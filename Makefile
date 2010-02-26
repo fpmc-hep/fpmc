@@ -60,8 +60,9 @@ examples:oldExamples
 allApp: Fpmc Herwig Externals examples allModules 
 	
 clean:clean_sqme
-	rm -f Objects/* *~ Examples/*~ External/*~ Herwig/*~ Fpmc/*~  \
-	 module* fort.* *.hbook last.kumac *.ntp example_* *.mod
+	@find ./ -name "*~" -exec rm -v {} \;
+	@find ./ -name ".*.swp" -exec rm -v {} \;
+	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod
 	
 # FLAGS
 # -------
@@ -71,7 +72,7 @@ clean:clean_sqme
 
 # g77 flags very important for simulation interfaces!
 F_FLAGS = -O1 -Wno-all  -fno-f2c -finit-local-zero -fno-automatic 
-F_COMP = g77 $(F_FLAGS) $(SPEC_FL)
+F_COMP = gfortran $(F_FLAGS) $(SPEC_FL)
 CC=g++
 
 # Directories

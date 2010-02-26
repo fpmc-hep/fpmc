@@ -8,11 +8,11 @@
 extern "C" {
 #endif
 // routines called by fpmc - note the difference masses of mw and mz 
-void sqme_aaww_c__(double *_amp2, double *_s, double *_t, double *_alpha,
+void sqme_aaww_c_(double *_amp2, double *_s, double *_t, double *_alpha,
      double* _mw, double *_sw, double *_dkappa, double *_lambda,
      double *_a0w, double *_aCw, double *_cutoff);
 
-void sqme_aazz_c__(double *_amp2, double *_s, double *_t, double *_alpha,
+void sqme_aazz_c_(double *_amp2, double *_s, double *_t, double *_alpha,
      double* _mz, double *_sw, double *_a0z, double *_aCz, double *_cutoff);
 #ifdef __cplusplus
 }
@@ -33,7 +33,7 @@ void sqme_aazz_c__(double *_amp2, double *_s, double *_t, double *_alpha,
 
 
 //////////////////////////////////////////////////////////////////// 
-void sqme_aaww_c__(double *_amp2, double *_s, double *_t, double *_alpha,
+void sqme_aaww_c_(double *_amp2, double *_s, double *_t, double *_alpha,
      double* _mw, double *_sw, double *_dkappa, double *_lambda,
      double *_a0w, double *_aCw, double *_cutoff) {
 //////////////////////////////////////////////////////////////////// 
@@ -70,7 +70,7 @@ void sqme_aaww_c__(double *_amp2, double *_s, double *_t, double *_alpha,
 }   
 
 //////////////////////////////////////////////////////////////////// 
-void sqme_aazz_c__(double *_amp2, double *_s, double *_t, double *_alpha,
+void sqme_aazz_c_(double *_amp2, double *_s, double *_t, double *_alpha,
      double* _mz, double *_sw, double *_a0z, double *_aCz, double *_cutoff) {
 //////////////////////////////////////////////////////////////////// 
 // anomalous aazz coupling:
