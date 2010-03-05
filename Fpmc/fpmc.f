@@ -464,9 +464,7 @@ c      ACTID=IFITPDF-PDFID
             STOP
          ENDIF
 
-         IF(AAANOM.EQ.0)THEN
-           
-         ELSEIF(AAANOM.EQ.1)THEN
+         IF(AAANOM.EQ.1)THEN
             PRINT *, 'Full SM formula for AAWW used'
          ELSEIF(AAANOM.EQ.2)THEN
            IF(IPROC.NE.16010) THEN
@@ -508,21 +506,9 @@ c      ACTID=IFITPDF-PDFID
             PRINT *, ' For ANOMCUTOFF < 0 GeV, dipole form of the
      & coupling formfactor turned off (see comphep_wrapper.cpp)'
            ENDIF
-         ELSEIF(AAANOM.EQ.10) THEN
-           IF(IPROC.NE.16030) THEN
-              PRINT*, ' '
-              PRINT*, ' FPMC - Magnetic monompole '
-              PRINT*, '        only with IPROC = 16030'
-              PRINT*, ' - STOP'
-              PRINT*, ' '
-              PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
-              PRINT*, ' '
-              STOP
-           ENDIF
-
          ELSE
                PRINT *, 'Unknown AAANOM = ', AAANOM
-               PRINT *, 'Should be =0, 1, 2, 3, 10'
+               PRINT *, 'Should be =0, 1, 2, 3'
                STOP
          ENDIF
       ENDIF   
@@ -2637,11 +2623,6 @@ c ... M.B. : if HQ=13, do not change it
 c ... O.K. : HQ=15 ZZ
           IF (HQ.GT.6.AND.HQ.LE.10) HQ=2*HQ+107
           IF (HQ.EQ.15) HQ=200 ! ZZ
-          IF (HQ.EQ.30) HQ=198   ! o.k. magnetic monopoles OKCHANGE
-         ! change HQ to the index of a monopole, which you have to
-         ! include in RMASS(I) etc, look in routine HWUDAT (herwig.f)
-         ! and in the Herwig manual how to include a new particle. 
-         ! In case of WW production, leave it. 
           IF (HQ.EQ.127) HQ=198 
           IF (HQ.GE.21.AND.HQ.LE.26) THEN 
             HQ=HQ+400-20
@@ -2667,11 +2648,8 @@ C Kinematics
            U=-S-T
            COSTH=(T-U)/(BE*S)
            EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U))        
-
 C Cross-sections
-           ! OKCHANGE change the last 198 to the id of monopoles
-        IF (HQ.NE.198.AND.HQ.NE.200.AND.HQ.NE.198) THEN   
-
+        IF (HQ.NE.198.AND.HQ.NE.200) THEN
 C --- Begin modif by Tibor Kucs 08/14/2003
 C     Updated by Maarten Boonekamp 11/03/2003
 c ... If QED use the original implementation :
@@ -2791,27 +2769,6 @@ c              FACTR1=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
 c     $             *6*pifac*cfac*alphem**2/s**2
 c     $             *(1-2*s*(2*s+3*emsq)/(3*(emsq-t)*(emsq-u))
 c     $           +2*s**2*(s**2+3*emsq*emsq)/(3*(emsq-t)**2*(emsq-u)**2))
-
-C ...          O.K magnetic monopoles
-          ELSEIF( AAANOM.EQ.10 ) THEN
-              ! recalculate kinematic - no approx. now
-              TMIN=S/2*(1-SQRT(MAX(1-4*(EMSQ+PTMIN**2)/S,ZERO)))-EMSQ 
-              TMAX=S/2*(1-SQRT(MAX(1-4*(EMSQ+PTMAX**2)/S,ZERO)))-EMSQ
-              IF (TMIN.GE.TMAX) RETURN
-              T=-(TMAX/TMIN)**RGEN1*TMIN
-              IF (RGEN2.GT.HALF) then
-                     T=-S-T+2*EMSQ
-              ENDIF   
-              U=-S-T+2*EMSQ
-             
-              COSTH=(2*T+S-2*EMSQ)/SQRT(S**2-4*EMSQ*S)
-              EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U))        
-
-              ! OKCHANGE  ... plug formula for magnetic monopoles
-              FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
-     $             *6*pifac*cfac*alphem**2/s**2
-     $             *(1-2*s*(2*s+3*emsq)/(3*(emsq-t)*(emsq-u))
-     $           +2*s**2*(s**2+3*emsq*emsq)/(3*(emsq-t)**2*(emsq-u)**2))
           ELSE
              print *, 'Nonstandard choice of AAANOM=', AAANOM
              stop
@@ -2840,11 +2797,6 @@ c O.K ZZ
             IF (HQ.EQ.200) THEN 
                ID4=200
                Q=1
-            ENDIF
-c O.K Magentic monopole OKCHANGE set HQ to monopole ID, uncomment Q=1
-            IF (HQ.EQ.198) THEN 
-               ID4=198
-               !Q=1 !uncomment after implementing monompole with charge 0
             ENDIF
             HCS=HCS+Q**4
             IF (GENEV.AND.HCS.GT.RCS) CALL HWHQCP(ID3,ID4,1243,61,*99)
