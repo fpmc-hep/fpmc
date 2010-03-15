@@ -464,7 +464,8 @@ c      ACTID=IFITPDF-PDFID
             STOP
          ENDIF
 
-         IF(AAANOM.EQ.1)THEN
+         IF(AAANOM.EQ.0)THEN
+         ELSEIF(AAANOM.EQ.1)THEN
             PRINT *, 'Full SM formula for AAWW used'
          ELSEIF(AAANOM.EQ.2)THEN
            IF(IPROC.NE.16010) THEN
