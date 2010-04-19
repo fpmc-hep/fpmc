@@ -3,7 +3,7 @@ C--   Example program to demonstrate usage of the MSTW 2008 PDFs.    --
 C--   Comments to Graeme Watt <watt(at)hep.ucl.ac.uk>.               --
 C---------------------------------------------------------------------
       subroutine KMR2_example
-      include 'KMR2.inc'
+      include 'kmr2.inc'
 
       integer i
       double precision x,mu2,y
@@ -142,7 +142,7 @@ c     print*, y, x
 
 
       subroutine KMR2_Init(s_)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision s_,HWUALF,k
       external HWUALF
       integer alphaSorder,alphaSnfmax
@@ -192,7 +192,7 @@ c     endif
 
 
       function KMR2_IntxPgg(x,kT)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       integer Nf
       double precision KMR2_IntxPgg,x,kT
       double precision x2,x3,x4,C_A,I1,I2
@@ -231,7 +231,7 @@ c     endif
       end
       
       subroutine KMR2_test() 
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       integer i
       double precision KMR2_alphas, Q2,AS1,AS2,AS3,AS4,AS5
       double precision alpha_s,CHIDeas,HWUALF,MRSTW_ALPHAS,ExHuME_alphas
@@ -248,7 +248,7 @@ c     AS1 = MRSTW_ALPHAS(sqrt(Q2))
       end
   
       function KMR2_alphas(Q2) 
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision KMR2_alphas, Q2
       double precision ExHuME_alphas
       external ExHuME_alphas
@@ -257,7 +257,7 @@ c     AS1 = MRSTW_ALPHAS(sqrt(Q2))
       end
 
       function KMR2_xg(x,Q2)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision KMR2_xg,x,Q2,q
       double precision GetOnePDF
       double precision upv,dnv,usea,dsea,str,chm,bot,glu
@@ -275,7 +275,7 @@ c      KMR2_xg = GetOnePDF(prefix,iset,x,Q,0)
 
       
       function KMR2_dT(lnkT2,par)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision KMR2_dT, lnkT2, par(10), kT2
       double precision I, mu, kT, AS
       double precision KMR2_alphas, KMR2_IntxPgg
@@ -290,7 +290,7 @@ c      KMR2_xg = GetOnePDF(prefix,iset,x,Q,0)
       end
             
       function KMR2_T(QT2,mu2)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision KMR2_T, QT2, mu2
       double precision KMR2_integrate2, KMR2_dT, I, par(10)
       external KMR2_integrate2, KMR2_dT
@@ -301,7 +301,7 @@ c      KMR2_xg = GetOnePDF(prefix,iset,x,Q,0)
       end
      
       function KMR2_Rg(x,QT2)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision KMR2_Rg, x, QT2
       double precision q, lambda, x1, x2, g1, g2
       double precision KMR2_xg
@@ -327,7 +327,7 @@ c      KMR2_xg = GetOnePDF(prefix,iset,x,Q,0)
       end      
 
       function KMR2_f(x,xp,QT2,mu2)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision KMR2_f,x,xp,QT2,mu2
       double precision sqrtT, grad, ddT,d,mu,q
       double precision xglu
@@ -349,7 +349,7 @@ c     ddT = KMR2_alphas(QT2)/(4.0*pi)*KMR2_IntxPgg(mu/(q+mu),q)
       end
  
       function KMR2_dL(lnQT2,par)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision KMR2_dL, x1, x2, Qt2, mu2, par(10)
       double precision x1p, x2p, lnQT2
       double precision KMR2_f
@@ -366,7 +366,7 @@ c     ddT = KMR2_alphas(QT2)/(4.0*pi)*KMR2_IntxPgg(mu/(q+mu),q)
       end
       
       function KMR2_L(M2,y,mu2)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision Q2min,Q2max,b
       double precision KMR2_L, x1, x2, mu2, M2,
      & y, sss, par(10)
@@ -386,7 +386,7 @@ c     ddT = KMR2_alphas(QT2)/(4.0*pi)*KMR2_IntxPgg(mu/(q+mu),q)
       end 
 
       function KMR2_GET_LUMI(x1,x2)
-      include 'KMR2.inc'
+      include 'kmr2.inc'
       double precision KMR2_GET_LUMI,x1,x2
       double precision M2,y,mu2
       double precision KMR2_L

@@ -384,6 +384,21 @@ C ... begin R.S.
         PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
         PRINT*, ' '
         STOP
+        ELSEIF(NFLUX.EQ.18 .AND. .NOT.(IPROC.EQ.19999 
+     &  .OR. IPROC.EQ.16012)) THEN
+        PRINT*, ' '
+        PRINT*, ' FPMC - You requested a CHIDe model'
+        PRINT*, '          with a photon initiated hard process:'
+        PRINT*, '          NFLUX  = ', NFLUX
+        PRINT*, '          TYPINT = ', TYPINT 
+        PRINT*, ' NFLUX=18 should be used with TYPINT=QCD'
+        PRINT*, ' '
+        PRINT*, ' - STOP'
+        PRINT*, ' '
+        PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
+        PRINT*, ' '
+        STOP
+
 C ... end R.S.
       ELSEIF(TYPEPR.EQ.'EXC'.AND.IPR.NE.60.AND.IPR.NE.99.AND.IPR.NE.98
      &       .AND.IPR.NE.97.AND.IPR.NE.96) THEN
@@ -464,8 +479,7 @@ c      ACTID=IFITPDF-PDFID
             STOP
          ENDIF
 
-         IF(AAANOM.EQ.0)THEN
-         ELSEIF(AAANOM.EQ.1)THEN
+         IF(AAANOM.EQ.1)THEN
             PRINT *, 'Full SM formula for AAWW used'
          ELSEIF(AAANOM.EQ.2)THEN
            IF(IPROC.NE.16010) THEN
@@ -533,6 +547,7 @@ c-------------------------------------------------------------------
 
       INCLUDE 'HERWIG65.INC'
       INCLUDE 'fpmc.inc'
+      INCLUDE 'CHIDe.inc'
 c---To pass the relative GAP Srv. prob factor for BL inclusive modified dist.
       DOUBLE PRECISION GAPSPRREL
       COMMON /BLMODIF/  GAPSPRREL
@@ -543,7 +558,11 @@ c---To pass the relative GAP Srv. prob factor for BL inclusive modified dist.
 
       CHARACTER(80) STABLE
 
-
+c ... begin R.S.
+      character*50  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
+       common/CHIDePATH/ dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
+c ... end R.S.
+       
 c--- Initialization of the QCD subroutine
       IF(TYPEPR.NE.'EXC') THEN
          Q2=75D0        !dummy - just initialization
@@ -625,19 +644,42 @@ c--- Initialize KMR calculation
 
       IF(NFLUX.EQ.16) THEN
          IF(PBEAM1.LE.1d3) THEN
-             CALL KMRINI(1)
+*            CALL KMRINI(1)
+c           CALL KMRINI(3,CHIDeS)
+            CALL KMRINI(99,CHIDeS)
          ELSEIF(PBEAM1.GE.6.5d3) THEN
-             CALL KMRINI(2)
+*            CALL KMRINI(2)
+c           CALL KMRINI(4,CHIDeS)
+            CALL KMRINI(99,CHIDeS)
         ENDIF
       ENDIF
 
+C ... begin R.S.
 C ... Initialize CHIDe model
+      IF(NFLUX.EQ.18 .AND. IPROC.EQ.19999) THEN
+        dgdtab1="External/CHIDe/Data/Higgsdgdtab1.d"
+        dgdtab2="External/CHIDe/Data/Higgsdgdtab2.d"
+        dgdtab3="External/CHIDe/Data/Higgsdgdtab3.d"
+        dgdtab4="External/CHIDe/Data/Higgsdgdtab4.d"
+        sudatab="External/CHIDe/Data/Higgssudatab.d"
 C     Parameters: Higgs mass, top mass, cms energy^2, impact factor
 C     parameterisation, upper and lower limit scales of sudakov factor,
 C     Rapidity Gap Survival
-      IF(NFLUX.EQ.18) THEN
-          CALL CHIDeHiggsInit(RMASS(201),RMASS(6),CHIDeS,CHIDeIGLU,
-     &         CHIDeX, CHIDeXP, CHIDeS2)
+        CALL CHIDeHiggsInit(RMASS(201),RMASS(6),CHIDeS,CHIDeIGLU,
+     &  CHIDeX, CHIDeXP, CHIDeS2)
+      ELSEIF(NFLUX.EQ.18 .AND. IPROC.EQ.16012) THEN
+        dgdtab1="External/CHIDe/Data/ggdgdtab1.d"
+        dgdtab2="External/CHIDe/Data/ggdgdtab2.d"
+        dgdtab3="External/CHIDe/Data/ggdgdtab3.d"
+        dgdtab4="External/CHIDe/Data/ggdgdtab4.d"
+        sudatab="External/CHIDe/Data/ggsudatab.d"
+        CALL CHIDeGGInit(CHIDeS,DBLE(PTMIN),CHIDeS2,
+     &       CHIDeX,CHIDeXP,CHIDeIGLU,
+     &       CHIDeX1Min, CHIDeX1Max, CHIDeX2Min, CHIDeX2Max,
+     &       DBLE(YJMIN), DBLE(YJMAX))
+        CHIDeX1MIN=CHIDeX1MIN/1d3! CHIDeZ1 = CHIDeB1 + CHIDeB2 
+c        CHIDeX1MIN=1d-10 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
+c       CHIDeX1MAX=1d0 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
       ENDIF
 C ... end R.S.
 
@@ -1005,16 +1047,25 @@ c M.R. ExcChi
       DOUBLE PRECISION THETA,PHIGAM,MASS2,THETA2,THETA1,K0,K1,OMEGA,Q2WT
 
 C ... begin R.S.
+
+      include 'CHIDe.inc' 
       DOUBLE PRECISION CHIDe_C, CHIDe_B
-C     DOUBLE PRECISION CHIDe_K1X,CHIDe_K1Y,CHIDe_K1
-c     DOUBLE PRECISION CHIDe_K2X,CHIDe_K2Y,CHIDe_K2
       DOUBLE PRECISION S, AA, BB, CC, DELTA
-      DOUBLE PRECISION CHIDe_Z1, CHIDe_K1X, CHIDe_K1Y, CHIDe_K12 
-      DOUBLE PRECISION CHIDe_Z2, CHIDe_K2X, CHIDe_K2Y, CHIDe_K22
-      COMMON /CHIDe/ CHIDe_Z1, CHIDe_K1X, CHIDe_K1Y, CHIDe_K12,
-     &               CHIDe_Z2, CHIDe_K2X, CHIDe_K2Y, CHIDe_K22
 
+      LOGICAL IsCHIDeHiggs, IsCHIDeGG, IsCHIDe
+      DOUBLE PRECISION CHIDeKmax, CHIDeK2max
+      DOUBLE PRECISION CHIDedotdiff
+      EXTERNAL CHIDedotdiff
 
+      DOUBLE PRECISION CHIDeQ, CHIDeQp,CHIDeSigma,SIGMA
+      DOUBLE PRECISION CHIDePhi, CHIDePhip
+      DOUBLE PRECISION CHIDeK(2), CHIDeKp(2)
+      integer II,N
+      
+      IsCHIDe = (NFLUX.EQ.18)
+      IsCHIDeGG = (IPROC.EQ.16012 .AND. NFLUX.EQ.18)
+      IsCHIDeHiggs = (IPROC.EQ.19999 .AND. NFLUX.EQ.18)
+      
 C ... end R.S.
 
 
@@ -1177,6 +1228,9 @@ C ... M.B. : set boundaries properly for Exclusive case
           IF(TYPEPR.EQ.'EXC'.AND.(IPRO.EQ.16.OR.IPRO.EQ.99)) THEN
              ZMAX = YWWMAX
              ZMIN = RMASS(201)**2/SS**2/ZMAX
+             !R.S.
+             CHIDeX1Min = max(CHIDeX1Min,RMASS(201)**2/SS**2/CHIDeX2Max)
+             CHIDeX2Min = min(CHIDeX2Min,RMASS(201)**2/SS**2/CHIDeX1Max)
           ENDIF
           IF(EXCKINE) THEN  ! M.R. ExcChi
             ZMAX = YWWMAX
@@ -1198,13 +1252,22 @@ C---UNKNOWN PROCESS: USE ENERGY CUTOFF, AND WARN USER
 C---APPLY USER DEFINED CUTS YWWMIN,YWWMAX AND INDIRECT LIMITS ON Z
       IF (.NOT.WWA) THEN
         ZMIN=MAX(ZMIN,YWWMIN,SQRT(Q2WWMN)/ABS(PHEP(3,IHEP)))
+
+C ... begin R.S.
+       IF(IHEP.EQ.1) THEN
+         ZMIN=CHIDeX1Min
+         ZMax=CHIDeX1Max
+       ELSEIF(IHEP.EQ.2) THEN
+         ZMIN=CHIDeX2Min
+         ZMax=CHIDeX2Max
+       ENDIF 
+C ... end R.S.        
         ZMAX=MIN(ZMAX,YWWMAX)
         IF (ZMIN.GT.ZMAX) THEN
           GAMWT=ZERO
           RETURN
         ENDIF
       ENDIF
-
 C---Q2WWMN AND Q2WWMX ARE USER-DEFINED LIMITS IN THE Q**2 INTEGRATION
       QQMAX=Q2WWMX
       QQMIN=Q2WWMN
@@ -1220,14 +1283,96 @@ C---POMERON (REGGEON) FLUX ; calculate GAMWT
       ELSEIF ((NFLUX.GE.10).AND.(NFLUX.LE.16)) THEN 
          GAMWT = GAMWT*F*ZGAM/C
 C ... begin R.S.
-      ELSEIF(NFLUX.EQ.18) THEN
 C     In CHIDe model the integrand is not factorised into flux and hard
 C     process, therefore there is no flux here.
-         GAMWT = GAMWT*ZGAM/C
+      ELSEIF(IsCHIDeHiggs .AND. IHEP.EQ.1) THEN
+        CHIDe_B = 4d0! Only matters for generation efficiency
+        CHIDe_C = CHIDe_B/(DEXP(-CHIDe_B*QQMIN)-DEXP(-CHIDe_B*QQMAX))
+        CHIDeQQ1 = -1.0/CHIDe_B*DLOG(DEXP(-CHIDe_B*QQMIN) 
+     &            - CHIDe_B/CHIDe_C*HWRGEN(1))
+        CHIDeQQ3 = -1.0/CHIDe_B*DLOG(DEXP(-CHIDe_B*QQMIN) 
+     &            - CHIDe_B/CHIDe_C*HWRGEN(2))
+        GAMWT = pi*GAMWT/CHIDe_C/DEXP(-CHIDe_B*CHIDeQQ1)
+        GAMWT = pi*GAMWT/CHIDe_C/DEXP(-CHIDe_B*CHIDeQQ3)
+        CHIDePhi1 = 2*pi*HWRGEN(1)
+        CHIDePhi3 = 2*pi*HWRGEN(2)
+        
+        CHIDeQ1 = sqrt(CHIDeQQ1)
+        CHIDeQ3 = sqrt(CHIDeQQ3)
+                
+        CHIDeK1(1) =  CHIDeQ1*cos(CHIDePhi1)
+        CHIDeK1(2) =  CHIDeQ1*sin(CHIDePhi1)
+        CHIDeK3(1) =  CHIDeQ3*cos(CHIDePhi3)
+        CHIDeK3(2) =  CHIDeQ3*sin(CHIDePhi3)
+        
+        CHIDeZ1 = (ZMIN/ZMAX)**HWRGEN(1)*ZMAX
+        GAMWT = GAMWT*CHIDeZ1*DLOG(ZMAX/ZMIN)
+
+C     Exact kinematics (from A.Dechambre)           
+c       S = (PBEAM1+PBEAM2)**2
+c       AA = S*CHIDeZ1
+c       BB = S*CHIDeZ1 - CHIDeQQ3 + CHIDeZ1/(1.-CHIDeZ1)*CHIDeQQ1
+c    &      - (CHIDeK1(1)-CHIDeK1(2))**2 - (CHIDeK2(1)-CHIDeK2(2))**2 
+c    &      + RMASS(201)**2
+c       CC = CHIDeZ1/(1.-CHIDeZ1)*CHIDeQQ1
+c    &      - (CHIDeK2(1)-CHIDeK2(2))**2 + RMASS(201)**2
+c       DELTA = BB**2-(4.*AA*CC)
+c
+c       IF(DELTA.LE.ZERO) GAMWT = ZERO
+c       CHIDeZ2 = (-BB + sqrt(DELTA))/2./AA
+        
+        CHIDeZ2 = (RMASS(201)/SS)**2 / CHIDeZ1
+c       print*, RMASS(201), sqrt(CHIDeZ1*CHIDeZ2)*SS
+c       stop
+        ZGAM = CHIDeZ1
+      ELSEIF(IsCHIDeGG .AND. IHEP.EQ.1) THEN
+        CHIDeK2max =PTMIN+100d0
+        CHIDe_B = 0.2d0! Only matters for generation efficiency
+        CHIDe_C=CHIDe_B/(DEXP(-CHIDe_B*PTMIN)-DEXP(-CHIDe_B*CHIDeK2max))
+        CHIDeQ2 = -1.0/CHIDe_B*DLOG(DEXP(-CHIDe_B*PTMIN) 
+     &            - CHIDe_B/CHIDe_C*HWRGEN(1))
+        GAMWT = 2*pi*GAMWT*CHIDeQ2/CHIDe_C/DEXP(-CHIDe_B*CHIDeQ2)
+        CHIDePhi2 = 2*pi*HWRGEN(2)
+        CHIDeQQ2 = CHIDeQ2**2
+       
+        CHIDe_B = 5d0! Only matters for generation efficiency
+        CHIDe_C = CHIDe_B/(DEXP(-CHIDe_B*QQMIN)-DEXP(-CHIDe_B*QQMAX))
+        CHIDeQQ1 = -1.0/CHIDe_B*DLOG(DEXP(-CHIDe_B*QQMIN) 
+     &            - CHIDe_B/CHIDe_C*HWRGEN(1))
+        CHIDeQQ3 = -1.0/CHIDe_B*DLOG(DEXP(-CHIDe_B*QQMIN) 
+     &            - CHIDe_B/CHIDe_C*HWRGEN(2))
+        GAMWT = pi*GAMWT/CHIDe_C/DEXP(-CHIDe_B*CHIDeQQ1)
+        GAMWT = pi*GAMWT/CHIDe_C/DEXP(-CHIDe_B*CHIDeQQ3)
+        CHIDePhi1 = 2*pi*HWRGEN(1)
+        CHIDePhi3 = 2*pi*HWRGEN(2)
+        CHIDeQ1 = sqrt(CHIDeQQ1)
+        CHIDeQ3 = sqrt(CHIDeQQ3)
+        
+        CHIDeK1(1) =  CHIDeQ1*cos(CHIDePhi1)
+        CHIDeK1(2) =  CHIDeQ1*sin(CHIDePhi1)
+        CHIDeK2(1) =  CHIDeQ2*cos(CHIDePhi2)
+        CHIDeK2(2) =  CHIDeQ2*sin(CHIDePhi2)
+        CHIDeK3(1) =  CHIDeQ3*cos(CHIDePhi3)
+        CHIDeK3(2) =  CHIDeQ3*sin(CHIDePhi3)
+       
+        CHIDeB1 = (CHIDeX1MIN/CHIDeX1MAX)**HWRGEN(1)*CHIDeX1MAX
+        CHIDeB2 = (CHIDeX1MIN/CHIDeX1MAX)**HWRGEN(2)*CHIDeX1MAX
+        GAMWT = GAMWT*DLOG(CHIDeX1MAX/(CHIDeX1MIN))*CHIDeB1
+        GAMWT = GAMWT*DLOG(CHIDeX1MAX/(CHIDeX1MIN))*CHIDeB2
+
+        CHIDeA1=CHIDedotdiff(CHIDeK1,CHIDeK2,CHIDeK1,CHIDeK2)
+     &           /CHIDeS/CHIDeB1
+        CHIDeA2=CHIDedotdiff(CHIDeK3,CHIDeK2,CHIDeK3,CHIDeK2)
+     &           /CHIDeS/CHIDeB2
+        
+        CHIDeZ1 = CHIDeB1 + CHIDeB2
+        CHIDeZ2 = CHIDeA1 + CHIDeA2
+        ZGAM = CHIDeZ1
+      ELSEIF(IsCHIDe .AND. IHEP.EQ.2) THEN
+        ZGAM =  CHIDeZ2
 c ... end R.S.
-         
       ELSE
-         WRITE(*,*) 'In HWEGAM : NFLUX MUST BE 9-16 IN FPMC'
+         WRITE(*,*) 'In HWEGAM : NFLUX MUST BE 9-16,18 IN FPMC'
          STOP
       ENDIF
 
@@ -1236,21 +1381,18 @@ C---Works only for gluglu/gamgam -> Higgs. Other use cases?
 C ... M.B.
       IF(TYPEPR.EQ.'EXC'.AND.IHEP.EQ.1.AND.IPRO.EQ.99) THEN
 C ... begin R.S
-         IF(NFLUX.NE.18) THEN
-C     In CHIDe model ZGAM2 factor (coming from dirac delta integration)
-C     included in crossection formula, just like the flux.
-           ZGAM2 = (RMASS(201)/SS)**2 / ZGAM
-           CALL FLUX(F,ZGAM2,QQMIN,QQMAX,IPRO,2)
-           GAMWT = GAMWT * F * ZGAM2
+         IF(IsCHIDeHiggs) THEN
+           ZGAM1 = CHIDeZ1
+           ZGAM2 = CHIDeZ2
          ELSE
-C     Calculate ZGAM2 using aproximate kinematics. It is overriten after
-C     drawing t1 and t2 with exact kinematics (ugly and dangerous, but 
-C     it's the only way without modyfing FPMC structure).
            ZGAM2 = (RMASS(201)/SS)**2 / ZGAM
            ZGAM1 = ZGAM
+           CALL FLUX(F,ZGAM2,QQMIN,QQMAX,IPRO,2)
+           GAMWT = GAMWT * F * ZGAM2
          ENDIF
+        IF(ZGAM.GT.CHIDeX1Max.OR.ZGAM2.GT.CHIDeX2Max) THEN 
 C ... end R.S.
-        IF(ZGAM.GT.YWWMAX.OR.ZGAM2.GT.YWWMAX) THEN 
+c       IF(ZGAM.GT.YWWMAX.OR.ZGAM2.GT.YWWMAX) THEN 
           PRINT*, '!!! HWEGAM : ZGAM OUT OF RANGE !!!'
         ENDIF
       ENDIF
@@ -1289,7 +1431,7 @@ C *** M.B. M.R. Compute ZGAM in second call for exclusive production
           ZGAM2=ZGAM 
 
           CALL FLUX(F,ZGAM,QQMIN,QQMAX,NFLUX,IPRO)
-          IF(NFLUX.NE.18) GAMWT=GAMWT*F*ZGAM
+          IF(.NOT. IsCHIDe) GAMWT=GAMWT*F*ZGAM
           IF(ZGAM.LT.YWWMIN) GAMWT = 0d0
           IF(ZGAM.GT.YWWMAX.OR.ZGAM.LT.YWWMIN) THEN
             PRINT*, ''
@@ -1358,12 +1500,9 @@ C        function envelope is 1/ebeam/z*alpha/pifac/Q2
         Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
      +     (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
 C ... begin R.S.
-      ELSEIF(NFLUX.EQ.18) THEN 
-         CHIDe_B=3.5 ! Only matters for generation efficiency
-         CHIDe_C=CHIDe_B/(DEXP(-CHIDe_B*QQMIN)-DEXP(-CHIDe_B*QQMAX))
-         Q2 = -1.0/CHIDe_B*DLOG(DEXP(-CHIDe_B*QQMIN) 
-     &        - CHIDe_B/CHIDe_C*HWRGEN(1))
-         GAMWT = GAMWT/CHIDe_C/DEXP(-CHIDe_B*Q2)
+      ELSEIF(IsCHIDe) THEN
+        IF(IHEP.EQ.1) Q2 = CHIDeQQ1
+        IF(IHEP.EQ.2) Q2 = CHIDeQQ3
 C ... end R.S.
       ENDIF
       IF(IHEP.EQ.1) THEN
@@ -1378,8 +1517,21 @@ C ... end R.S.
          PRINT*, 'HWEGAM -- THIS SHOULD NEVER HAPPEN'
          STOP
       ENDIF
+C ... end M.B. T.K.
 
-      
+C *** M.R. ExcChi Update GAMWT for exclusive production
+      IF(IHEP.EQ.1) THEN
+         TGAM1=-Q2
+         IF(EXCKINE) THEN
+           THETA1=THETA !Save THETA1 for  M.R. ExcChi
+           ZGAM1=ZGAM
+         ENDIF
+      ELSEIF(IHEP.EQ.2) THEN
+         TGAM2=-Q2
+      ELSE
+         PRINT*, 'HWEGAM -- THIS SHOULD NEVER HAPPEN'
+         STOP
+      ENDIF
 C ... end M.B. T.K.
 
 C *** M.R. ExcChi Update GAMWT for exclusive production
@@ -1397,10 +1549,26 @@ C *** M.R. ExcChi Update GAMWT for exclusive production
 C *** end M.R.
 
 C ... MB 03/05 : pick and save phi here.
-      CALL HWRAZM(SQRT(Q2),PXGAM,PYGAM)
+
+C ... begin R.S.     
+      IF(IsCHIDe .AND. IHEP.EQ.1) THEN
+        PXGAM = -CHIDeK1(1)
+        PYGAM = -CHIDeK1(2)
+      ELSEIF(IsCHIDe .AND. IHEP.EQ.2) THEN
+        PXGAM = CHIDeK3(1)
+        PYGAM = CHIDeK3(2)
+      ELSE
+        CALL HWRAZM(SQRT(Q2),PXGAM,PYGAM)
+      ENDIF
+C ... end R.S.
       PHIGAM1=-999d0
       PHIGAM2=-999d0
-      IF(IHEP.EQ.1) THEN
+C ... begin R.S.     
+      IF(IsCHIDe) THEN
+              IF(IHEP.EQ.1) PHIGAM1 = 2*pi-CHIDePhi1
+              IF(IHEP.EQ.2) PHIGAM2 = CHIDePhi3
+C ... end R.S.
+      ELSEIF(IHEP.EQ.1) THEN
         PHIGAM1=DACOS(PXGAM/SQRT(Q2))
         IF(PYGAM.LT.0d0) PHIGAM1=-PHIGAM1
       ELSEIF(IHEP.EQ.2) THEN
@@ -1410,45 +1578,6 @@ C ... MB 03/05 : pick and save phi here.
          PRINT*, 'HWEGAM -- THIS SHOULD NEVER HAPPEN'
          STOP
       ENDIF
-
-C ... begin R.S
-      IF(NFLUX.EQ.18 .AND. IHEP.EQ.1) THEN
-        CHIDe_K12 = Q2
-        CHIDe_K1X = PXGAM
-        CHIDe_K1Y = PYGAM 
-      ELSEIF(NFLUX.EQ.18 .AND. IHEP.EQ.2) THEN
-        CHIDe_K22 = Q2
-        CHIDe_K2X = PXGAM
-        CHIDe_K2Y = PYGAM 
-      ENDIF
-      IF(NFLUX.EQ.18 .AND. IHEP.EQ.2 .AND. IPRO.EQ.99) THEN
-C    Exact kinematics (from A. Dechambre)
-           S = (PBEAM1+PBEAM2)**2
-           AA = S*ZGAM1
-           BB = S*ZGAM1 - CHIDe_K22 + ZGAM1/(1.-ZGAM1)*CHIDe_K12
-     &         - (CHIDe_K1X-CHIDe_K1Y)**2 - (CHIDe_K2X-CHIDe_K2Y)**2 
-     &         + RMASS(201)**2
-           CC = ZGAM1/(1.-ZGAM1)*CHIDe_K12
-     &         - (CHIDe_K2X-CHIDe_K2Y)**2 + RMASS(201)**2
-           DELTA = BB**2-(4.*AA*CC)
-C        print*,  ZGAM1, ZGAM2,  (-BB + sqrt(DELTA))/2./AA, 
-C     & (CHIDe_K12 + CHIDe_K22 + RMASS(201)**2)/ZGAM1/S
-
-         IF(DELTA.LE.ZERO) GAMWT = ZERO
-         ZGAM2 = (-BB + sqrt(DELTA))/2./AA
-         CHIDe_Z1 = ZGAM1
-         CHIDe_Z2 = ZGAM2
-        
-         ENDIF
-C       print*, NFLUX, IHEP,IPRO 
-c      IF(NFLUX.NE.18 .AND. IHEP.EQ.2 .AND. IPROC.EQ.99)
-c     &print*, IHEP, ZGAM2, (-BB + sqrt(DELTA))/2./AA
-
-
-C ... end R.S.
-
-
-
       
 C ... Apply soft survival probability
       IF(IHEP.EQ.2) THEN
@@ -1530,6 +1659,7 @@ C---UPDATE OVERALL CM FRAME
       CALL HWVDIF(4,PHEP(1,3),PHEP(1,IHEP),PHEP(1,3))
       CALL HWVSUM(4,PHEP(1,NHEP),PHEP(1,3),PHEP(1,3))
       CALL HWUMAS(PHEP(1,3))
+      
 C---FILL OUTGOING LEPTON
       NHEP=NHEP+1
       IDHW(NHEP)=IDHW(IHEP)
@@ -1542,7 +1672,6 @@ C---FILL OUTGOING LEPTON
       JDAHEP(2,IHEP)=NHEP
       CALL HWVDIF(4,PHEP(1,IHEP),PHEP(1,NHEP-1),PHEP(1,NHEP))
       PHEP(5,NHEP)=PHEP(5,IHEP)
-
  999  END
 C------------------------------------------------------------------------------
 *-- Author :    Bryan Webber
@@ -1559,6 +1688,7 @@ C                        - include a switch for Jz=0 photon pairprod.
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
 C ... begin R.S.
+      include 'CHIDe.inc'
       INCLUDE 'fpmc.inc' ! To be able to check NFLUX
 C ... end R.S.
       DOUBLE PRECISION CIRCKP(2)
@@ -1579,10 +1709,6 @@ C--Les Houches Common Block
      &                XMAXUP(MAXPUP),LPRUP(MAXPUP)
 
 C ... begin R.S.
-        DOUBLE PRECISION CHIDe_Z1, CHIDe_K1X, CHIDe_K1Y, CHIDe_K12
-        DOUBLE PRECISION CHIDe_Z2, CHIDe_K2X, CHIDe_K2Y, CHIDe_K22
-        COMMON /CHIDe/ CHIDe_Z1, CHIDe_K1X, CHIDe_K1Y, CHIDe_K12,
-     &                 CHIDe_Z2, CHIDe_K2X, CHIDe_K2Y, CHIDe_K22
 C ... end R.S.
       
       IF (IERROR.NE.0)  RETURN
@@ -1781,20 +1907,6 @@ C---IF IT DOES NOT DOMINATE, ZMXISR SHOULD BE DECREASED
         ENDIF
       ENDIF
       
-C ... begin R.S.
-C      IF(NFLUX.EQ.18) THEN
-C     The kinematics is read before coming to photon-photon centre of
-C     mass frame, then put used in CHIDe formulae
-
-C         CHIDe_Z1  = PHEP(4,4)/PHEP(4,1)
-C         CHIDe_K1X = PHEP(1,4)
-C         CHIDe_K1Y = PHEP(2,4)
-C         CHIDe_Z2  = PHEP(4,6)/PHEP(4,2)
-C         CHIDe_K2X = PHEP(1,6)
-C         CHIDe_K2Y = PHEP(2,6)
-C      ENDIF
-C ... end R.S.
-
 C---IF USER LIMITS WERE TOO TIGHT, MIGHT NOT BE ANY PHASE-SPACE
       IF (GAMWT.LE.ZERO) GOTO 30
 C---IF CMF HAS ACQUIRED A TRANSVERSE BOOST, OR USER REQUESTS IT ANYWAY,
@@ -1802,7 +1914,6 @@ C   BOOST EVENT RECORD BACK TO CMF
       IF (PHEP(1,3)**2+PHEP(2,3)**2.GT.ZERO .OR. USECMF) CALL HWUBST(1)
 C---ROUTINE LOOPS BACK TO HERE IF GENERATED WEIGHT WAS ACCEPTED
    20 CONTINUE
-
 
       IPRO=MOD(IPROC/100,100)
 C---PROCESS GENERATED BY LES HOUCHES INTERFACE
@@ -2037,6 +2148,7 @@ C end M.B.T.K.
           IERROR=0
         ENDIF
         EVWGT=EVWGT*GAMWT
+        if(EVWGT-EVWGT.NE.ZERO) EVWGT=ZERO ! R.S. IF =NAN or =INF
         NWGTS=NWGTS+1
         ABWGT=ABS(EVWGT)
         IF (EVWGT.LT.ZERO) THEN
@@ -2157,7 +2269,7 @@ c---End modif by Tibor Kucs
           ENDIF
          ENDIF
          EVWGT=EVWGT + CSFAC
-      ENDIF
+        ENDIF
   999 END
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -2335,18 +2447,20 @@ C-----------------------------------------------------------------------
       EQUIVALENCE (EMW,RMASS(198))
 
 C ... begin R.S.
-      INTEGER CHIDe_I, CHIDe_N
-      DOUBLE PRECISION CHIDe_kmax,CHIDe_ak, CHIDe_akp
-      DOUBLE PRECISION CHIDe_thetak, CHIDe_thetap
-      DOUBLE PRECISION CHIDe_jac, CHIDe_sigma
-      DOUBLE PRECISION CHIDe_k1(2), CHIDe_k3(2)
-      DOUBLE PRECISION CHIDe_k(2), CHIDe_kp(2)
-      DOUBLE PRECISION CHIDe_b1, CHIDe_a3
-        
-      DOUBLE PRECISION CHIDe_Z1, CHIDe_K1X, CHIDe_K1Y, CHIDe_K12
-      DOUBLE PRECISION CHIDe_Z2, CHIDe_K2X, CHIDe_K2Y, CHIDe_K22
-      COMMON /CHIDe/ CHIDe_Z1, CHIDe_K1X, CHIDe_K1Y, CHIDe_K12,
-     &                  CHIDe_Z2, CHIDe_K2X, CHIDe_K2Y, CHIDe_K22
+      include 'CHIDe.inc'
+      INTEGER CHIDeN, CHIDeI
+      LOGICAL IsCHIDeHiggs
+      DOUBLE PRECISION CHIDeSigma, CHIDeJac
+
+      DOUBLE PRECISION CHIDeQ, CHIDeQp
+      DOUBLE PRECISION CHIDePhi, CHIDePhip
+      DOUBLE PRECISION CHIDeK(2), CHIDeKp(2)
+
+      DOUBLE PRECISION CHIDeKmax
+      DOUBLE PRECISION CHIDedotdiff
+      EXTERNAL CHIDedotdiff
+
+      IsCHIDeHiggs = (NFLUX.EQ.18 .AND. IPROC.EQ.19999)
 C ... end R.S.
       
 
@@ -2399,59 +2513,34 @@ C ... O.K. NLO k-factor NLOConst
              CSFAC=GFACTR*HWHIGT(EMH)*HWUALF(1,EMH)**2*EMFAC*16
              NLOConst = PI + 5.5/PI;
              CSFAC=CSFAC*(1+HWUALF(1,EMH)*NLOConst)
-
 C ... begin R.S.
-
-             IF(NFLUX.EQ.18) THEN
-
+             IF(IsCHIDeHiggs) THEN
 C     Average over unphysical variables to increase the efficiency
                 CSFAC=ZERO
-                CHIDe_N = 100
-                DO CHIDe_I = 1, CHIDe_N
-                  
-C     Cross-section from CHIDe model
-                  
-C     CHIDe_Z1, CHIDe_Z2 - protons' reduced momentum losses
-C     CHIDe_k1 - transverse momentum of 1st pomeron
-C     CHIDe_k2 - transverse momentum of 2nd pomeron
-                   
-                   CHIDe_kmax=20.0 ! Maximal momentum in gluon loop
-                   
-                   CHIDe_jac=1.
+                CHIDeN = 100
+                DO CHIDeI = 1, CHIDeN
+                   CHIDeKmax=20.0 ! Maximal momentum in gluon loop
+                   CHIDeJac=1.
 
-                   CHIDe_ak=CHIDe_kmax*HWRGEN(1)
-                   CHIDe_thetak=2.*PIFAC*HWRGEN(2)
-                   CHIDe_jac=CHIDe_jac*2.*PIFAC*CHIDe_ak*CHIDe_kmax
-                   CHIDe_k(1)=CHIDe_ak*cos(CHIDe_thetak)
-                   CHIDe_k(2)=CHIDe_ak*sin(CHIDe_thetak)
+                   CHIDeQ=CHIDeKmax*HWRGEN(1)
+                   CHIDePhi=2.*PIFAC*HWRGEN(2)
+                   CHIDeJac=CHIDeJac*2.*PIFAC*CHIDeQ*CHIDeKmax
+                   CHIDeK(1)=CHIDeQ*cos(CHIDePhi)
+                   CHIDeK(2)=CHIDeQ*sin(CHIDePhi)
                    
-                   CHIDe_akp=CHIDe_kmax*HWRGEN(1)
-                   CHIDe_thetap=2.*PIFAC*HWRGEN(2)                   
-                   CHIDe_jac=CHIDe_jac*2.*PIFAC*CHIDe_akp*CHIDe_kmax
-                   CHIDe_kp(1)=CHIDe_akp*cos(CHIDe_thetap)
-                   CHIDe_kp(2)=CHIDe_akp*sin(CHIDe_thetap) 
+                   CHIDeQp=CHIDeKmax*HWRGEN(1)
+                   CHIDePhip=2.*PIFAC*HWRGEN(2)                   
+                   CHIDeJac=CHIDeJac*2.*PIFAC*CHIDeQp*CHIDeKmax
+                   CHIDeKp(1)=CHIDeQp*cos(CHIDePhip)
+                   CHIDeKp(2)=CHIDeQp*sin(CHIDePhip) 
                    
-                   CHIDe_k1(1)=CHIDe_K1X
-                   CHIDe_k1(2)=CHIDe_K1Y
-                   CHIDe_k3(1)=CHIDe_K2X
-                   CHIDe_k3(2)=CHIDe_K2Y
-                   
-                   CHIDe_b1 = CHIDe_Z1       
-                   CHIDe_a3 = CHIDe_Z2
-
-                   call CHIDeHiggs(CHIDe_sigma,CHIDe_a3,CHIDe_b1,
-     &                             CHIDe_k1,CHIDe_k3,CHIDe_k,CHIDe_kp)
-
-                   CHIDe_sigma=CHIDe_jac*CHIDe_sigma
-                   CSFAC=CSFAC+CHIDe_sigma
-
-                   ENDDO
-C       (2*PIFAC)^2 comes from integration over both protons azimuthal
-C       angles and (1/2)^2 from the fact that we integrate over Q_1^2 and 
-C       Q_2^2, not over Q_1 and Q_2
-                CSFAC=PIFAC**2 * CSFAC/CHIDe_N
+                   call CHIDeHiggs(CHIDeSigma,CHIDeZ1,CHIDeZ2,
+     &                             CHIDeK1,CHIDeK3,CHIDeK,CHIDeKp)
+                   CHIDeSigma=CHIDeJac*CHIDeSigma
+                   CSFAC=CSFAC+CHIDeSigma
+                ENDDO
+                CSFAC=CSFAC/CHIDeN
                 IF(CSFAC.LE.0) CSFAC=ZERO
-                
              ENDIF        
 C     ... end R.S.
 
@@ -2604,6 +2693,23 @@ c --- edited by Oldrich Kepka
       DOUBLE PRECISION BETA, AMP2
       DOUBLE PRECISION EMSQ1, RGEN1, RGEN2
       EXTERNAL sqme_aaww_c
+C ... begin R.S.
+      include 'CHIDe.inc'
+      INTEGER CHIDeN, CHIDeI
+      LOGICAL IsCHIDeGG
+      DOUBLE PRECISION CHIDeSigma, CHIDeJac
+
+      DOUBLE PRECISION CHIDeQ, CHIDeQp
+      DOUBLE PRECISION CHIDePhi, CHIDePhip
+      DOUBLE PRECISION CHIDeK(2), CHIDeKp(2)
+      
+      DOUBLE PRECISION CHIDeKmax
+      DOUBLE PRECISION CHIDedotdiff,CHIDedot
+      EXTERNAL CHIDedotdiff,CHIDedot
+
+      IsCHIDeGG = (NFLUX.EQ.18 .AND. IPROC.EQ.16012)
+C ... end R.S.      
+      
       IF (GENEV) THEN
         RCS=HCS*HWRGEN(0)
       ELSE
@@ -2614,7 +2720,7 @@ c --- edited by Oldrich Kepka
         S=RS**2
         HQ=MOD(IPROC,100)
 C Checks on HQ
-        IF (HQ.EQ.0.OR.HQ.EQ.11) THEN
+        IF (HQ.EQ.0.OR.HQ.EQ.1) THEN 
           EMSQ=0
           BESQ=1
           BE=1
@@ -2631,6 +2737,7 @@ c ... O.K. : HQ=15 ZZ
             ILAST = 406
           ENDIF
           EMSQ=RMASS(HQ)**2
+          IF(HQ.EQ.12) EMSQ=RMASS(13)**2 ! R.S.
           BESQ=1-4*EMSQ/S
           IF (BESQ.LT.ZERO) RETURN
           BE=SQRT(BESQ)
@@ -2644,11 +2751,17 @@ C Kinematics
 
            RGEN1=HWRGEN(1)
            RGEN2=HWRGEN(2)
-           T=-(TMAX/TMIN)**RGEN1*TMIN
-           IF (RGEN2.GT.HALF) T=-S-T
+C ... begin R.S.
+           IF(IsCHIDeGG) THEN
+             T = -CHIDeQQ2*(CHIDeB1+CHIDeB2)/CHIDeB1
+           ELSE
+C ... end R.S.
+             T=-(TMAX/TMIN)**RGEN1*TMIN
+             IF(RGEN2.GT.HALF) T=-S-T
+           ENDIF
            U=-S-T
            COSTH=(T-U)/(BE*S)
-           EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U))        
+           EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U)) 
 C Cross-sections
         IF (HQ.NE.198.AND.HQ.NE.200) THEN
 C --- Begin modif by Tibor Kucs 08/14/2003
@@ -2661,44 +2774,75 @@ c     this is for lepton - antilepton
      $            *((U-4*EMSQ)/T+(T-4*EMSQ)/U-4*(EMSQ/T+EMSQ/U)**2)
 c ... If QCD / EXC take the Jz=0, color singlet QCD cross-section
           ELSEIF(TYPINT.EQ.'QCD'.AND.TYPEPR.EQ.'EXC') THEN
-            TFACT=PIFAC*HWUALF(1,EMSCA)**2/3.D0
+          if(.NOT.IsCHIDeGG) TFACT=PIFAC*HWUALF(1,EMSCA)**2/3.D0
             SGGQQ=0d0 
             SGGGG=0d0
             SINSQ=(1.D0-COSTH)*(1.D0+COSTH)
 c ...... gg -> qq
             IF((HQ.GE.1.AND.HQ.LE.6).OR.(HQ.GE.401.AND.HQ.LE.406)
      &           .OR.HQ.EQ.11) THEN
-              DO 77 IFLAVR=IFIRST,ILAST
-                XMSQ=RMASS(IFLAVR)**2
-                IF(S.GT.4*XMSQ.AND.(IFLAVR.EQ.HQ.OR.HQ.EQ.11)) THEN
-                  PTSQ=(S/4d0-XMSQ)*SINSQ
-                  ETSQ=XMSQ+PTSQ
-                  XSQQ(IFLAVR)=0d0
-                  IF(IFLAVR.GE.1.AND.IFLAVR.LE.6) THEN
-                    BESQ=1d0-4*XMSQ/S
-                    XSQQ(IFLAVR) = TFACT*XMSQ/S/ETSQ**2*BESQ
-                    SGGQQ=SGGQQ+XSQQ(IFLAVR)
-                  ELSEIF(IFLAVR.GE.401.AND.IFLAVR.LE.406) THEN
-                    XSQQ(IFLAVR) = 2*TFACT*XMSQ**2/S**2/ETSQ**2
-                    SGGQQ=SGGQQ+XSQQ(IFLAVR)
-                  ENDIF
-                ENDIF
- 77           CONTINUE
-c ...... gg -> gg : include a factor 1/2! to compensate for double PhSp integration
-            ELSEIF(HQ.EQ.13) THEN
-              XMSQ=RMASS(HQ)**2
+            DO IFLAVR=IFIRST,ILAST
+            XMSQ=RMASS(IFLAVR)**2
+            IF(S.GT.4*XMSQ.AND.(IFLAVR.EQ.HQ.OR.HQ.EQ.11)) THEN
               PTSQ=(S/4d0-XMSQ)*SINSQ
               ETSQ=XMSQ+PTSQ
-              SGGGG=TFACT*(27.D0/2.D0)/ETSQ**2 / 2d0
+              XSQQ(IFLAVR)=0d0
+              IF(IFLAVR.GE.1.AND.IFLAVR.LE.6) THEN
+                BESQ=1d0-4*XMSQ/S
+                XSQQ(IFLAVR) = TFACT*XMSQ/S/ETSQ**2*BESQ
+                SGGQQ=SGGQQ+XSQQ(IFLAVR)
+                ELSEIF(IFLAVR.GE.401.AND.IFLAVR.LE.406) THEN
+                XSQQ(IFLAVR) = 2*TFACT*XMSQ**2/S**2/ETSQ**2
+                SGGQQ=SGGQQ+XSQQ(IFLAVR)
+              ENDIF
             ENDIF
+            ENDDO 
+C ... begin R.S.               
+            ELSEIF(IsCHIDeGG) THEN
+            CHIDeN = 50
+            FACTR = 0d0
+            DO CHIDeI = 1, CHIDeN
+            CHIDeKmax=20.0 ! Maximal momentum in gluon loop
+            CHIDeJac=1.
+
+            CHIDeQ=CHIDeKmax*HWRGEN(1)
+            CHIDePhi=2.*PIFAC*HWRGEN(2)
+            CHIDeJac=CHIDeJac*2.*PIFAC*CHIDeQ*CHIDeKmax
+            CHIDeK(1)=CHIDeQ*cos(CHIDePhi)
+            CHIDeK(2)=CHIDeQ*sin(CHIDePhi)
+
+            CHIDeQp=CHIDeKmax*HWRGEN(1)
+            CHIDePhip=2.*PIFAC*HWRGEN(2)                   
+            CHIDeJac=CHIDeJac*2.*PIFAC*CHIDeQp*CHIDeKmax
+            CHIDeKp(1)=CHIDeQp*cos(CHIDePhip)
+            CHIDeKp(2)=CHIDeQp*sin(CHIDePhip) 
+
+            call CHIDeGG(CHIDeSigma,
+     &             CHIDeK,CHIDeKp,CHIDeK1,CHIDeK2,CHIDeK3, 
+     &             CHIDeB1,CHIDeB2,CHIDeA1, CHIDeA2)
+            FACTR=FACTR+CHIDeSigma*CHIDeJac
+            ENDDO
+
+            FACTR=FACTR/CHIDeN
+            IF(FACTR.LE.0) FACTR=ZERO
+C ... end R.S.           
+
+c ...... gg -> gg : include a factor 1/2! to compensate for double PhSp integration
+            ELSEIF(HQ.EQ.13) THEN
+            XMSQ=RMASS(HQ)**2
+            PTSQ=(S/4d0-XMSQ)*SINSQ
+            ETSQ=XMSQ+PTSQ
+            SGGGG=TFACT*(27.D0/2.D0)/ETSQ**2 / 2d0
+          ENDIF
 c ...... Total 
-            FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)*(SGGQQ+SGGGG)
-          ELSE
-            PRINT*, 'In HWHQPM : settings not consistent',TYPINT,TYPEPR,
-     &              ' - STOP'
-            STOP
-          END IF
+          if(.not.IsCHIDeGG) 
+     &        FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)*(SGGQQ+SGGGG)
         ELSE
+          PRINT*, 'In HWHQPM : settings not consistent',TYPINT,TYPEPR,
+     &              ' - STOP'
+          STOP
+        ENDIF
+      ELSE
 
 c O.K. 01/11/2007 modified to include call to O'Mega matrix
 c element for AA->WW
@@ -2809,7 +2953,7 @@ C ... For 'QCD' no EM charge, it is set to ONE
         XX(1)=1.
         XX(2)=1.
         IF(GENEV) THEN
-          IF(HWRGEN(0)*(SGGQQ+SGGGG).LE.SGGGG) THEN
+           IF(IsCHIDeGG .OR. HWRGEN(0)*(SGGQQ+SGGGG).LE.SGGGG) THEN
             ID3=13           ! gluons in the final state 
             ID4=13
             CALL HWHQCP(ID3,ID4,1243,61,*99)
@@ -2835,8 +2979,102 @@ c---End modif by Tibor Kucs 08/14/2003
  99   IDN(1)=59
       IDN(2)=59      
       IDCMF=15
-      CALL HWETWO
+      IF(IsCHIDeGG) THEN
+        CALL HWETWO_MOD(CHIDePhi2) ! not sure if this is
+        ! the right angle
+      ELSE 
+        CALL HWETWO
+      ENDIF
       END
+
+CDECK  ID>, HWETWO.
+*CMZ :-        -26/04/91  11.11.55  by  Bryan Webber
+*-- Author :    Bryan Webber
+C-----------------------------------------------------------------------
+      SUBROUTINE HWETWO_MOD(phi)
+C-----------------------------------------------------------------------
+C     SETS UP 2->2 HARD SUBPROCESS
+C-----------------------------------------------------------------------
+      INCLUDE 'HERWIG65.INC'
+C ... begin R.S.      
+      double precision phi
+C ... end R.S.
+      DOUBLE PRECISION HWUMBW,HWUPCM,PA,PCM
+      INTEGER ICMF,IBM,I,J,K,IHEP,NTRY
+      EXTERNAL HWUPCM
+C---INCOMING LINES
+      ICMF=NHEP+3
+      DO 15 I=1,2
+      IBM=I
+C---FIND BEAM AND TARGET
+      IF (JDAHEP(1,I).NE.0) IBM=JDAHEP(1,I)
+      IHEP=NHEP+I
+      IDHW(IHEP)=IDN(I)
+      IDHEP(IHEP)=IDPDG(IDN(I))
+      ISTHEP(IHEP)=110+I
+      JMOHEP(1,IHEP)=ICMF
+      JMOHEP(I,ICMF)=IHEP
+      JDAHEP(1,IHEP)=ICMF
+C---SPECIAL - IF INCOMING PARTON IS INCOMING BEAM THEN COPY IT
+      IF (XX(I).EQ.ONE.AND.IDHW(IBM).EQ.IDN(I)) THEN
+        CALL HWVEQU(5,PHEP(1,IBM),PHEP(1,IHEP))
+        IF (I.EQ.2) PHEP(3,IHEP)=-PHEP(3,IHEP)
+      ELSE
+        PHEP(1,IHEP)=0.
+        PHEP(2,IHEP)=0.
+        PHEP(5,IHEP)=RMASS(IDN(I))
+        PA=XX(I)*(PHEP(4,IBM)+ABS(PHEP(3,IBM)))
+        PHEP(4,IHEP)=0.5*(PA+PHEP(5,IHEP)**2/PA)
+        PHEP(3,IHEP)=PA-PHEP(4,IHEP)
+      ENDIF
+ 15   CONTINUE
+      PHEP(3,NHEP+2)=-PHEP(3,NHEP+2)
+C---HARD CENTRE OF MASS
+      IDHW(ICMF)=IDCMF
+      IDHEP(ICMF)=IDPDG(IDCMF)
+      ISTHEP(ICMF)=110
+      CALL HWVSUM(4,PHEP(1,NHEP+1),PHEP(1,NHEP+2),PHEP(1,ICMF))
+      CALL HWUMAS(PHEP(1,ICMF))
+C---OUTGOING LINES
+      NTRY=0
+ 19   CONTINUE
+      DO 20 I=3,4
+      IHEP=NHEP+I+1
+      IDHW(IHEP)=IDN(I)
+      IDHEP(IHEP)=IDPDG(IDN(I))
+      ISTHEP(IHEP)=110+I
+      JMOHEP(1,IHEP)=ICMF
+      JDAHEP(I-2,ICMF)=IHEP
+ 20   PHEP(5,IHEP)=HWUMBW(IDN(I))
+      PCM=HWUPCM(PHEP(5,NHEP+3),PHEP(5,NHEP+4),PHEP(5,NHEP+5))
+      IF (PCM.LT.ZERO) THEN
+        NTRY=NTRY+1
+        IF (NTRY.LE.NETRY) GO TO 19
+        CALL HWWARN('HWETWO',103,*999)
+      ENDIF
+      IHEP=NHEP+4
+      PHEP(4,IHEP)=SQRT(PCM**2+PHEP(5,IHEP)**2)
+      PHEP(3,IHEP)=PCM*COSTH
+      PHEP(1,IHEP)=SQRT((PCM+PHEP(3,IHEP))*(PCM-PHEP(3,IHEP)))
+C ... begin R.S
+C      CALL HWRAZM(PHEP(1,IHEP),PHEP(1,IHEP),PHEP(2,IHEP)) 
+       PHEP(2,IHEP) = PHEP(1,IHEP)*sin(phi)
+       PHEP(1,IHEP) = PHEP(1,IHEP)*cos(phi)
+C ... end R.S      
+      CALL HWULOB(PHEP(1,NHEP+3),PHEP(1,IHEP),PHEP(1,IHEP))
+      CALL HWVDIF(4,PHEP(1,NHEP+3),PHEP(1,IHEP),PHEP(1,NHEP+5))
+C---SET UP COLOUR STRUCTURE LABELS
+      DO 30 I=1,4
+      J=I
+      IF (J.GT.2) J=J+1
+      K=ICO(I)
+      IF (K.GT.2) K=K+1
+      JMOHEP(2,NHEP+J)=NHEP+K
+   30 JDAHEP(2,NHEP+K)=NHEP+J
+      NHEP=NHEP+5
+  999 END
+
+
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       SUBROUTINE HWHQPP

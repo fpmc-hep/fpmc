@@ -84,7 +84,7 @@ clean:clean_sqme
 
 # g77 flags very important for simulation interfaces!
 F_FLAGS = -g3 -O0 -m32  -Wno-all  -fno-f2c -finit-local-zero -fno-automatic 
-F_COMP = g77 $(F_FLAGS) $(SPEC_FL) -IHerwig
+F_COMP = g77 $(F_FLAGS) $(SPEC_FL) -IHerwig -Iinc
 CC=g++ -O0 -m32
 
 
@@ -144,14 +144,57 @@ ext_kmr_obj_dest=$(ext_kmr_obj:%=$(OBJDIR)/%)
 $(ext_kmr_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/kmrlumi/%.f
 	$(F_COMP) -c $< -o $@ 
 
-# ----- CHIDe model
-ext_CHIDe=CHIDe/CHIDeHiggs.f  CHIDe/dcadredo.f  CHIDe/dgdforward.f  \
-CHIDe/CHIDeHiggsInit.f   CHIDe/dgd2008.f   CHIDe/Histo.f   
+# ----- Generalised Skewed Parton Distributions (GSPDF)
+ext_GSPDF=GPDFS/GSPDF.f \
+	  GPDFS/mrst2002.f 
+ #	  GPDFS/mstwpdf.f GPDFS/alphaS.f 
 
-ext_CHIDe_obj=$(ext_CHIDe:CHIDe/%.f=%.o)
-ext_CHIDe_obj_dest=$(ext_CHIDe_obj:%=$(OBJDIR)/%)
-$(ext_CHIDe_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/%.f
+ext_GSPDF_obj=$(ext_GSPDF:GPDFS/%.f=%.o)
+ext_GSPDF_obj_dest=$(ext_GSPDF_obj:%=$(OBJDIR)/%)
+$(ext_GSPDF_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/GSPDF/%.f
 	$(F_COMP) -c $< -o $@ 
+
+
+################# CHIDe MODEL ##################
+
+# -----  common files
+ext_CHIDeCommon = \
+CHIDe/Common/CHIDedcadredo.f  \
+CHIDe/Common/CHIDedgd2008.f  \
+CHIDe/Common/CHIDeFunctions.f \
+CHIDe/Common/CHIDedgd2007.f  \
+CHIDe/Common/CHIDedgdforward.f
+
+ext_CHIDeCommon_obj=$(ext_CHIDeCommon:CHIDe/Common/%.f=%.o)
+ext_CHIDeCommon_obj_dest=$(ext_CHIDeCommon_obj:%=$(OBJDIR)/%)
+$(ext_CHIDeCommon_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/Common/%.f
+	$(F_COMP) -c $< -o $@ 
+
+# ----- Higgs
+ext_CHIDeHiggs= \
+CHIDe/Higgs/CHIDeHiggs.f \
+CHIDe/Higgs/CHIDeHiggsInit.f
+
+ext_CHIDeHiggs_obj=$(ext_CHIDeHiggs:CHIDe/Higgs/%.f=%.o)
+ext_CHIDeHiggs_obj_dest=$(ext_CHIDeHiggs_obj:%=$(OBJDIR)/%)
+$(ext_CHIDeHiggs_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/Higgs/%.f
+	$(F_COMP) -c $< -o $@ 
+
+# ----- GG 
+ext_CHIDeGG=\
+CHIDe/GG/CHIDeGG.f \
+CHIDe/GG/CHIDeGGAmplitudes.f \
+CHIDe/GG/CHIDeGGFunctions.f \
+CHIDe/GG/CHIDeGGInit.f \
+CHIDe/GG/CHIDeGGDurhamlike.f 
+
+ext_CHIDeGG_obj=$(ext_CHIDeGG:CHIDe/GG/%.f=%.o)
+ext_CHIDeGG_obj_dest=$(ext_CHIDeGG_obj:%=$(OBJDIR)/%)
+$(ext_CHIDeGG_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/GG/%.f
+	$(F_COMP) -c $< -o $@ 
+
+################################################
+
 
 # ---- softc 
 ext_softc=softc/getsoftc.f softc/soft.2TeV.f softc/soft.14TeV.f softc/soft.2TeV.effopa.f softc/soft.14TeV.effopa.f
@@ -202,7 +245,10 @@ $(OBJDIR)/ffcard.o:Examples/ffcard.f Examples/ffcard.inc
 # Objects variables
 # ----------------
 OBJSTAND=$(OBJDIR)/herwig6500.o  $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o
-OBJEXT=$(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_kmr_obj_dest) $(ext_softc_obj_dest) $(ext_CHIDe_obj_dest) 
+OBJEXT=$(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_kmr_obj_dest) $(ext_softc_obj_dest) \
+        $(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_GSPDF_obj_dest) \
+        $(ext_CHIDeGG_obj_dest) 
+
 OBJUSR = $(OBJDIR)/ntuple.o
 LIBS=$(CERNLIB) $(LIB_OMEGA)
 OBJRECO = $(reco_obj_dest)
@@ -226,5 +272,6 @@ module_reco: Examples/module_reco.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) $(OBJRECO) 
 module: Examples/module.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) \
 	Examples/ffcard.inc
 	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(LIBS) -lstdc++
+
 #----------------------------------------------------------------------------------------
 
