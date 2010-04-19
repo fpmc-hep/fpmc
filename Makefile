@@ -71,14 +71,14 @@ clean:clean_sqme
 #SPEC_FL=-Wno-globals -Wno-implicit
 
 # g77 flags very important for simulation interfaces!
-F_FLAGS = -O1 -Wno-all  -fno-f2c -finit-local-zero -fno-automatic 
+F_FLAGS = -O1 -Wno-all  -fno-f2c -finit-local-zero -fno-automatic -Iinc
 F_COMP = gfortran $(F_FLAGS) $(SPEC_FL)
 CC=g++
 
 # Directories
 # -----------
 
-OBJDIR   = Objects
+OBJDIR  = Objects
 DPEDIR	= Fpmc
 HERDIR	= Herwig
 EXTDIR	= External
@@ -130,14 +130,55 @@ ext_kmr_obj_dest=$(ext_kmr_obj:%=$(OBJDIR)/%)
 $(ext_kmr_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/kmrlumi/%.f
 	$(F_COMP) -c $< -o $@ 
 
-# ----- CHIDe model
-ext_CHIDe=CHIDe/CHIDeHiggs.f  CHIDe/dcadredo.f  CHIDe/dgdforward.f  \
-CHIDe/CHIDeHiggsInit.f   CHIDe/dgd2008.f   CHIDe/Histo.f   
+# ----- KMR2 - direct implementation of KMR (based on ExHuME)
+ext_KMR2=kmrlumi2/kmr2.f kmrlumi2/mrst2002.f 
 
-ext_CHIDe_obj=$(ext_CHIDe:CHIDe/%.f=%.o)
-ext_CHIDe_obj_dest=$(ext_CHIDe_obj:%=$(OBJDIR)/%)
-$(ext_CHIDe_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/%.f
+ext_KMR2_obj=$(ext_KMR2:kmrlumi2/%.f=%.o)
+ext_KMR2_obj_dest=$(ext_KMR2_obj:%=$(OBJDIR)/%)
+$(ext_KMR2_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/kmrlumi2/%.f
 	$(F_COMP) -c $< -o $@ 
+
+
+################# CHIDe MODEL ##################
+
+# -----  common files
+ext_CHIDeCommon = \
+CHIDe/Common/CHIDedcadredo.f  \
+CHIDe/Common/CHIDedgd2008.f  \
+CHIDe/Common/CHIDeFunctions.f \
+CHIDe/Common/CHIDedgd2007.f  \
+CHIDe/Common/CHIDedgdforward.f
+
+ext_CHIDeCommon_obj=$(ext_CHIDeCommon:CHIDe/Common/%.f=%.o)
+ext_CHIDeCommon_obj_dest=$(ext_CHIDeCommon_obj:%=$(OBJDIR)/%)
+$(ext_CHIDeCommon_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/Common/%.f
+	$(F_COMP) -c $< -o $@ 
+
+# ----- Higgs
+ext_CHIDeHiggs= \
+CHIDe/Higgs/CHIDeHiggs.f \
+CHIDe/Higgs/CHIDeHiggsInit.f
+
+ext_CHIDeHiggs_obj=$(ext_CHIDeHiggs:CHIDe/Higgs/%.f=%.o)
+ext_CHIDeHiggs_obj_dest=$(ext_CHIDeHiggs_obj:%=$(OBJDIR)/%)
+$(ext_CHIDeHiggs_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/Higgs/%.f
+	$(F_COMP) -c $< -o $@ 
+
+# ----- GG 
+ext_CHIDeGG=\
+CHIDe/GG/CHIDeGG.f \
+CHIDe/GG/CHIDeGGAmplitudes.f \
+CHIDe/GG/CHIDeGGFunctions.f \
+CHIDe/GG/CHIDeGGInit.f \
+CHIDe/GG/CHIDeGGDurhamlike.f 
+
+ext_CHIDeGG_obj=$(ext_CHIDeGG:CHIDe/GG/%.f=%.o)
+ext_CHIDeGG_obj_dest=$(ext_CHIDeGG_obj:%=$(OBJDIR)/%)
+$(ext_CHIDeGG_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/GG/%.f
+	$(F_COMP) -c $< -o $@ 
+
+################################################
+
 
 # ---- softc 
 ext_softc=softc/getsoftc.f softc/soft.2TeV.f softc/soft.14TeV.f softc/soft.2TeV.effopa.f softc/soft.14TeV.effopa.f
@@ -188,7 +229,9 @@ $(OBJDIR)/ffcard.o:Examples/ffcard.f Examples/ffcard.inc
 # Objects variables
 # ----------------
 OBJSTAND=$(OBJDIR)/herwig6500.o  $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o
-OBJEXT=$(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_kmr_obj_dest)  $(ext_CHIDe_obj_dest) $(ext_softc_obj_dest)
+OBJEXT=$(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_kmr_obj_dest)  $(ext_softc_obj_dest) \
+       $(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_KMR2_obj_dest) \
+	$(ext_CHIDeGG_obj_dest) 
 OBJUSR = $(OBJDIR)/ntuple.o
 LIBS=$(CERNLIB) $(LIB_OMEGA)
 OBJRECO = $(reco_obj_dest)
