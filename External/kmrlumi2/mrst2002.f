@@ -60,7 +60,8 @@ C***************************************************************C
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='External/GSPDF/mrst2002nlo.dat',status='old')
+        open(unit=33,file='External/kmrlumi2/mrst2002nlo.dat',
+     . status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq
         read(33,50)f1(n,m),f2(n,m),f3(n,m),f4(n,m),
@@ -168,7 +169,7 @@ c notation: 1=uval 2=val 3=glue 4=usea 5=chm 6=str 7=btm 8=dsea
       xsave=x
       q2save=qsq
       if(init.ne.0) goto 10
-        open(unit=33,file='External/GSPDF/mrst2002nnlo.dat',
+        open(unit=33,file='External/kmrlumi/mrst2002nnlo.dat',
      .       status='old')
         do 20 n=1,nx-1
         do 20 m=1,nq

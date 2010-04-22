@@ -18,7 +18,7 @@ INS=-Icomphep/include
 #CLIBS= $(shell more $(CHEP)/CLIBS) 
 
 CC=g++
-CFLAGS=-g -m32 -Wall -DNUM_DOUBLE -DCOMPHEP
+CFLAGS=-g -Wall -DNUM_DOUBLE -DCOMPHEP
 
 all: sqme_aaww.a
 test:testcall testcall2

@@ -1,0 +1,26 @@
+NTNAME      'chide.hbook'
+MAXEV       100
+PART1       'E+'
+PART2       'E-'
+TYPEPR      'EXC'
+TYPINT      'QCD'
+ECMS        1960.
+IPROC       16013
+NFLUX       16
+NRN1        33781
+NRN2        11776
+YJMAX       2.5
+YJMIN      -2.5
+PTMIN       10.
+Q2WWMN      0.00001
+Q2WWMX      10.
+IFIT        10
+ISOFTM      1
+HADR	'Y'
+CHIDeX1Min    0.03 
+CHIDeX1Max    0.08
+CHIDeX2Min    0.001
+CHIDeX2Max    1.0
+CHIDeGapMin   3.6
+CHIDeGapMax   5.9
+

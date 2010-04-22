@@ -1,0 +1,20 @@
+NTNAME     'kmr.hbook'
+MAXEV       100     
+TYPEPR      'EXC'    
+TYPINT      'QCD'    
+ECMS        14000.   
+IPROC       19999    
+NFLUX       16       
+HMASS       120.0     
+NRN1        33781    
+NRN2        11776    
+YJMAX       10.      
+YJMIN      -10.      
+PTMIN       0.       
+CHIDeX1Min  0.       
+CHIDeX1Max  0.5      
+CHIDeX2Min  0.       
+CHIDeX2Max  0.5      
+Q2WWMN     0.        
+Q2WWMX     8.        
+

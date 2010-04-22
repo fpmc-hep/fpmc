@@ -12,12 +12,16 @@ C-----------------------------------------------------------------------
      $   UDLAMBDA,
      $   UANOMCUTOFF, UQ2WWMN, UQ2WWMX,UYWWMIN, UYWWMAX, UA0W, UACW,
      $   UA0Z, UACZ,
-     $   UCHIDeX, UCHIDeXP, UCHIDeS2 ! R.S.
+     $   UCHIDeX, UCHIDeXP, UCHIDeS2, ! R.S.
+     $   UCHIDeX1Min, UCHIDeX1Max, UCHIDeX2Min, UCHIDeX2Max,
+     $   UCHIDeGapMin, UCHIDeGapMax
      
       COMMON /MYFFREAD1/ URMASS,UWMASS,UHMASS,UTMASS,UMST1,UMSB1,UECMS,
      $     UYJMIN, UYJMAX,UPTMIN, UPTMAX, UEMMIN, UEMMAX, UDKAPPA,
      $     UACW, UA0W, UA0Z, UACZ,
-     $     UCHIDeX, UCHIDeXP, UCHIDeS2 ! R.S.
+     $     UCHIDeX, UCHIDeXP, UCHIDeS2, ! R.S.
+     $   UCHIDeX1Min, UCHIDeX1Max, UCHIDeX2Min, UCHIDeX2Max,
+     $   UCHIDeGapMin, UCHIDeGapMax
      
       COMMON /MYFFREAD2/ UDLAMBDA, UANOMCUTOFF, UYWWMIN, UYWWMAX,
      $ UQ2WWMN, UQ2WWMX

@@ -71,7 +71,7 @@ clean:clean_sqme
 #SPEC_FL=-Wno-globals -Wno-implicit
 
 # g77 flags very important for simulation interfaces!
-F_FLAGS = -O1 -Wno-all  -fno-f2c -finit-local-zero -fno-automatic -Iinc
+F_FLAGS = -g -O1 -Wno-all -fno-f2c -finit-local-zero -fno-automatic -Iinc
 F_COMP = gfortran $(F_FLAGS) $(SPEC_FL)
 CC=g++
 
