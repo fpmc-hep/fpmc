@@ -7,6 +7,7 @@ C-----------------------------------------------------------------------
 c---Common block
       INCLUDE 'HERWIG65.INC'
       INCLUDE 'FPMC.INC'
+      INCLUDE 'CHIDe.inc'
 c---User's declarations
       DOUBLE PRECISION CMSENR
       INTEGER N
@@ -153,6 +154,21 @@ c ---Anomalous coupling settings
       A0Z = UA0Z
       ACZ = UACZ
       ANOMCUTOFF = UANOMCUTOFF
+
+C ... begin R.S.
+C     CHIDe Model
+      CHIDeIGLU = UCHIDeIGLU
+      CHIDeX   =  UCHIDeX
+      CHIDeXP  =  UCHIDeXP
+      CHIDeS2  =  UCHIDeS2
+      CHIDeS   =  UECMS*UECMS
+      CHIDeX1MIN = UCHIDeX1MIN
+      CHIDeX1MAX = UCHIDeX1MAX
+      CHIDeX2MIN = UCHIDeX2MIN
+      CHIDeX2MAX = UCHIDeX2MAX
+      CHIDeGapMin = UCHIDeGapMin
+      CHIDeGapMax = UCHIDeGapMax
+C ... end R.S.
 
 
 c---Set normalisations for Exclusive processes

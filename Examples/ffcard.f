@@ -56,79 +56,124 @@ c---FFC default initialiszation
       UQ2WWMX    =    4.
       UYWWMIN    =    0.
       UYWWMAX    =    0.1
-
-C ... begin R.S.
-C     CHIDe Model
-      UCHIDeIGLU = 4   ! Impact factor parameterisation
-      UCHIDeX = 1      ! Scaling upper limit of Sudakov factor integration
-      UCHIDeXP = 1     ! Scaling lower limit of Sudakov factor integration
-      UCHIDeS2 = 0.075 ! Gap Survival Probability
-C ... end R.S.
+      UCHIDeIGLU = -1
+      UCHIDeX    = -1.0
+      UCHIDeXP   = -1.0
+      UCHIDeS2   = -1.0
+      UCHIDeX1MIN= -1.0 
+      UCHIDeX1MAX= -1.0 
+      UCHIDeX2MIN= -1.0 
+      UCHIDeX2MAX= -1.0 
 
       IF(READCARD) THEN
-         !---Key reading      
-         PRINT *, "Reading datacard ..."
-         call FFINIT(1000)
-         !---JC read config file
-         CALL FFSET('SIZE', 32)
-         call FFKEY('MAXEV',UMAXEV,1,'integer')
-         call FFKEY('TYPEPR',UTYPEPR,3,'mixed')
-         call FFKEY('TYPINT',UTYPINT,3,'mixed')
-         call FFKEY('HADR',UHADR,1,'mixed')
-         call FFKEY('PART1',UPART1,1,'mixed')
-         call FFKEY('PART2',UPART2,1,'mixed')
-         call FFKEY('ECMS',UECMS,1,'real')
-         call FFKEY('IPROC',UIPROC,1,'integer')
-         call FFKEY('NFLUX',UNFLUX,1,'integer')
-         call FFKEY('NRN1',UNRN1,1,'integer')
-         call FFKEY('NRN2',UNRN2,1,'integer')
-         call FFKEY('IFIT',UIFIT,1,'integer')
-         call FFKEY('IZION',UZION,1,'integer')
-         call FFKEY('IAION',UAION,1,'integer')
-         call FFKEY('WMASS',UWMASS,1,'real')
-         call FFKEY('TMASS',UTMASS,1,'real')
-         call FFKEY('HMASS',UHMASS,1,'real')
-         call FFKEY('MSTOP1',UMST1,1,'real')
-         call FFKEY('MSBOT1',UMSB1,1,'real')
-         call FFKEY('YJMAX',UYJMAX,1,'real')
-         call FFKEY('YJMIN',UYJMIN,1,'real')
-         call FFKEY('PTMIN',UPTMIN,1,'real')
-         call FFKEY('PTMAX',UPTMAX,1,'real')
-         call FFKEY('EMMIN',UEMMIN,1,'real')
-         call FFKEY('EMMAX',UEMMAX,1,'real')
-         call FFKEY('Q2WWMN',UQ2WWMN,1,'real')
-         call FFKEY('Q2WWMX',UQ2WWMX,1,'real')
-         call FFKEY('YWWMIN',UYWWMIN,1,'real')
-         call FFKEY('YWWMAX',UYWWMAX,1,'real')
-         call FFKEY('ISOFTM',UISOFTM,1,'integer')
-         call FFKEY('AAANOM', UAAANOM,1,'integer')
-         call FFKEY('DKAPPA', UDKAPPA,1,'real')
-         call FFKEY('LAMBDA', UDLAMBDA,1,'real')
-         call FFKEY('A0W', UA0W,1,'real')
-         call FFKEY('ACW', UACW,1,'real')
-         call FFKEY('A0Z', UA0Z,1,'real')
-         call FFKEY('ACZ', UACZ,1,'real')
-         call FFKEY('ANOMCUTOFF', UANOMCUTOFF,1,'real')
-
+        !---Key reading      
+        PRINT *, "Reading datacard ..."
+        call FFINIT(1000)
+        !---JC read config file
+        CALL FFSET('SIZE', 32)
+        call FFKEY('MAXEV',UMAXEV,1,'integer')
+        call FFKEY('TYPEPR',UTYPEPR,3,'mixed')
+        call FFKEY('TYPINT',UTYPINT,3,'mixed')
+        call FFKEY('HADR',UHADR,1,'mixed')
+        call FFKEY('PART1',UPART1,1,'mixed')
+        call FFKEY('PART2',UPART2,1,'mixed')
+        call FFKEY('ECMS',UECMS,1,'real')
+        call FFKEY('IPROC',UIPROC,1,'integer')
+        call FFKEY('NFLUX',UNFLUX,1,'integer')
+        call FFKEY('NRN1',UNRN1,1,'integer')
+        call FFKEY('NRN2',UNRN2,1,'integer')
+        call FFKEY('IFIT',UIFIT,1,'integer')
+        call FFKEY('IZION',UZION,1,'integer')
+        call FFKEY('IAION',UAION,1,'integer')
+        call FFKEY('WMASS',UWMASS,1,'real')
+        call FFKEY('TMASS',UTMASS,1,'real')
+        call FFKEY('HMASS',UHMASS,1,'real')
+        call FFKEY('MSTOP1',UMST1,1,'real')
+        call FFKEY('MSBOT1',UMSB1,1,'real')
+        call FFKEY('YJMAX',UYJMAX,1,'real')
+        call FFKEY('YJMIN',UYJMIN,1,'real')
+        call FFKEY('PTMIN',UPTMIN,1,'real')
+        call FFKEY('PTMAX',UPTMAX,1,'real')
+        call FFKEY('EMMIN',UEMMIN,1,'real')
+        call FFKEY('EMMAX',UEMMAX,1,'real')
+        call FFKEY('Q2WWMN',UQ2WWMN,1,'real')
+        call FFKEY('Q2WWMX',UQ2WWMX,1,'real')
+        call FFKEY('YWWMIN',UYWWMIN,1,'real')
+        call FFKEY('YWWMAX',UYWWMAX,1,'real')
+        call FFKEY('ISOFTM',UISOFTM,1,'integer')
+        call FFKEY('AAANOM', UAAANOM,1,'integer')
+        call FFKEY('DKAPPA', UDKAPPA,1,'real')
+        call FFKEY('LAMBDA', UDLAMBDA,1,'real')
+        call FFKEY('A0W', UA0W,1,'real')
+        call FFKEY('ACW', UACW,1,'real')
+        call FFKEY('A0Z', UA0Z,1,'real')
+        call FFKEY('ACZ', UACZ,1,'real')
+        call FFKEY('ANOMCUTOFF', UANOMCUTOFF,1,'real')
+        UNTNAME = ''
+        call FFKEY('NTNAME',UNTNAME,32,'mixed')
+        call FFKEY('CHIDeIGLU', UCHIDeIGLU, 1, 'integer')
+        call FFKEY('CHIDeX',  UCHIDeX, 1, 'real')
+        call FFKEY('CHIDeXP', UCHIDeXp, 1, 'real')
+        call FFKEY('CHIDeS2', UCHIDeS2, 1, 'real')
+        call FFKEY('CHIDeX1Min', UCHIDeX1Min, 1, 'real')
+        call FFKEY('CHIDeX1Max', UCHIDeX1Max, 1, 'real')
+        call FFKEY('CHIDeX2Min', UCHIDeX2Min, 1, 'real')
+        call FFKEY('CHIDeX2Max', UCHIDeX2Max, 1, 'real')
+        call FFKEY('CHIDeGapMin', UCHIDeGapMin, 1, 'real')
+        call FFKEY('CHIDeGapMax', UCHIDeGapMax, 1, 'real')
+        call FFGO
+        
 C ... begin R.S.
-         call FFKEY('CHIDeIGLU', UCHIDeIGLU, 1, 'integer')
-         call FFKEY('CHIDeX',  UCHIDeX, 1, 'real')
-         call FFKEY('CHIDeXP', UCHIDeXp, 1, 'real')
-         call FFKEY('CHIDeS2', UCHIDeS2, 1, 'real')
+C     CHIDe Model
+        IF(UNFLUX.EQ.18) THEN          
+C   Impact factor parameterisation
+          IF(UCHIDeIGLU.LT.0.0) UCHIDeIGLU = 4
+C   Scaling lower limit of Sudakov factor integration
+          IF(UCHIDeXP.LT.0.0) UCHIDeXP = 0.5
+C   Gap Survival Probability
+          IF(UCHIDeS2.LT.0.0) THEN 
+            IF(abs(UECMS-14000.).lt.1.) THEN
+              UCHIDeS2 = 0.03 ! ~LHC
+            ELSEIF(abs(UECMS-1960.).lt.1) THEN
+              UCHIDeS2 = 0.10  ! ~Tevatron
+            ELSE
+              WRITE (*,*) "ERROR: CHIDeS2 not specified!",
+     &  "  For nonstandard ECMS (different than 1960 and 14000)",
+     &  "  CHIDeS2 must be specified in data card."
+              WRITE (*,*) "STOP"
+              STOP
+            ENDIF
+          ENDIF
+          IF(UIPROC.EQ.16012) THEN ! Scaling upper limit of Sudakov factor integration:
+            IF(UCHIDeX.LT.0.0) UCHIDeX = 0.5      
+          ELSEIF(UIPROC.EQ.19999) THEN
+            IF(UCHIDeX.LT.0.0) UCHIDeX = 1    
+          ENDIF
+C   Xi cuts
+          IF(UCHIDeX1Min.LT.0.0) UCHIDeX1Min = UYWWMIN
+          IF(UCHIDeX1Max.LT.0.0) UCHIDeX1Max = UYWWMAX
+          IF(UCHIDeX2Min.LT.0.0) UCHIDeX2Min = UYWWMIN
+          IF(UCHIDeX2Max.LT.0.0) UCHIDeX2Max = UYWWMAX
+
+        ENDIF
 C ... end R.S.
 
-         UNTNAME = ''
-         call FFKEY('NTNAME',UNTNAME,32,'mixed')
-         call FFGO
       ELSE
-         PRINT *, "Reading datacard not requested, using default",
+        PRINT *, "Reading datacard not requested, using default",
      & " parameters."
       ENDIF    
 
       END SUBROUTINE
 
       SUBROUTINE FPMC_WELCOME
-
+      WRITE (*,*) ""
+      WRITE (*,*) ""
+      WRITE (*,*) ""
+      WRITE (*,*) "     _|_|_|_|  _|_|_|    _|      _|    _|_|_| " 
+      WRITE (*,*) "     _|        _|    _|  _|_|  _|_|  _|       " 
+      WRITE (*,*) "     _|_|_|    _|_|_|    _|  _|  _|  _|       " 
+      WRITE (*,*) "     _|        _|        _|      _|  _|       " 
+      WRITE (*,*) "     _|        _|        _|      _|    _|_|_| " 
       WRITE (*,*) ""
       WRITE (*,*) ""
       WRITE (*,*) "     FPMC - Forward Physics Monte Carlo v1.0 beta",

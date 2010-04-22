@@ -7,9 +7,10 @@ C-----------------------------------------------------------------------
 c---Common block
       INCLUDE 'HERWIG65.INC'
       INCLUDE 'FPMC.INC'
+      INCLUDE 'CHIDe.inc'
 c---User's declarations
       DOUBLE PRECISION CMSENR
-      INTEGER N
+      INTEGER N,NN
       CHARACTER ANSWER
       LOGICAL READCARD
 c---External
@@ -162,6 +163,12 @@ C     CHIDe Model
       CHIDeXP  =  UCHIDeXP
       CHIDeS2  =  UCHIDeS2
       CHIDeS   =  UECMS*UECMS
+      CHIDeX1Min = UCHIDeX1Min
+      CHIDeX1Max = UCHIDeX1Max
+      CHIDeX2Min = UCHIDeX2Min
+      CHIDeX2Max = UCHIDeX2Max
+      CHIDeGapMin = UCHIDeGapMin
+      CHIDeGapMax = UCHIDeGapMax
 C ... end R.S.
 
 c---Set normalisations for Exclusive processes
@@ -237,8 +244,11 @@ c---Initialize event record fixing : this will replace the beam
 c   electrons by protons, radiated photons by pomerons/reggeons etc
       CALL HWFXER(.TRUE.,IPROC)
 
+      NN = MAXEV/100
+      IF(NN.EQ.0) NN = 1
 c---Loop over events
       DO 100 N=1,MAXEV
+      if(MOD(N,NN).EQ.0) print*, "Progress: ",100*N/MAXEV,"%"
 c...Initialize event
          CALL HWUINE
 c...Generate hard subprocesses
@@ -293,7 +303,11 @@ C-----------------------------------------------------------------------
       INTEGER IQUEST
       COMMON /QUEST/ IQUEST(100)
 
-
+C ... begin R.S.
+      CHARACTER*8 RSTAGS(8)
+      DATA RSTAGS/'WEIGHT','M_H','pT_H','y_H','xi1','xi2','pT1','pT2'/
+C ... end R.S.
+      
 c---HBOOK initialization
       CALL HLIMIT(NWPAWC)
       CALL HCDIR('//PAWC',' ')
@@ -307,53 +321,58 @@ c     UNTNAME is adopted from the key
 c      CALL HROPEN(33,'HWIG',UNTNAME,'NC',4096,ISTAT)
       
 c---Histograms
-      CALL HBOOK1(101,'Proton v1sq     ',50,0.,2.,0.)
-      CALL HBOOK1(102,'Proton v2sq     ',50,0.,2.,0.)
-      CALL HBOOK1(103,'Proton 1-xi1    ',50,0.,0.5,0.)
-      CALL HBOOK1(104,'Proton 1-xi2    ',50,0.,0.5,0.)
-      CALL HBOOK1(105,'Gluon xg1       ',51,0.,1.02,0.)
-      CALL HBOOK1(106,'Gluon xg2       ',51,0.,1.02,0.)
-      CALL HBOOK1(107,'Central Mass    ',200,0.,2000.,0.)
-      CALL HBOOK1(108,'Dijet mass      ', 10,50.,100.,0.)
-      CALL HBOOK1(109,'Mass fraction   ',51,0.,1.02,0.)
-      CALL HBOOK1(110,'Rapidity y1     ',100,-5.,5.,0.)
-      CALL HBOOK1(111,'Rapidity y2     ',100,-5.,5.,0.)
-      CALL HBOOK1(112,'Trans. mom pt1  ',50,0.,200.,0.)
-      CALL HBOOK1(113,'Trans. mom pt2  ',50,0.,200.,0.)
-      CALL HBOOK2(114,'Proton (1-xi1)(1-xi2)',50,0.9,1.,50,0.9,1.,0)
-      CALL HBOOK2(115,'Gluons (xg1)(xg2)',100,0.,1.,100,0.,1.,0)
-      CALL HBOOK2(116,'Partons (xg1)(y1)',100,0.,1.,100,-10.,10.,0)
-      CALL HBOOK2(117,'Partons (xg2)(y2)',100,0.,1.,100,-10.,10.,0)
-      CALL HBOOK1(118,'Rapidity y0     ',100,-5.,5.,0.)
-      CALL HBOOK1(119,'Trans. mom pt0  ',50,0.,5.,0.)
-      CALL HBOOK1(301,'Proton phi1',100,-3.2,3.2,0.)
-      CALL HBOOK1(302,'Proton phi2',100,-3.2,3.2,0.)
-      CALL HBOOK1(303,'Proton dphi',90,0.,180.,0.)
-      CALL HBOOK1(901,'N events        ',1,0.,1.,0.)
-      CALL HBOOK1(902,'E cms           ',1,0.,1.,0.)
-      CALL HBOOK1(903,'IPROC           ',1,0.,1.,0.)
-      CALL HBOOK1(904,'NFLUX           ',1,0.,1.,0.)
-      CALL HBOOK1(905,'YJMAX           ',1,0.,1.,0.)
-      CALL HBOOK1(906,'PTMIN           ',1,0.,1.,0.)
-      CALL HBOOK1(907,'AAANOM        ',1,0.,1.,0.)
-      CALL HBOOK1(908,'D_KAPPA         ',1,0.,1.,0.)
-      CALL HBOOK1(909,'LAMBDA        ',1,0.,1.,0.)
-      CALL HBOOK1(910,'ANOMCUTOFF      ',1,0.,1.,0.)
-      CALL HBOOK1(999,'XSECT[pb]       ',1,0.,1.,0.)
+      CALL HBOOK1(101,'Proton v1sq     ', 50, 0.0, 3.0, 0.0)
+      CALL HBOOK1(102,'Proton v2sq     ', 50, 0.0, 3.0, 0.0)
+      CALL HBOOK1(103,'Proton 1-xi1    ', 50, 0.0, 1.0, 0.0)
+      CALL HBOOK1(104,'Proton 1-xi2    ', 50, 0.0, 1.0, 0.0)
+c      CALL HBOOK1(105,'Gluon xg1       ',51,0.,1.02,0.)
+c      CALL HBOOK1(106,'Gluon xg2       ',51,0.,1.02,0.)
+       CALL HBOOK1(107,'Central Mass    ',200,0.,100.,0.)
+c      CALL HBOOK1(108,'Dijet mass      ', 10,50.,100.,0.)
+c      CALL HBOOK1(109,'Mass fraction   ',51,0.,1.02,0.)
+c      CALL HBOOK1(110,'Rapidity y1     ',100,-5.,5.,0.)
+c      CALL HBOOK1(111,'Rapidity y2     ',100,-5.,5.,0.)
+c      CALL HBOOK1(112,'Trans. mom pt1  ',50,0.,200.,0.)
+c      CALL HBOOK1(113,'Trans. mom pt2  ',50,0.,200.,0.)
+c      CALL HBOOK2(114,'Proton (1-xi1)(1-xi2)',50,0.9,1.,50,0.9,1.,0)
+c      CALL HBOOK2(115,'Gluons (xg1)(xg2)',100,0.,1.,100,0.,1.,0)
+c      CALL HBOOK2(116,'Partons (xg1)(y1)',100,0.,1.,100,-10.,10.,0)
+c      CALL HBOOK2(117,'Partons (xg2)(y2)',100,0.,1.,100,-10.,10.,0)
+      CALL HBOOK1(118,'Rapidity y0     ', 100, -4.0, 4.0, 0.0)
+      CALL HBOOK1(119,'Trans. mom pt0  ', 50, 0.0, 3.0, 0.0)
+c      CALL HBOOK1(301,'Proton phi1',100,-3.2,3.2,0.)
+c      CALL HBOOK1(302,'Proton phi2',100,-3.2,3.2,0.)
+c      CALL HBOOK1(303,'Proton dphi',90,0.,180.,0.)
+c      CALL HBOOK1(901,'N events        ',1,0.,1.,0.)
+c      CALL HBOOK1(902,'E cms           ',1,0.,1.,0.)
+c      CALL HBOOK1(903,'IPROC           ',1,0.,1.,0.)
+c      CALL HBOOK1(904,'NFLUX           ',1,0.,1.,0.)
+c      CALL HBOOK1(905,'YJMAX           ',1,0.,1.,0.)
+c      CALL HBOOK1(906,'PTMIN           ',1,0.,1.,0.)
+c      CALL HBOOK1(907,'AAANOM        ',1,0.,1.,0.)
+c      CALL HBOOK1(908,'D_KAPPA         ',1,0.,1.,0.)
+c      CALL HBOOK1(909,'LAMBDA        ',1,0.,1.,0.)
+c      CALL HBOOK1(910,'ANOMCUTOFF      ',1,0.,1.,0.)
+c      CALL HBOOK1(999,'XSECT[pb]       ',1,0.,1.,0.)
 
       ! save some settings into the ntuple
-      CALL HF1(901, 0.5, REAL(UMAXEV))
-      CALL HF1(902, 0.5, REAL(UECMS))
-      CALL HF1(903, 0.5, REAL(UIPROC))
-      CALL HF1(904, 0.5, REAL(UNFLUX))
-      CALL HF1(905, 0.5, REAL(UYJMAX))
-      CALL HF1(906, 0.5, REAL(UPTMIN))
-      CALL HF1(907, 0.5, REAL(UAAANOM))
-      CALL HF1(908, 0.5, REAL(UDKAPPA))
-      CALL HF1(909, 0.5, REAL(UDLAMBDA))
+c      CALL HF1(901, 0.5, REAL(UMAXEV))
+c      CALL HF1(902, 0.5, REAL(UECMS))
+c      CALL HF1(903, 0.5, REAL(UIPROC))
+c      CALL HF1(904, 0.5, REAL(UNFLUX))
+c      CALL HF1(905, 0.5, REAL(UYJMAX))
+c      CALL HF1(906, 0.5, REAL(UPTMIN))
+c      CALL HF1(907, 0.5, REAL(UAAANOM))
+c      CALL HF1(908, 0.5, REAL(UDKAPPA))
+c      CALL HF1(909, 0.5, REAL(UDLAMBDA))
 
+C ... begin R.S.
+c      CALL HBOOKN(10,'DPE Excl. Higgs',8,'//HWIG',1000,RSTAGS)
+C ... end R.S.
+
+      
 c  simulation ntuple initialisation
-      CALL NTINIT
+c     CALL NTINIT
 
       RETURN
       END
@@ -374,12 +393,14 @@ C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
       INCLUDE 'FPMC.INC'
 
+      INCLUDE "CHIDe.inc"
       integer IERR
       REAL V1SQ,V2SQ,XI1,XI2,OXI1,OXI2,WEIGHT,XG1,XG2
       REAL ROOTS,CENTM,HARDM,MFRAC
       REAL PT0,Y0,PT1,MT1SQ,Y1,PT2,MT2SQ,Y2,PTH,MTHSQ,YH
       REAL PHI1,PHI2,DPHI
       real xg1b, xg2b
+      real RS(8)
       common /remnant/ xg1b,xg2b
 
       IF(IERROR.NE.0) RETURN
@@ -413,6 +434,7 @@ C-----------------------------------------------------------------------
       HARDM=CENTM*SQRT(XG1*XG2)
       MFRAC=HARDM/CENTM
 
+
       PT0=SQRT(PHEP(1,10)**2+PHEP(2,10)**2)
       Y0=0.5*LOG((PHEP(4,10)+PHEP(3,10))/(PHEP(4,10)-PHEP(3,10)))
 
@@ -421,33 +443,54 @@ C-----------------------------------------------------------------------
 
       PT2=SQRT(PHEP(1,12)**2+PHEP(2,12)**2)
       Y2=0.5*LOG((PHEP(4,12)+PHEP(3,12))/(PHEP(4,12)-PHEP(3,12)))
+     
+c      print*, "ABABAB", Y1, Y2
+c     print*, "AAAAA", PHEP(1,11), PHEP(2,11), PHEP(3,11), PHEP(4,11)
+c     print*, "BBBBB", PHEP(1,12), PHEP(2,12), PHEP(3,12), PHEP(4,12)
+c     print*, "CCCCC", 
+c    & PHEP(1,5) + PHEP(1,7) + PHEP(1,11) + PHEP(1,12),
+c    & PHEP(2,5) + PHEP(2,7) + PHEP(2,11) + PHEP(2,12),
+c    & PHEP(3,5) + PHEP(3,7) + PHEP(3,11) + PHEP(3,12)
+c     print*, "DDDD", PHEP(3,5),PHEP(3,7),PHEP(3,11),PHEP(3,12)
 
       CALL HF1(101,V1SQ,WEIGHT)
       CALL HF1(102,V2SQ,WEIGHT)
       CALL HF1(103,XI1,WEIGHT)
       CALL HF1(104,XI2,WEIGHT)
-      CALL HF1(105,XG1,WEIGHT)
-      CALL HF1(106,XG2,WEIGHT)
+c      CALL HF1(105,XG1,WEIGHT)
+c      CALL HF1(106,XG2,WEIGHT)
       CALL HF1(107,CENTM,WEIGHT)
-      CALL HF1(108,HARDM,WEIGHT)
-      CALL HF1(109,MFRAC,WEIGHT)
-      CALL HF1(110,Y1,WEIGHT)
-      CALL HF1(111,Y2,WEIGHT)
-      CALL HF1(112,PT1,WEIGHT)
-      CALL HF1(113,PT2,WEIGHT)
-      CALL HF2(114,OXI1,OXI2,WEIGHT)
-      CALL HF2(115,XG1,XG2,WEIGHT)
-      CALL HF2(116,XG1,Y1,WEIGHT)
-      CALL HF2(117,XG2,Y2,WEIGHT)
+c      CALL HF1(108,HARDM,WEIGHT)
+c      CALL HF1(109,MFRAC,WEIGHT)
+c      CALL HF1(110,Y1,WEIGHT)
+c      CALL HF1(111,Y2,WEIGHT)
+c      CALL HF1(112,PT1,WEIGHT)
+c      CALL HF1(113,PT2,WEIGHT)
+c      CALL HF2(114,OXI1,OXI2,WEIGHT)
+c      CALL HF2(115,XG1,XG2,WEIGHT)
+c      CALL HF2(116,XG1,Y1,WEIGHT)
+c      CALL HF2(117,XG2,Y2,WEIGHT)
       CALL HF1(118,Y0,WEIGHT)
       CALL HF1(119,PT0,WEIGHT)
-      CALL HF1(301,PHI1,WEIGHT)
-      CALL HF1(302,PHI2,WEIGHT)
-      CALL HF1(303,DPHI,WEIGHT)
+c      CALL HF1(301,PHI1,WEIGHT)
+c      CALL HF1(302,PHI2,WEIGHT)
+c      CALL HF1(303,DPHI,WEIGHT)
 
 c      print *,'central mass', sqrt(xi1*xi2)*ROOTS
 
-      call hfnt(777)
+C ... begin R.S.
+c      RS(1) = WEIGHT 
+c      RS(2) = CENTM
+c      RS(3) = PT0
+c      RS(4) = Y0
+c      RS(5) = XI1
+c      RS(6) = XI2
+c      RS(7) = PT1
+c      RS(8) = PT2
+c      CALL HFN (10,RS)
+C ... end R.S.
+
+c      call hfnt(777)
 
       RETURN
       END

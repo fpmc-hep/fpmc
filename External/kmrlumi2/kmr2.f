@@ -157,7 +157,7 @@ c      COMMON/mstwCommon/distance,tolerance,
 c     &     mCharm,mBottom,alphaSQ0,alphaSMZ,alphaSorder,alphaSnfmax
 c      CALL INITALPHAS(2,1.D0,1.D0,0.45077d0,
 c     &     1.4d0,4.75d0,1.D10)
-c      prefix = "External/GSPDF/Grids/mstw2008nlo" ! prefix for the grid files
+c      prefix = "External/kmrlumi2/Grids/mstw2008nlo" ! prefix for the grid files
 c      iset = 0 ! Central PDFs
 c      BottomMass = 4.6;
 c      CharmMass = 1.42;

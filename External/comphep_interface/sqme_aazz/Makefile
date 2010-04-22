@@ -11,7 +11,7 @@
 INS=-Icomphep/include
 
 CC=g++
-CFLAGS=-g -m32 -Wall -DNUM_DOUBLE -DCOMPHEP
+CFLAGS=-g -Wall -DNUM_DOUBLE -DCOMPHEP
 
 all: sqme_aazz.a
 test:testcall testcall2
