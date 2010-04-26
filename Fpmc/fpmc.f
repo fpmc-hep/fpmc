@@ -479,7 +479,8 @@ c      ACTID=IFITPDF-PDFID
             STOP
          ENDIF
 
-         IF(AAANOM.EQ.1)THEN
+         IF(AAANOM.EQ.0)THEN
+         ELSEIF(AAANOM.EQ.1)THEN
             PRINT *, 'Full SM formula for AAWW used'
          ELSEIF(AAANOM.EQ.2)THEN
            IF(IPROC.NE.16010) THEN
@@ -645,11 +646,9 @@ c--- Initialize KMR calculation
       IF(NFLUX.EQ.16) THEN
          IF(PBEAM1.LE.1d3) THEN
 *            CALL KMRINI(1)
-c           CALL KMRINI(3,CHIDeS)
             CALL KMRINI(99,CHIDeS)
          ELSEIF(PBEAM1.GE.6.5d3) THEN
 *            CALL KMRINI(2)
-c           CALL KMRINI(4,CHIDeS)
             CALL KMRINI(99,CHIDeS)
         ENDIF
       ENDIF
@@ -1254,10 +1253,10 @@ C---APPLY USER DEFINED CUTS YWWMIN,YWWMAX AND INDIRECT LIMITS ON Z
         ZMIN=MAX(ZMIN,YWWMIN,SQRT(Q2WWMN)/ABS(PHEP(3,IHEP)))
 
 C ... begin R.S.
-       IF(IHEP.EQ.1) THEN
+       IF(IHEP.EQ.1 .AND. NFLUX.EQ.18) THEN
          ZMIN=CHIDeX1Min
          ZMax=CHIDeX1Max
-       ELSEIF(IHEP.EQ.2) THEN
+       ELSEIF(IHEP.EQ.2 .AND. NFLUX.EQ.18) THEN
          ZMIN=CHIDeX2Min
          ZMax=CHIDeX2Max
        ENDIF 

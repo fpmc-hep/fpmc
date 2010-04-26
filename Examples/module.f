@@ -366,9 +366,6 @@ c      CALL HF1(907, 0.5, REAL(UAAANOM))
 c      CALL HF1(908, 0.5, REAL(UDKAPPA))
 c      CALL HF1(909, 0.5, REAL(UDLAMBDA))
 
-C ... begin R.S.
-c      CALL HBOOKN(10,'DPE Excl. Higgs',8,'//HWIG',1000,RSTAGS)
-C ... end R.S.
 
       
 c  simulation ntuple initialisation
@@ -443,15 +440,6 @@ C-----------------------------------------------------------------------
 
       PT2=SQRT(PHEP(1,12)**2+PHEP(2,12)**2)
       Y2=0.5*LOG((PHEP(4,12)+PHEP(3,12))/(PHEP(4,12)-PHEP(3,12)))
-     
-c      print*, "ABABAB", Y1, Y2
-c     print*, "AAAAA", PHEP(1,11), PHEP(2,11), PHEP(3,11), PHEP(4,11)
-c     print*, "BBBBB", PHEP(1,12), PHEP(2,12), PHEP(3,12), PHEP(4,12)
-c     print*, "CCCCC", 
-c    & PHEP(1,5) + PHEP(1,7) + PHEP(1,11) + PHEP(1,12),
-c    & PHEP(2,5) + PHEP(2,7) + PHEP(2,11) + PHEP(2,12),
-c    & PHEP(3,5) + PHEP(3,7) + PHEP(3,11) + PHEP(3,12)
-c     print*, "DDDD", PHEP(3,5),PHEP(3,7),PHEP(3,11),PHEP(3,12)
 
       CALL HF1(101,V1SQ,WEIGHT)
       CALL HF1(102,V2SQ,WEIGHT)
@@ -477,18 +465,6 @@ c      CALL HF1(302,PHI2,WEIGHT)
 c      CALL HF1(303,DPHI,WEIGHT)
 
 c      print *,'central mass', sqrt(xi1*xi2)*ROOTS
-
-C ... begin R.S.
-c      RS(1) = WEIGHT 
-c      RS(2) = CENTM
-c      RS(3) = PT0
-c      RS(4) = Y0
-c      RS(5) = XI1
-c      RS(6) = XI2
-c      RS(7) = PT1
-c      RS(8) = PT2
-c      CALL HFN (10,RS)
-C ... end R.S.
 
 c      call hfnt(777)
 
