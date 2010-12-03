@@ -72,7 +72,9 @@ clean:clean_sqme
 
 # g77 flags very important for simulation interfaces!
 F_FLAGS = -g -O1 -Wno-all -fno-f2c -finit-local-zero -fno-automatic -Iinc
-F_COMP = gfortran $(F_FLAGS) $(SPEC_FL)
+F_COMP = g77 $(F_FLAGS) $(SPEC_FL)
+#F_FLAGS = -g -O1  -fno-automatic -Iinc
+#F_COMP = gfortran $(F_FLAGS) $(SPEC_FL)
 CC=g++
 
 # Directories
