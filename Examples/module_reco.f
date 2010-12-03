@@ -179,7 +179,7 @@ c                                           3 : effective opacity model
       ISOFTM = UISOFTM
 
 c---Events printed
-      MAXPR=3
+      MAXPR=10
 
 c---Set the number of nucleons - for QED photon flux
       ZION = UZION
