@@ -8,11 +8,11 @@
 extern "C" {
 #endif
 // routines called by fpmc - note the difference masses of mw and mz 
-void sqme_aaww_c_(double *_amp2, double *_s, double *_t, double *_alpha,
+void sqme_aaww_c__(double *_amp2, double *_s, double *_t, double *_alpha,
      double* _mw, double *_sw, double *_dkappa, double *_lambda,
      double *_a0w, double *_aCw, double *_cutoff);
 
-void sqme_aazz_c_(double *_amp2, double *_s, double *_t, double *_alpha,
+void sqme_aazz_c__(double *_amp2, double *_s, double *_t, double *_alpha,
      double* _mz, double *_sw, double *_a0z, double *_aCz, double *_cutoff);
 #ifdef __cplusplus
 }
@@ -33,9 +33,15 @@ void sqme_aazz_c_(double *_amp2, double *_s, double *_t, double *_alpha,
 
 
 //////////////////////////////////////////////////////////////////// 
+#ifdef __cplusplus /* If this is a C++ compiler, use C linkage */
+void sqme_aaww_c__(double *_amp2, double *_s, double *_t, double *_alpha,
+     double* _mw, double *_sw, double *_dkappa, double *_lambda,
+     double *_a0w, double *_aCw, double *_cutoff) {
+#else 
 void sqme_aaww_c_(double *_amp2, double *_s, double *_t, double *_alpha,
      double* _mw, double *_sw, double *_dkappa, double *_lambda,
      double *_a0w, double *_aCw, double *_cutoff) {
+#endif
 //////////////////////////////////////////////////////////////////// 
 // anomalous aaww coupling:
 //    _cutoff_scale means the scale cutoff - if < 0, no formfactor used
@@ -70,8 +76,13 @@ void sqme_aaww_c_(double *_amp2, double *_s, double *_t, double *_alpha,
 }   
 
 //////////////////////////////////////////////////////////////////// 
+#ifdef __cplusplus /* If this is a C++ compiler, use C linkage */
+void sqme_aazz_c__(double *_amp2, double *_s, double *_t, double *_alpha,
+     double* _mz, double *_sw, double *_a0z, double *_aCz, double *_cutoff) {
+#else
 void sqme_aazz_c_(double *_amp2, double *_s, double *_t, double *_alpha,
      double* _mz, double *_sw, double *_a0z, double *_aCz, double *_cutoff) {
+#endif
 //////////////////////////////////////////////////////////////////// 
 // anomalous aazz coupling:
 //////////////////////////////////////////////////////////////////// 
