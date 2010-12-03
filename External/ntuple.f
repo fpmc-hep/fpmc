@@ -24,7 +24,6 @@ c     exactly the same structure as simul_interf_cms.f
 
 
 ***** renostruction common block      
-C CHR 25/05/99 modif pour ntuple reconstruit
       integer nrecmax
       parameter(nrecmax=100)
       integer nrec

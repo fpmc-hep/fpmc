@@ -82,6 +82,8 @@ c ... loop variables
       INTEGER I, J, N, IPART
       DOUBLE PRECISION RAP
 
+      integer idiv
+
 
 C...HEPEVT commonblock.
 c      PARAMETER (NMXHEP=4000)
@@ -164,7 +166,14 @@ c-------------------------------------------------------------------
       ENDIF   
 
 
-      print *,' *** cone_interface nevhep :', nevhep
+
+      idiv = MOD(nevhep, 1000)
+      if(nevhep.lt.100) then 
+        print *,' *** cone_interface nevhep :', nevhep
+      else  if ( idiv.EQ.0 ) then
+            print *,' ***  cone_interface nevhep :', nevhep
+      ENDIF
+
 
 c...jets common blocks
       call vzero(typrec,nrecmax)
@@ -235,12 +244,12 @@ c               PLEP(5, nleptons) = rm(i)
 
           ! missing Et
           if( (absid.eq.12).or.(absid.eq.14).or.(absid.eq.16) ) then
-             misspx =  px(i)
-             misspy =  py(i)
+             misspx =  misspx + px(i)
+             misspy =  misspy + py(i)
           endif   
           
 1600  continue
-      print '(A,I6)', 'nleptons', nleptons
+c      print '(A,I6)', 'nleptons', nleptons
 
 c --- look for misidentified leptons as jets
 
@@ -259,7 +268,7 @@ c         print *,''
 c 1550 continue         
  
       !assumtion all jet hadronic
-      print '(A,I6)', 'njet', njet
+c      print '(A,I6)', 'njet', njet
       do 1550 i=1, njet
          nrec=nrec+1
          typrec(nrec)= 4
