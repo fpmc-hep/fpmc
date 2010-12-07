@@ -400,8 +400,8 @@ C ... begin R.S.
         STOP
 
 C ... end R.S.
-      ELSEIF(TYPEPR.EQ.'EXC'.AND.IPR.NE.60.AND.IPR.NE.99.AND.IPR.NE.98
-     &       .AND.IPR.NE.97.AND.IPR.NE.96) THEN
+      ELSEIF(TYPEPR.EQ.'EXC'.AND.IPR.NE.60.AND. IPR.NE.61.AND.IPR.NE.99.AND.IPR.NE.98
+     &       .AND.IPR.NE.97.AND.IPR.NE.96 ) THEN
         PRINT*, ' '
         PRINT*, ' FPMC - You requested an exclusive cross-section'
         PRINT*, '          with a bad IPROC:'
@@ -1039,7 +1039,7 @@ c      PARAMETER (ALPHAPbl=0.25,Bbl=6.0)
       EXTERNAL HWRGEN,HWRUNI,HWRGAU
       INTEGER ICHI
       LOGICAL EXCKINE
-      DOUBLE PRECISION Q2MINPROT, RNDFLUX, BUDNEVFLUX, BFLUX, MAXFLUX
+      DOUBLE PRECISION Q2MINPROT, BUDNEVFLUX, RNDFLUX, BFLUX, MAXFLUX
       EXTERNAL BUDNEVFLUX
       LOGICAL LOOP
 c M.R. ExcChi
@@ -1200,6 +1200,8 @@ C ... M.B. : add IPRO=60 below
         ELSEIF (IPRO.EQ.60) THEN
           S0 = 4d0*PTMIN**2
 C ... end M.B.
+        ELSEIF(IPRO.EQ.61) THEN
+          S0 = 4d0*PTMIN**2
         ELSEIF (IPRO.EQ.80) THEN
           S0 = WHMIN**2
         ELSEIF (IPRO.EQ.90) THEN
@@ -1392,7 +1394,7 @@ C ... begin R.S
         IF(ZGAM.GT.CHIDeX1Max.OR.ZGAM2.GT.CHIDeX2Max) THEN 
 C ... end R.S.
 c       IF(ZGAM.GT.YWWMAX.OR.ZGAM2.GT.YWWMAX) THEN 
-          PRINT*, '!!! HWEGAM : ZGAM OUT OF RANGE !!!'
+          PRINT*, '!!! HWEGAM : ZGAM OUT OF RANGE !!!', IPROC, IPRO
         ENDIF
       ENDIF
 C ... end M.B.
@@ -1802,7 +1804,7 @@ C   FOR HADRONIC PROCESSES WITH LEPTON BEAMS
       GAMWT=ONE
 C ... M.B. : added IPRO=96-99 below
       IF ((IPRO.GT.12.AND.IPRO.LT.90).OR.
-     &    (IPRO.GE.96.AND.IPRO.LE.99)) THEN
+     &    (IPRO.GE.95.AND.IPRO.LE.99)) THEN
         IF (CIRCOP.EQ.0) THEN
            IF (ABS(IDHEP(1)).EQ.11.OR.ABS(IDHEP(1)).EQ.13) then
                CALL HWEGAM(1,ZERO, ONE,.FALSE.)
@@ -2077,6 +2079,9 @@ C Point-like photon/higher twist meson production
       ELSEIF (IPRO.EQ.60) THEN
 C---QPM GAMMA-GAMMA-->QQBAR
         CALL HWHQPM
+      ELSEIF (IPRO.EQ.61) THEN
+         CALL HWEWJJ
+c        CALL HWEWW
       ELSEIF (IPRO.GE.70.AND.IPRO.LE.79) THEN
 C---BARYON-NUMBER VIOLATION, AND OTHER MULTI-W PRODUCTION PROCESSES
         CALL HVHBVI
@@ -2096,10 +2101,10 @@ C---DEEP INELASTIC WITH EXTRA JET: OBSOLETE PROCESS
  40     FORMAT (1X,' IPROC=92** is no longer supported.'
      &         /1X,' Please use IPROC=91** instead.')
         CALL HWWARN('HWEPRO',500,*999)
-      ELSEIF(IPRO.EQ.95) THEN
-C---HIGGS PRODUCTION VIA W FUSION IN E P
-        CALL HWHIGW
-C ... New processes for DPE : 
+c      ELSEIF(IPRO.EQ.95) THEN
+c---HIGGS PRODUCTION VIA W FUSION IN E P
+c        CALL HWHIGW
+C ... New processes for DPE :
 C ... M.B.T.K.
       ELSEIF(IPRO.EQ.96) THEN
 C---INCLUSIVE CHI PRODUCTION
@@ -2706,6 +2711,13 @@ C ... begin R.S.
       DOUBLE PRECISION CHIDedotdiff,CHIDedot
       EXTERNAL CHIDedotdiff,CHIDedot
 
+      INTEGER I
+     
+
+
+
+
+
       IsCHIDeGG = (NFLUX.EQ.18 .AND. IPROC.EQ.16012)
 C ... end R.S.      
       
@@ -2986,6 +2998,284 @@ c---End modif by Tibor Kucs 08/14/2003
       ENDIF
       END
 
+c ... begin R.S.
+      SUBROUTINE HWEJJ
+      INCLUDE 'HERWIG65.INC'
+      INCLUDE 'fpmc.inc'
+      INTEGER I
+      CHARACTER*8 PARTICLE
+      DOUBLE PRECISION HWRGEN
+      EXTERNAL HWRGEN
+
+      IF(GENEV) THEN
+        NHEP = 12;
+        
+        CALL HWVEQU(5,PHEP(1,4),PHEP(1,8))
+        CALL HWVEQU(5,PHEP(1,6),PHEP(1,9))
+        CALL HWVEQU(5,PHEP(1,3),PHEP(1,10))
+        
+        ISTHEP(8)  = 111
+        ISTHEP(9)  = 112
+        ISTHEP(10) = 110
+        ISTHEP(11) = 113 
+        ISTHEP(12) = 114
+
+        IDHEP(8) = 22
+        IDHEP(9) = 22
+        IDHEP(10) = 0
+        IDHEP(11) = 1
+        IDHEP(12) = -1
+
+        JMOHEP(1,8) = 10 
+        JMOHEP(1,9) = 10
+        JMOHEP(1,10) = 8
+        JMOHEP(1,11) = 10
+        JMOHEP(1,12) = 10
+
+        JMOHEP(2,8) = 8
+        JMOHEP(2,9) = 9
+        JMOHEP(2,10) = 9
+        JMOHEP(2,11) = 12
+        JMOHEP(2,12) = 11
+
+        JDAHEP(1,8) = 10 
+        JDAHEP(1,9) = 10
+        JDAHEP(1,10) = 11
+        JDAHEP(1,11) = 0
+        JDAHEP(1,12) = 0
+
+        JDAHEP(2,8) = 8
+        JDAHEP(2,9) = 9
+        JDAHEP(2,10) = 12
+        JDAHEP(2,11) = 12
+        JDAHEP(2,12) = 11
+        
+        EMSCA=PHEP(5,10)
+        
+        PHEP(3,11) = EMSCA/2.-10.
+        PHEP(1,11) = 10. 
+        PHEP(2,11) = 0.
+        PHEP(4,11) = EMSCA/2.
+        PHEP(5,11) = 0.11
+        
+        PHEP(3,12) = EMSCA/2.+10.
+        PHEP(1,12) = -10.
+        PHEP(2,12) = 0.
+        PHEP(4,12) = EMSCA/2.
+        PHEP(5,12) = 0.11
+        
+       ! CALL HWUBST(1) ! Boost back to LAB frame
+
+        DO I=8,NHEP
+        CALL HWUIDT(1,IDHEP(I),IDHW(I),PARTICLE)
+        ENDDO
+        IDHW(10)=15
+
+      ELSE
+        EVWGT = HWRGEN()
+      ENDIF
+
+      END
+
+
+
+      SUBROUTINE HWEWW
+      INCLUDE 'HERWIG65.INC'
+      INCLUDE 'fpmc.inc'
+      INTEGER I
+      DOUBLE PRECISION MOM
+      CHARACTER*8 PARTICLE
+      DOUBLE PRECISION HWRGEN, HWUPCM
+      EXTERNAL HWRGEN, HWUPCM
+
+      IF(GENEV) THEN
+        NHEP = 12;
+        
+        CALL HWVEQU(5,PHEP(1,4),PHEP(1,8))
+        CALL HWVEQU(5,PHEP(1,6),PHEP(1,9))
+        CALL HWVEQU(5,PHEP(1,3),PHEP(1,10))
+        
+        ISTHEP(8)  = 111
+        ISTHEP(9)  = 112
+        ISTHEP(10) = 110
+        ISTHEP(11) = 113 
+        ISTHEP(12) = 114
+
+        IDHEP(8) = 22
+        IDHEP(9) = 22
+        IDHEP(10) = 0
+        IDHEP(11) = 24
+        IDHEP(12) = -24
+
+        JMOHEP(1,8) = 10 
+        JMOHEP(1,9) = 10
+        JMOHEP(1,10) = 8
+        JMOHEP(1,11) = 10
+        JMOHEP(1,12) = 10
+
+        JMOHEP(2,8) = 8
+        JMOHEP(2,9) = 9
+        JMOHEP(2,10) = 9
+        JMOHEP(2,11) = 12
+        JMOHEP(2,12) = 11
+
+        JDAHEP(1,8) = 10 
+        JDAHEP(1,9) = 10
+        JDAHEP(1,10) = 11
+        JDAHEP(1,11) = 0
+        JDAHEP(1,12) = 0
+
+        JDAHEP(2,8) = 8
+        JDAHEP(2,9) = 9
+        JDAHEP(2,10) = 12
+        JDAHEP(2,11) = 12
+        JDAHEP(2,12) = 11
+        
+        EMSCA=PHEP(5,10)
+        
+        MOM = HWUPCM(EMSCA,RMASS(198),RMASS(198))
+        PRINT*, "AA", MOM, EMSCA
+
+        PHEP(3,11) = MOM
+        PHEP(1,11) = 0. 
+        PHEP(2,11) = 0.
+        PHEP(4,11) = EMSCA/2.
+        PHEP(5,11) = RMASS(198)
+        
+        PHEP(3,12) = -MOM
+        PHEP(1,12) = 0.
+        PHEP(2,12) = 0.
+        PHEP(4,12) = EMSCA/2.
+        PHEP(5,12) = RMASS(198)
+        
+       ! CALL HWUBST(1) ! Boost back to LAB frame
+
+        DO I=8,NHEP
+        CALL HWUIDT(1,IDHEP(I),IDHW(I),PARTICLE)
+        ENDDO
+        IDHW(10)=15
+        MODBOS(1) = 2
+        MODBOS(2) = 3
+
+      ELSE
+        EVWGT = HWRGEN()
+        IF(PHEP(5,3).LE.RMASS(198)) EVWGT = 0.0
+      ENDIF
+
+      END
+
+
+      SUBROUTINE HWEWJJ
+      INCLUDE 'HERWIG65.INC'
+      INCLUDE 'fpmc.inc'
+      INTEGER I
+      DOUBLE PRECISION MOM
+      CHARACTER*8 PARTICLE
+      DOUBLE PRECISION HWRGEN, HWUPCM
+      EXTERNAL HWRGEN, HWUPCM
+
+      IF(GENEV) THEN
+        NHEP = 13;
+        
+        CALL HWVEQU(5,PHEP(1,4),PHEP(1,8))
+        CALL HWVEQU(5,PHEP(1,6),PHEP(1,9))
+        CALL HWVEQU(5,PHEP(1,3),PHEP(1,10))
+        
+        ISTHEP(8)  = 111
+        ISTHEP(9)  = 112
+        ISTHEP(10) = 110
+        ISTHEP(11) = 113 
+        ISTHEP(12) = 113 
+        ISTHEP(13) = 114
+
+        IDHEP(8) = 22
+        IDHEP(9) = 22
+        IDHEP(10) = 0
+        IDHEP(11) = 1
+        IDHEP(12) = -2
+        IDHEP(13) = 24
+
+        JMOHEP(1,8) = 10 
+        JMOHEP(1,9) = 10
+        JMOHEP(1,10) = 8
+        JMOHEP(1,11) = 10
+        JMOHEP(1,12) = 10
+        JMOHEP(1,13) = 10
+
+        JMOHEP(2,8) = 8
+        JMOHEP(2,9) = 9
+        JMOHEP(2,10) = 9
+        JMOHEP(2,11) = 12
+        JMOHEP(2,12) = 13
+        JMOHEP(2,13) = 12
+
+        JDAHEP(1,8) = 10 
+        JDAHEP(1,9) = 10
+        JDAHEP(1,10) = 11
+        JDAHEP(1,11) = 0
+        JDAHEP(1,12) = 0
+        JDAHEP(1,13) = 0
+
+        JDAHEP(2,8) = 8
+        JDAHEP(2,9) = 9
+        JDAHEP(2,10) = 13
+        JDAHEP(2,11) = 13
+        JDAHEP(2,12) = 11
+        JDAHEP(2,13) = 11
+        
+        EMSCA=PHEP(5,10)
+        
+        !MOM = HWUPCM(EMSCA/2,RMASS(198),RMASS(198))
+        MOM = (EMSCA - RMASS(198))/2.
+        PRINT*, "AA", MOM, EMSCA
+
+        PHEP(1,11) = MOM
+        PHEP(2,11) = 0. 
+        PHEP(3,11) = 0.
+        PHEP(4,11) = MOM
+        PHEP(5,11) = 0
+        
+        PHEP(1,12) = -MOM
+        PHEP(2,12) = 0.
+        PHEP(3,12) = 0.
+        PHEP(4,12) = MOM
+        PHEP(5,12) = 0
+
+
+        PHEP(3,13) = 0.
+        PHEP(1,13) = 0.
+        PHEP(2,13) = 0.
+        PHEP(4,13) = RMASS(198)
+        PHEP(5,13) = RMASS(198)
+        
+        !PHEP(3,14) = 0.
+        !PHEP(1,14) = MOM
+        !PHEP(2,14) = 0.
+        !PHEP(4,14) = EMSCA/4.
+        !PHEP(5,14) = RMASS(198)
+        
+       ! CALL HWUBST(1) ! Boost back to LAB frame
+
+        DO I=8,NHEP
+        CALL HWUIDT(1,IDHEP(I),IDHW(I),PARTICLE)
+        ENDDO
+        IDHW(10)=15
+        MODBOS(1) = 2
+        MODBOS(2) = 3
+
+      ELSE
+        EVWGT = HWRGEN()
+        IF(PHEP(5,3).LE.2*RMASS(198)) EVWGT = 0.0
+      ENDIF
+
+      END
+
+
+c ... end R.S.
+
+
+
+      
 CDECK  ID>, HWETWO.
 *CMZ :-        -26/04/91  11.11.55  by  Bryan Webber
 *-- Author :    Bryan Webber

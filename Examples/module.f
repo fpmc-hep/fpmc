@@ -179,7 +179,7 @@ c                                           3 : effective opacity model
       ISOFTM = UISOFTM
 
 c---Events printed
-      MAXPR=3
+      MAXPR=100
 
 c---Set the number of nucleons - for QED photon flux
       ZION = UZION
@@ -248,7 +248,8 @@ c   electrons by protons, radiated photons by pomerons/reggeons etc
       IF(NN.EQ.0) NN = 1
 c---Loop over events
       DO 100 N=1,MAXEV
-      if(MOD(N,NN).EQ.0) print*, "Progress: ",100*N/MAXEV,"%"
+c     if(MOD(N,NN).EQ.0) print*, "Progress: ",100*N/MAXEV,"%"
+      print*, "Progress: ",100*N/MAXEV,"%"
 c...Initialize event
          CALL HWUINE
 c...Generate hard subprocesses
@@ -266,15 +267,15 @@ c...Include showering and hadronization
 c...Finish event
          CALL HWUFNE
 c...Fix event record (i.e. restore correct intermediate states); print result
-         CALL HWFXER(.FALSE.,IPROC)
-         IF(N.LE.MAXPR) THEN
-           PRINT*, ' '
-           PRINT*, ' '
-           PRINT*, ' '
-           PRINT*, ' '
-           PRINT*, 'AFTER EVENT RECORD FIXING:'
-           CALL HWUEPR
-         ENDIF
+         !CALL HWFXER(.FALSE.,IPROC)
+         !IF(N.LE.MAXPR) THEN
+         !  PRINT*, ' '
+         !  PRINT*, ' '
+         !  PRINT*, ' '
+         !  PRINT*, ' '
+         !  PRINT*, 'AFTER EVENT RECORD FIXING:'
+         !  CALL HWUEPR
+         !ENDIF
 c...User's event analysis
          CALL HWANAL
  100  CONTINUE

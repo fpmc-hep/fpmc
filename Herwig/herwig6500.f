@@ -38576,7 +38576,7 @@ C Speed of light (mm/s)
 C Cross-section conversion factor (hbar.c/e)**2
       GEV2NB=389379.D0
 C---NUMBER OF SHOTS FOR INITIAL MAX WEIGHT SEARCH
-      IBSH=10000
+      IBSH=100
 C---RANDOM NO. SEEDS FOR INITIAL MAX WEIGHT SEARCH
       IBRN(1)=1246579
       IBRN(2)=8447766

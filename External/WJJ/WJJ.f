@@ -1,0 +1,621 @@
+      PROGRAM GGWW
+      IMPLICIT NONE
+      REAL*8 W, SIG, DSIG, CS, FLKMR
+      REAL*8 Z1, Z2, S, A, MAX, MAXX
+      REAL*8 ZMIN,ZMAX,JAC
+      REAL*8 C
+      INTEGER I,N,II, ZZ1, ZZ2
+
+C -- gg CENTRE OF MASS ENERGY
+      CS=0
+      II=0
+      MAX=0
+      S=14000**2
+      N=10000
+      ZMIN=0.001
+      ZMAX=0.2
+      CALL KMRINI(4)
+
+      
+      DO I=1,N
+         Z1=(ZMIN/ZMAX)**rand()*ZMAX
+         Z2=(ZMIN/ZMAX)**rand()*ZMAX
+         C=1.D0/DLOG(ZMAX/ZMIN)
+         JAC=Z1*Z2/C/C
+
+         W = sqrt(S*Z1*Z2)
+         IF(W.LE.85) THEN
+            SIG=0
+            GOTO 100
+         ENDIF
+         SIG=0
+         FLKMR=0
+
+         CALL KMRINT(Z1,Z2,FLKMR)
+         CALL SIGMA(W,SIG,DSIG)
+         
+         A=FLKMR/Z1/Z2*SIG*JAC
+         
+         IF(A.LE.0) A=0
+ 100     CONTINUE
+         CS = CS + A
+         IF(MAX.LE.A) MAX=A
+         IF(A.GE.(MAXX*rand())) II = II+1
+c         IF(MOD(I,10).EQ.0)  PRINT*, I, CS/I, II
+         
+      ENDDO
+      
+      CS = CS/N
+c      PRINT*, "CROSSECTION=",CS, " [pb]"
+c      PRINT*, "MAX=",MAX
+c      PRINT*, "EVENTS=",II
+      STOP
+      END
+
+
+      SUBROUTINE SIGMA(WW,SIG,DSIG)
+      IMPLICIT REAL*8(A-H,O-Z)
+      REAL*8 P(4,100),XM(100),PW(4),PJJ(4)     
+      REAL*8 WW,W, SIG, DSIG
+      REAL*8 EW,E1,E2,pTW,pT1,pT2,phiW,phi1,phi2
+      COMMON/MOM/PLAB(4,8)
+      COMMON/CUTPARS/PTMIN,YMAX
+      
+      W=WW
+      
+      DO 5 J=1,100
+      XM(J)=0D0
+      DO 5 I=1,4
+  5   P(I,J)=0D0
+
+
+C *****************999***********************
+C
+C
+C    GG -->  W ( -> L + NU )  + 2 JET (QQBAR)
+C
+C       (J_Z = 0 or 1)
+C
+C        9th May 2009
+C
+C  the reference is: Khoze, Ryskin, Stirling
+C  Eur.Phys.J.C44:227-232,2005, hep-ph/0504131
+C
+C *****************999***********************
+
+      PI=4D0*DATAN(1D0)
+C     -- PHYSICS PARAMETERS
+      RMW=80.4D0
+      PTMIN=0D0
+      YMAX=2.5D0
+C     -- 2 JET MASS WINDOW AROUND RMW
+      DELTA=10D0
+      
+C     -- COUPLING CONSTANTS = (GSSQ)**2 * GWSQ
+      AS=0.120D0
+      GSSQ=4D0*PI*AS
+      XW=0.232D0
+      GF=1.166391D-5
+      AW0=1./(127.8*XW*8.)
+      AW=DSQRT(2D0)*RMW**2*GF/PI/8D0
+      GWSQ=4D0*PI*AW 
+      
+      FLUX=1D0/(2D0*W**2)
+      
+C     DO 600 IJJ=40,40
+C     RMUJJ=1D0*IJJ
+      
+C     --  INITIALISE COUNTERS ETC...
+      NEVMX=100
+      NIN=0
+      NOUT=0
+      SIG=0D0
+      SIGSQ=0D0
+      
+C     -- GENERATE EVENTS: START OF EVENT LOOP
+      
+      DO 500 IEV=1,NEVMX
+         NEVT=IEV
+         WEIGHT=0D0
+         ICUT=0
+         
+         
+C -- NOTE PLAB(*,1,2) ARE INCOMING
+         PLAB(1,1)=0D0
+         PLAB(2,1)=0D0
+         PLAB(3,1)=.5D0*W
+         PLAB(4,1)=.5D0*W
+         PLAB(1,2)=0D0
+         PLAB(2,2)=0D0
+         PLAB(3,2)=-.5D0*W
+         PLAB(4,2)=.5D0*W
+         
+         
+C     -- GENERATE A 2J MASS
+C     C       RMUSQMAX=(RMW+DELTA)**2
+C     C       RMUSQMIN=(RMW-DELTA)**2
+         
+         RMUSQMAX=(W-RMW)**2
+         RMUSQMIN=0D0
+         
+         WTMU=RMUSQMAX-RMUSQMIN
+         RMUSQ=WTMU*RN(1)+RMUSQMIN
+C     RMUSQ=4D0*RMW*DELTA*RN(1)+(RMW-DELTA)**2
+C     WTMU=4D0*DELTA*RMW
+         RMU=DSQRT(RMUSQ)
+         
+C     RMU=RMUJJ
+C     WTMU=2D0*RMU
+         
+         XM(1)=RMU
+         XM(2)=RMW
+         
+         CALL RAMBO(2,W,XM,P,WTWJJ)
+         DO J=1,4
+            PJJ(J)=P(J,1)
+            PW(J)=P(J,2)
+            PLAB(J,3)=PW(J)
+         ENDDO
+         XM(1)=0D0
+         XM(2)=0D0
+         
+         CALL RAMBOO(2,RMU,PJJ,XM,P,WTJJ)
+         DO J=1,4
+            PLAB(J,6)=P(J,1)
+            PLAB(J,7)=P(J,2)
+         ENDDO
+         
+         CALL RAMBOO(2,RMW,PW,XM,P,WTW)
+         DO J=1,4
+            PLAB(J,4)=P(J,1)
+            PLAB(J,5)=P(J,2)
+         ENDDO
+         
+         EW = PW(4) 
+         E1 = PLAB(4,6)
+         E2 = PLAB(4,7)
+         pTW = sqrt(PW(1)**2 + PW(2)**2)
+         pT1 = sqrt(PLAB(1,6)**2 + PLAB(2,6)**2)
+         pT2 = sqrt(PLAB(1,7)**2 + PLAB(2,7)**2)
+         phiW=atan2(PW(1),PW(2))
+         phi1=atan2(PLAB(1,6),PLAB(2,6))
+         phi2=atan2(PLAB(1,7),PLAB(2,7))
+         pzW = PW(3)
+         pz1 = PLAB(3,6)
+         pz2 = PLAB(3,7)
+         
+         WTPS=WTMU*WTWJJ*WTJJ/(2D0*PI)**5
+         
+C     -- APPLY EVENT CUTS...
+         CALL CUT(ICUT)
+         IF(ICUT.EQ.0) GOTO 400
+C     -- EVENT PASSES, SO CALCULATE THE AMPLITUDE WEIGHT
+         
+C     -- AMPLITUDES AND COLOUR/SPIN AVERAGES
+         
+         CALL STD(2)
+         CALL AMP2G(6,7,1,2,4,5,CM3)
+         CM3=CM3/256.
+         CALL AMP2G(6,7,1,2,5,4,CP3)
+         CP3=CP3/256.
+         
+C     -- FACTOR OF TWO FOR FINAL STATE FAMILIES
+         FAC=(GSSQ)**2*GWSQ*1.5D0/RMW**2  * 2D0
+         
+         PPB=(CM3+CP3)*FAC
+C     PPB=1D0
+         
+C     -- AND THE TOTAL EVENT WEIGHT
+         WEIGHT=PPB * WTPS * FLUX * 389379.66D3
+         
+         
+ 400     NIN=NIN+ICUT
+         SIG=SIG+WEIGHT
+         SIGSQ=SIGSQ+WEIGHT*WEIGHT
+ 
+         print*, 111111111, EW, E1, E2,       WEIGHT
+         print*, 222222222, pTW, pT1, pT2,    WEIGHT
+         print*, 333333333, phiW, phi1, phi2, WEIGHT
+         print*, 444444444, pzW, pz1, pz2,    WEIGHT
+
+ 500  CONTINUE
+      
+C     -- END OF EVENT LOOP 
+      NEV=NEVT
+C     -- CALCULATE CROSS SECTION AND ERROR
+      SIG=SIG/DBLE(NEV)
+      DSIG=DSQRT(SIGSQ-SIG*SIG*DBLE(NEV))/DBLE(NEV)
+            
+      END 
+
+
+      SUBROUTINE STD(NJET)
+      IMPLICIT REAL*8(A-H,O-Z)
+      COMPLEX*16 S(8,8),T(8,8),C23(8)
+      REAL*8 D(8,8),ROOT(8)
+      COMMON/CSTD/S,T,D
+      COMMON/MOM/PLAB(4,8)
+      NTOT=NJET+5
+      DO 5 K=1,NTOT
+      S(K,K)=(0.D0,0.D0)
+      T(K,K)=S(K,K)
+      D(K,K)=0.D0
+      ROOT(K)=DSQRT(PLAB(4,K)-PLAB(1,K))
+   5  C23(K)=DCMPLX(PLAB(2,K),PLAB(3,K))
+      DO 10 I=2,NTOT
+      DO 10 J=1,I-1
+      S(I,J)=C23(I)*ROOT(J)/ROOT(I) - C23(J)*ROOT(I)/ROOT(J)
+      S(J,I)=-S(I,J)
+      T(I,J)=-DCONJG(S(I,J))
+      T(J,I)=-T(I,J)
+      D(I,J)=S(I,J)*T(J,I)
+      D(J,I)=D(I,J)
+  10  CONTINUE
+      RETURN
+      END
+
+      SUBROUTINE QG16(P1,P2,K1,K2,R1,R2,A1,B1,A2,B2,C123,C456)
+      IMPLICIT REAL*8(A-H,O-Z)
+      REAL*8 D(8,8)
+      COMPLEX*16 S(8,8),T(8,8),C123,C456,X1,X2,X3,X4,X5,X6
+      INTEGER A(8),R1,R2,P1,P2,K1,K2,A1,B1,A2,B2
+      COMMON/CSTD/S,T,D
+      DATA A/-1,-1,6*1/
+C -- DENOMINATORS.....
+      SQ1=D(R1,R2)+A(P1)*(D(P1,R1)+D(P1,R2))
+      SQ2=D(R1,R2)+A(P2)*(D(P2,R1)+D(P2,R2))
+      SQ3=A(P1)*A(K1)*D(P1,K1)
+      SQ4=A(P1)*A(K2)*D(P1,K2)
+      SQ5=A(P2)*A(K1)*D(P2,K1)
+      SQ6=A(P2)*A(K2)*D(P2,K2)
+      DEN1=SQ1*SQ6*.25*D(K1,K2)
+      DEN2=SQ3*SQ6*.25*D(K1,K2)
+      DEN3=SQ3*SQ2*.25*D(K1,K2)
+      DEN4=SQ1*SQ5*.25*D(K1,K2)
+      DEN5=SQ4*SQ5*.25*D(K1,K2)
+      DEN6=SQ4*SQ2*.25*D(K1,K2)
+C -- AND NUMERATORS....
+      X1=T(P1,R1)*S(B2,P2)*
+     1    (S(R2,R1)*T(R1,A1)+A(P1)*S(R2,P1)*T(P1,A1))
+     2   *(A(P2)*S(B1,P2)*T(P2,A2)+A(K2)*S(B1,K2)*T(K2,A2))/DEN1
+      X2=T(P1,A1)*S(B2,P2)*(A(P1)*S(B1,P1)*T(P1,R1)+A(K1)*S(B1,K1)*
+     1 T(K1,R1))*(A(P2)*S(R2,P2)*T(P2,A2)+A(K2)*S(R2,K2)*T(K2,A2))
+     2 /DEN2
+      X3=T(P1,A1)*S(R2,P2)*(A(P1)*S(B1,P1)*T(P1,A2)+A(K1)*S(B1,K1)*
+     1 T(K1,A2))*(S(B2,R2)*T(R2,R1)+A(P2)*S(B2,P2)*T(P2,R1))/DEN3
+      X4=T(P1,R1)*S(B1,P2)*
+     1  (S(R2,R1)*T(R1,A2)+A(P1)*S(R2,P1)*T(P1,A2))*
+     2  (A(P2)*S(B2,P2)*T(P2,A1)+A(K1)*S(B2,K1)*T(K1,A1))/DEN4
+      X5=T(P1,A2)*S(B1,P2)*(A(P1)*S(B2,P1)*T(P1,R1)+A(K2)*S(B2,K2)*
+     1 T(K2,R1))*(A(P2)*S(R2,P2)*T(P2,A1)+A(K1)*S(R2,K1)*T(K1,A1))
+     2 /DEN5
+      X6=T(P1,A2)*S(R2,P2)*(A(P1)*S(B2,P1)*T(P1,A1)+A(K2)*S(B2,K2)*
+     1 T(K2,A1))*(S(B1,R2)*T(R2,R1)+A(P2)*S(B1,P2)*T(P2,R1))/DEN6
+          C123=X1+X2+X3
+          C456=X4+X5+X6
+      RETURN
+      END
+
+      SUBROUTINE QG78(P1,P2,K1,K2,R1,R2,C78)
+      IMPLICIT REAL*8(A-H,O-Z)
+      REAL*8 D(8,8)
+      COMPLEX*16 S(8,8),T(8,8),X7,X8,C78
+      INTEGER A(8),R1,R2,P1,P2,K1,K2
+      COMMON/CSTD/S,T,D
+      DATA A/-1,-1,6*1/
+C -- DENOMINATORS.....
+      SQ1=D(R1,R2)+A(P1)*(D(P1,R1)+D(P1,R2))
+      SQ2=D(R1,R2)+A(P2)*(D(P2,R1)+D(P2,R2))
+      SQ7=A(K1)*A(K2)*D(K1,K2)
+      DEN7=SQ1*SQ7*.5
+      DEN8=-SQ2*SQ7*.5
+C -- AND NUMERATORS....
+      X7=T(P1,R1)*
+     1 (A(K1)*S(R2,R1)*T(R1,K1)*S(K1,P2)-A(K2)*S(R2,R1)*T(R1,K2)
+     2 *S(K2,P2)+A(P1)*A(K1)*S(R2,P1)*T(P1,K1)*S(K1,P2)-A(P1)*A(K2)*
+     3 S(R2,P1)*T(P1,K2)*S(K2,P2))/DEN7
+      X8=(A(K1)*T(P1,K1)*S(K1,R2)*T(R2,R1)
+     1 -A(K2)*T(P1,K2)*S(K2,R2)*T(R2,R1)
+     2 +A(P2)*A(K1)*T(P1,K1)*S(K1,P2)*T(P2,R1)-A(P2)*A(K2)*T(P1,K2)
+     3 *S(K2,P2)*T(P2,R1))*S(R2,P2)/DEN8
+            C78=-X7-X8
+      RETURN
+      END
+
+      SUBROUTINE AMP2G(P1,P2,K1,K2,R2,R1,AMP)
+      IMPLICIT REAL*8(A-H,O-Z)
+      COMPLEX*16 A123,A456,B123,B456,C123,C456,D123,D456,A78
+      INTEGER P1,P2,K1,K2,R1,R2
+      DATA COFAE,COFAO/9.333333333D0,12.D0/
+C***************************************************************
+C
+C   NOTE : THE AMPLITUDE DOES NOT CONTAIN THE OVERALL COUPLINGS
+C          GS**2 * GW , NOR A SPIN/COLOUR AVERAGE . THESE ARE
+C          TO BE INCLUDED IN SFMAT.
+C
+C***************************************************************
+
+      IPOL=0
+
+      IF(IPOL.EQ.0) THEN
+C -- CALL HELICITY AMPLITUDES (++),(--)
+
+      CALL QG16(P1,P2,K1,K2,R1,R2,K2,K1,K1,K2,C123,C456)
+      CALL QG16(P1,P2,K1,K2,R1,R2,K1,K2,K2,K1,B123,B456)
+
+        COFASING=64D0/3D0
+
+       AMPJZ0=COFASING* (CDABS(B123+B456+C123+C456)**2)
+C       AMPJZ0NOINT=COFASING*(CDABS(B123+B456)**2+CDABS(C123+C456)**2)
+C       AMP=AMPJZ0NOINT 
+C       AMP=AMPJZ0-AMPJZ0NOINT 
+       AMP=AMPJZ0
+
+       ELSEIF(IPOL.EQ.1)  THEN
+C -- CALL HELICITY AMPLITUDES (-+),(--),(++),(+-)
+      CALL QG16(P1,P2,K1,K2,R1,R2,K1,K2,K1,K2,A123,A456)
+      CALL QG16(P1,P2,K1,K2,R1,R2,K1,K2,K2,K1,B123,B456)
+      CALL QG16(P1,P2,K1,K2,R1,R2,K2,K1,K1,K2,C123,C456)
+      CALL QG16(P1,P2,K1,K2,R1,R2,K2,K1,K2,K1,D123,D456)
+      CALL QG78(P1,P2,K1,K2,R1,R2,A78)
+      AMPSNGJZ2=COFAE* (CDABS(A123+A456)**2+CDABS(D123+D456)**2)
+      AMPSNGJZ0=COFAE* (CDABS(B123+B456)**2+CDABS(C123+C456)**2)
+      AMPOCTJZ2=COFAO* (CDABS(A123-A456)**2+CDABS(D123-D456)**2)
+      AMPOCTJZ0=COFAO* (CDABS(B123-B456+2.*A78)**2
+     .                 +CDABS(C123-C456+2.*A78)**2)
+
+        AMPSNG=AMPSNGJZ0+AMPSNGJZ2
+        AMPOCT=AMPOCTJZ0+AMPOCTJZ2
+        AMP=AMPSNG+AMPOCT
+
+        ENDIF
+
+
+      RETURN
+      END
+
+      SUBROUTINE CUT(ICUT)
+      IMPLICIT REAL*8(A-H,O-Z)
+      COMMON/MOM/PLAB(4,8)
+      COMMON/CUTPARS/PTMIN,YMAX
+      ICUT=0
+
+      YJ1=0.5D0*DLOG((PLAB(4,6)+PLAB(3,6))/(PLAB(4,6)-PLAB(3,6)))
+      YJ2=0.5D0*DLOG((PLAB(4,7)+PLAB(3,7))/(PLAB(4,7)-PLAB(3,7)))
+      IF(DABS(YJ1).GT.YMAX) RETURN
+      IF(DABS(YJ2).GT.YMAX) RETURN
+
+      ICUT=1
+      RETURN
+      END
+
+      SUBROUTINE RAMBOO(N,ET,PSYS,AM,PS,WT)
+      IMPLICIT REAL*8(A-H,O-Z)
+      REAL*8 PSYS(4),AM(100),PS(4,100),PL(4),PC(4),P(4,100)
+      CALL RAMBO(N,ET,AM,P,WT)
+      DO 10 I=1,N
+      DO 20 J=1,4
+  20  PC(J)=P(J,I)
+      CALL BOOST(ET,PSYS,PC,PL)
+      DO 30 J=1,4
+  30  PS(J,I)=PL(J)
+  10  CONTINUE
+      RETURN
+      END
+C
+      SUBROUTINE RAMBO(N,ET,XM,P,WT)
+C------------------------------------------------------
+C
+C                       RAMBO
+C
+C    RA(NDOM)  M(OMENTA)  B(EAUTIFULLY)  O(RGANIZED)
+C
+C    A DEMOCRATIC MULTI-PARTICLE PHASE SPACE GENERATOR
+C    AUTHORS:  S.D. ELLIS,  R. KLEISS,  W.J. STIRLING
+C    THIS IS VERSION 1.0 -  WRITTEN BY R. KLEISS
+C
+C    N  = NUMBER OF PARTICLES (>1, IN THIS VERSION <101)
+C    ET = TOTAL CENTRE-OF-MASS ENERGY
+C    XM = PARTICLE MASSES ( DIM=100 )
+C    P  = PARTICLE MOMENTA ( DIM=(4,100) )
+C    WT = WEIGHT OF THE EVENT
+C
+C------------------------------------------------------
+      IMPLICIT REAL*8(A-H,O-Z)
+      DIMENSION XM(100),P(4,100),Q(4,100),Z(100),R(4),
+     .   B(3),P2(100),XM2(100),E(100),V(100),IWARN(5)
+      DATA ACC/1.D-14/,ITMAX/8/,IBEGIN/0/,IWARN/5*0/
+C
+      SAVE
+C INITIALIZATION STEP: FACTORIALS FOR THE PHASE SPACE WEIGHT
+      IF(IBEGIN.NE.0) GOTO 103
+      IBEGIN=1
+      TWOPI=8.*DATAN(1.D0)
+      PO2LOG=DLOG(TWOPI/4.)
+      Z(2)=PO2LOG
+      DO 101 K=3,100
+  101 Z(K)=Z(K-1)+PO2LOG-2.*DLOG(DBLE(K-2))
+      DO 102 K=3,100
+  102 Z(K)=(Z(K)-DLOG(DBLE(K-1)))
+C
+C CHECK ON THE NUMBER OF PARTICLES
+  103 IF(N.GT.1.AND.N.LT.101) GOTO 104
+      PRINT 1001,N
+      STOP
+C
+C CHECK WHETHER TOTAL ENERGY IS SUFFICIENT; COUNT NONZERO MASSES
+  104 XMT=0.
+      NM=0
+      DO 105 I=1,N
+      IF(XM(I).NE.0.D0) NM=NM+1
+  105 XMT=XMT+DABS(XM(I))
+      IF(XMT.LE.ET) GOTO 201
+      PRINT 1002,XMT,ET
+      STOP
+C
+C THE PARAMETER VALUES ARE NOW ACCEPTED
+C
+C GENERATE N MASSLESS MOMENTA IN INFINITE PHASE SPACE
+  201 DO 202 I=1,N
+      C=2.*RN(1)-1.
+      S=DSQRT(1.-C*C)
+      F=TWOPI*RN(2)
+      Q(4,I)=-DLOG(RN(3)*RN(4))
+      Q(3,I)=Q(4,I)*C
+      Q(2,I)=Q(4,I)*S*DCOS(F)
+  202 Q(1,I)=Q(4,I)*S*DSIN(F)
+C
+C CALCULATE THE PARAMETERS OF THE CONFORMAL TRANSFORMATION
+      DO 203 I=1,4
+  203 R(I)=0.
+      DO 204 I=1,N
+      DO 204 K=1,4
+  204 R(K)=R(K)+Q(K,I)
+      RMAS=DSQRT(R(4)**2-R(3)**2-R(2)**2-R(1)**2)
+      DO 205 K=1,3
+  205 B(K)=-R(K)/RMAS
+      G=R(4)/RMAS
+      A=1./(1.+G)
+      X=ET/RMAS
+C
+C TRANSFORM THE Q'S CONFORMALLY INTO THE P'S
+      DO 207 I=1,N
+      BQ=B(1)*Q(1,I)+B(2)*Q(2,I)+B(3)*Q(3,I)
+      DO 206 K=1,3
+  206 P(K,I)=X*(Q(K,I)+B(K)*(Q(4,I)+A*BQ))
+  207 P(4,I)=X*(G*Q(4,I)+BQ)
+C
+C CALCULATE WEIGHT AND POSSIBLE WARNINGS
+      WT=PO2LOG
+      IF(N.NE.2) WT=(2.*N-4.)*DLOG(ET)+Z(N)
+      IF(WT.GE.-180.D0) GOTO 208
+      IF(IWARN(1).LE.5) PRINT 1004,WT
+      IWARN(1)=IWARN(1)+1
+  208 IF(WT.LE. 174.D0) GOTO 209
+      IF(IWARN(2).LE.5) PRINT 1005,WT
+      IWARN(2)=IWARN(2)+1
+C
+C RETURN FOR WEIGHTED MASSLESS MOMENTA
+  209 IF(NM.NE.0) GOTO 210
+      WT=DEXP(WT)
+      RETURN
+C
+C MASSIVE PARTICLES: RESCALE THE MOMENTA BY A FACTOR X
+  210 XMAX=DSQRT(1.-(XMT/ET)**2)
+      DO 301 I=1,N
+      XM2(I)=XM(I)**2
+  301 P2(I)=P(4,I)**2
+      ITER=0
+      X=XMAX
+      ACCU=ET*ACC
+  302 F0=-ET
+      G0=0.
+      X2=X*X
+      DO 303 I=1,N
+      E(I)=DSQRT(XM2(I)+X2*P2(I))
+      F0=F0+E(I)
+  303 G0=G0+P2(I)/E(I)
+      IF(DABS(F0).LE.ACCU) GOTO 305
+      ITER=ITER+1
+      IF(ITER.LE.ITMAX) GOTO 304
+      PRINT 1006,ITMAX
+      GOTO 305
+  304 X=X-F0/(X*G0)
+      GOTO 302
+  305 DO 307 I=1,N
+      V(I)=X*P(4,I)
+      DO 306 K=1,3
+  306 P(K,I)=X*P(K,I)
+  307 P(4,I)=E(I)
+C
+C CALCULATE THE MASS-EFFECT WEIGHT FACTOR
+      WT2=1.
+      WT3=0.
+      DO 308 I=1,N
+      WT2=WT2*V(I)/E(I)
+  308 WT3=WT3+V(I)**2/E(I)
+      WTM=(2.*N-3.)*DLOG(X)+DLOG(WT2/WT3*ET)
+C
+C RETURN FOR  WEIGHTED MASSIVE MOMENTA
+      WT=WT+WTM
+      IF(WT.GE.-180.D0) GOTO 309
+      IF(IWARN(3).LE.5) PRINT 1004,WT
+      IWARN(3)=IWARN(3)+1
+  309 IF(WT.LE. 174.D0) GOTO 310
+      IF(IWARN(4).LE.5) PRINT 1005,WT
+      IWARN(4)=IWARN(4)+1
+  310 WT=DEXP(WT)
+      RETURN
+C
+ 1001 FORMAT(' RAMBO FAILS: # OF PARTICLES =',I5,' IS NOT ALLOWED')
+ 1002 FORMAT(' RAMBO FAILS: TOTAL MASS =',D15.6,' IS NOT',
+     . ' SMALLER THAN TOTAL ENERGY =',D15.6)
+ 1004 FORMAT(' RAMBO WARNS: WEIGHT = EXP(',F20.9,') MAY UNDERFLOW')
+ 1005 FORMAT(' RAMBO WARNS: WEIGHT = EXP(',F20.9,') MAY  OVERFLOW')
+ 1006 FORMAT(' RAMBO WARNS:',I3,' ITERATIONS DID NOT GIVE THE',
+     . ' DESIRED ACCURACY =',D15.6)
+      END
+C
+      SUBROUTINE BOOST(Q,PBOO,PCM,PLB)
+      REAL*8 PBOO(4),PCM(4),PLB(4),Q,FACT
+         PLB(4)=(PBOO(4)*PCM(4)+PBOO(3)*PCM(3)
+     &             +PBOO(2)*PCM(2)+PBOO(1)*PCM(1))/Q
+         FACT=(PLB(4)+PCM(4))/(Q+PBOO(4))
+         DO 10 J=1,3
+  10     PLB(J)=PCM(J)+FACT*PBOO(J)
+      RETURN
+      END
+
+      FUNCTION RN(IDUM)
+*
+* SUBTRACTIVE MITCHELL-MOORE GENERATOR
+* RONALD KLEISS - OCTOBER 2, 1987
+*
+* THE ALGORITHM IS N(I)=[ N(I-24) - N(I-55) ]MOD M,
+* IMPLEMENTED IN A CIRUCULAR ARRAY WITH IDENTIFCATION
+* OF NR(I+55) AND NR(I), SUCH THAT EFFECTIVELY:
+*        N(1)   <---   N(32) - N(1)
+*        N(2)   <---   N(33) - N(2)  ....
+*   .... N(24)  <---   N(55) - N(24)
+*        N(25)  <---   N(1)  - N(25) ....
+*   .... N(54)  <---   N(30) - N(54)
+*        N(55)  <---   N(31) - N(55)
+*
+* IN THIS VERSION  M =2**30  AND  RM=1/M=2.D0**(-30.D0)
+*
+* THE ARRAY NR HAS BEEN INITIALIZED BY PUTTING NR(I)=I
+* AND SUBSEQUENTLY RUNNING THE ALGORITHM 100,000 TIMES.
+*
+      IMPLICIT REAL*8(A-H,O-Z)
+      DIMENSION N(55)
+      DATA N/
+     . 980629335, 889272121, 422278310,1042669295, 531256381,
+     . 335028099,  47160432, 788808135, 660624592, 793263632,
+     . 998900570, 470796980, 327436767, 287473989, 119515078,
+     . 575143087, 922274831,  21914605, 923291707, 753782759,
+     . 254480986, 816423843, 931542684, 993691006, 343157264,
+     . 272972469, 733687879, 468941742, 444207473, 896089285,
+     . 629371118, 892845902, 163581912, 861580190,  85601059,
+     . 899226806, 438711780, 921057966, 794646776, 417139730,
+     . 343610085, 737162282,1024718389,  65196680, 954338580,
+     . 642649958, 240238978, 722544540, 281483031,1024570269,
+     . 602730138, 915220349, 651571385, 405259519, 145115737/
+      DATA M/1073741824/
+      DATA RM/0.9313225746154785D-09/
+      DATA K/55/,L/31/
+      IF(K.EQ.55) THEN
+         K=1
+         ELSE
+         K=K+1
+         ENDIF
+      IF(L.EQ.55) THEN
+         L=1
+         ELSE
+         L=L+1
+         ENDIF
+      J=N(L)-N(K)
+      IF(J.LT.0) J=J+M
+      N(K)=J
+      RN=J*RM
+      RETURN
+      END
