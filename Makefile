@@ -46,7 +46,7 @@
 # IMPORTANT USER SETUP
 #########################################################################
 
-CERNLIB=`cernlib mathlib pawlib packlib`
+CERNLIB=`cernlib mathlib pawlib packlib` -L$(PWD) -lgfortran
 
 #########################################################################
 
@@ -70,11 +70,16 @@ clean:clean_sqme
 # debuging flag to turn off anoying messages
 #SPEC_FL=-Wno-globals -Wno-implicit
 
-# g77 flags very important for simulation interfaces!
-#F_FLAGS = -g -O1 -Wno-all -fno-f2c -finit-local-zero -fno-automatic -Iinc
-#F_COMP = g77 $(F_FLAGS) $(SPEC_FL)
-F_FLAGS = -g -O1  -fno-automatic -Iinc
-F_COMP = gfortran $(F_FLAGS) $(SPEC_FL)
+# g77 - setup: 
+# flags very important for simulation interfaces!
+F_FLAGS = -g -O1 -Wno-all -fno-f2c -finit-local-zero -fno-automatic -Iinc
+F_COMP = g77 $(F_FLAGS) $(SPEC_FL)
+
+# gforan - setup
+#F_FLAGS = -g -O1  -fno-automatic -Iinc
+#F_COMP = gfortran $(F_FLAGS) $(SPEC_FL)
+
+# other 
 CC=g++
 
 # Directories
@@ -252,10 +257,8 @@ oldExamples:$(pgm)
 
 ### modules to be used by the end user###
 module_reco: Examples/module_reco.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
-	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(OBJRECO) $(LIBS) -lstdc++ 
-	
+	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(OBJRECO) $(LIBS) -lstdc++  	
 module: Examples/module.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) \
   	Examples/ffcard.inc
-	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(LIBS) -lstdc++
-#----------------------------------------------------------------------------------------
+	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(LIBS) -lstdc++ 
 
