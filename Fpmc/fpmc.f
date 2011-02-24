@@ -658,10 +658,10 @@ c--- Initialize KMR calculation
 C ... begin R.S.
 C ... Initialize CHIDe model
       IF(NFLUX.EQ.18 .AND. IPROC.EQ.19999) THEN
-        dgdtab1="External/CHIDe/Data/Higgsdgdtab1.d"
-        dgdtab2="External/CHIDe/Data/Higgsdgdtab2.d"
-        dgdtab3="External/CHIDe/Data/Higgsdgdtab3.d"
-        dgdtab4="External/CHIDe/Data/Higgsdgdtab4.d"
+        dgdtab1="External/CHIDe/Data/dgdtab1.d"
+        dgdtab2="External/CHIDe/Data/dgdtab2.d"
+        dgdtab3="External/CHIDe/Data/dgdtab3.d"
+        dgdtab4="External/CHIDe/Data/dgdtab4.d"
         sudatab="External/CHIDe/Data/Higgssudatab.d"
 C     Parameters: Higgs mass, top mass, cms energy^2, impact factor
 C     parameterisation, upper and lower limit scales of sudakov factor,
@@ -669,10 +669,10 @@ C     Rapidity Gap Survival
         CALL CHIDeHiggsInit(RMASS(201),RMASS(6),CHIDeS,CHIDeIGLU,
      &  CHIDeX, CHIDeXP, CHIDeS2)
       ELSEIF(NFLUX.EQ.18 .AND. IPROC.EQ.16012) THEN
-        dgdtab1="External/CHIDe/Data/ggdgdtab1.d"
-        dgdtab2="External/CHIDe/Data/ggdgdtab2.d"
-        dgdtab3="External/CHIDe/Data/ggdgdtab3.d"
-        dgdtab4="External/CHIDe/Data/ggdgdtab4.d"
+        dgdtab1="External/CHIDe/Data/dgdtab1.d"
+        dgdtab2="External/CHIDe/Data/dgdtab2.d"
+        dgdtab3="External/CHIDe/Data/dgdtab3.d"
+        dgdtab4="External/CHIDe/Data/dgdtab4.d"
         sudatab="External/CHIDe/Data/ggsudatab.d"
         CALL CHIDeGGInit(CHIDeS,DBLE(PTMIN),CHIDeS2,
      &       CHIDeX,CHIDeXP,CHIDeIGLU,
