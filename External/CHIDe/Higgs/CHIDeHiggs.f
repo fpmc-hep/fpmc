@@ -617,13 +617,18 @@ C   ----------------------------------------------------------------------------
       p2log=log(p2)
       
 C     Dimension and parameter of dgdtab
-       lp1min=log(0.0001d0)                             
-C       lp1max=log(0.2d0)                                
-C       lp1max=log(1.d0)
-       lp1max=log(0.4d0)
+c       lp1min=log(0.0001d0)                             
+c       lp1max=log(0.4d0)
+c       step1=(lp1max-lp1min)/1000.
+c       lp2min=log(1.E-6)                                
+c       lp2max=log(5000d0)                               
+c       step2=(lp2max-lp2min)/1000.
+
+       lp1min=-14d0                             
+       lp1max=0.d0
        step1=(lp1max-lp1min)/1000.
-       lp2min=log(1.E-6)                                
-       lp2max=log(5000d0)                               
+       lp2min=-9.d0
+       lp2max=8.d0
        step2=(lp2max-lp2min)/1000.
 
       if(p1log.LT.lp1min)p1log=lp1min+step1
