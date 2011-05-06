@@ -252,7 +252,7 @@ OBJRECO = $(reco_obj_dest)
 pgm=example_excDPE example_incDPE example_hbook example_sd example_ddis \
 	 example_qedww example_excChi example_incChi
 $(pgm): % : Examples/%.f $(OBJSTAND) $(OBJEXT)
-	$(F_COMP) $< -o $@ $(OBJSTAND) $(OBJEXT) $(LIBS) 
+	$(F_COMP) $< -o $@ $(OBJSTAND) $(OBJEXT) $(LIBS)  -lstdc++
 oldExamples:$(pgm)
 
 ### modules to be used by the end user###

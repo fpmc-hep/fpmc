@@ -410,8 +410,9 @@ C-----------------------------------------------------------------------
       XG1=ABS(PHEP(4,8)/PHEP(4,4))
       XG2=ABS(PHEP(4,9)/PHEP(4,6))
 
-      xg1b=xg1
-      xg2b=xg2
+      
+      XG1B=XG1
+      XG2B=XG2
 
       ROOTS=2*SQRT(PHEP(4,1)*PHEP(4,2))
       CENTM=ROOTS*SQRT(XI1*XI2)
