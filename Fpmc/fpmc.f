@@ -291,9 +291,7 @@ C-----------------------------------------------------------------------
 c------------------------------------------------------------------- 
 
 C ... Check NFLUX / TYPINT compatibility
-      PRINT *, 'debug ',  IPROC
       IPR=MOD(IPROC/100,100)
-      PRINT *, 'debug ', IPR
       PRINT*, ' '
       PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
       PRINT*, ' '
@@ -470,10 +468,10 @@ c      ACTID=IFITPDF-PDFID
 
       IF((NFLUX.GE.12).AND.(NFLUX.LE.15)) THEN
 
-         IF(IPROC.EQ.16015.AND.AAANOM.NE.3) THEN
+         IF( (IPROC.EQ.16010.OR.IPROC.EQ.16015).AND.AAANOM.NE.2) THEN
             PRINT*, ' '
             PRINT*, ' FPMC - Anomalous AAZZ coupling available '
-            PRINT*, '        only with AAANOM = 3'
+            PRINT*, '        only with AAANOM = 2'
             PRINT*, ' - STOP'
             PRINT*, ' '
             PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
@@ -485,16 +483,17 @@ c      ACTID=IFITPDF-PDFID
          ELSEIF(AAANOM.EQ.1)THEN
             PRINT *, 'Full SM formula for AAWW used'
          ELSEIF(AAANOM.EQ.2)THEN
-           IF(IPROC.NE.16010) THEN
+           IF( IPROC.NE.16010.AND.IPROC.NE.16015) THEN
             PRINT*, ' '
             PRINT*, ' FPMC - Anomalous AAWW coupling available '
-            PRINT*, '        only with IPROC = 16010'
+            PRINT*, '        only for IPROC = 16010 -- WW'
+            PRINT*, '                 IPROC = 16015 -- ZZ'
             PRINT*, ' - STOP'
             PRINT*, ' '
             PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
             PRINT*, ' '
             STOP
-           ELSE
+           ELSEIF(IPROC.EQ.16010) THEN
             PRINT *, 'Comphep ME used for TGC+QGC AA->WW '
             PRINT *, 'Vertex couplings set to:'
             PRINT *, '   D_KAPPA  = ', D_KAPPA 
@@ -504,18 +503,7 @@ c      ACTID=IFITPDF-PDFID
             PRINT *, '   ANOMCUTOFF = ', ANOMCUTOFF
             PRINT *, ' For ANOMCUTOFF < 0 GeV, dipole form of the
      & coupling formfactor turned off (see comphep_wrapper.cpp)'
-            ENDIF
-         ELSEIF(AAANOM.EQ.3) THEN
-           IF(IPROC.NE.16015) THEN
-            PRINT*, ' '
-            PRINT*, ' FPMC - Anomalous AAZZ coupling available '
-            PRINT*, '        only with IPROC = 16015'
-            PRINT*, ' - STOP'
-            PRINT*, ' '
-            PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
-            PRINT*, ' '
-            STOP
-           ELSE
+           ELSEIF(IPROC.EQ.16015) THEN
             PRINT *, 'Comphep ME used for QGC AA->ZZ '
             PRINT *, 'Vertex couplings set to:'
             PRINT *, '   A0Z = ', A0Z
@@ -2884,7 +2872,7 @@ cc            IF (HWRGEN(2).GT.HALF) then
      $             *(1-2*s*(2*s+3*emsq)/(3*(emsq-t)*(emsq-u))
      $           +2*s**2*(s**2+3*emsq*emsq)/(3*(emsq-t)**2*(emsq-u)**2))
 
-          ELSEIF((AAANOM.GE.2).AND.(AAANOM.LE.3))THEN
+          ELSEIF(AAANOM.EQ.2)THEN
 
               TMIN=S/2*(1-SQRT(MAX(1-4*(EMSQ+PTMIN**2)/S,ZERO)))-EMSQ 
               TMAX=S/2*(1-SQRT(MAX(1-4*(EMSQ+PTMAX**2)/S,ZERO)))-EMSQ
@@ -2903,9 +2891,9 @@ c           IF (HWRGEN(2).GT.HALF) then
               EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U))        
 
 C ... O.K. Calling anomalous aaww or aazz coupling
-              IF(AAANOM.EQ.2) call sqme_aaww_c(AMP2, S, T, alphem,
+              IF(HQ.EQ.198) call sqme_aaww_c(AMP2, S, T, alphem,
      $        SQRT(EMSQ), SWEIN, D_KAPPA, LAMBDA, A0W, ACW, ANOMCUTOFF)
-              IF(AAANOM.EQ.3) call sqme_aazz_c(AMP2, S, T, alphem,
+              IF(HQ.EQ.200) call sqme_aazz_c(AMP2, S, T, alphem,
      $        SQRT(EMSQ), SWEIN, A0Z, ACZ, ANOMCUTOFF)
 
              FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
