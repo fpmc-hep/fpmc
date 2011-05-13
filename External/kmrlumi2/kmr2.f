@@ -1,151 +1,8 @@
-C----------------------------------------------------------------------
-C--   Example program to demonstrate usage of the MSTW 2008 PDFs.    --
-C--   Comments to Graeme Watt <watt(at)hep.ucl.ac.uk>.               --
-C---------------------------------------------------------------------
-      subroutine KMR2_example
+      subroutine KMR2_Init(s_, gapsurv_, uscale_, delta_, q2cut_)
       include 'kmr2.inc'
-
-      integer i
-      double precision x,mu2,y
-      double precision S2
-      double precision xmin,xmax,M,mu,M2
-      integer N
-      double precision KMR2_L
-      external KMR2_L
-
- 
-
-      S2 = 0.03
-      N = 40 
-      y = 0d0
-
-      
-c     call KMR2_Init(14000d0**2)
-      
-
-c     xmin = 2
-c     xmax = 100
-c     do i=0, N
-c     Q2 = (xmin + i*(xmax-xmin)/N)
-c     mu = 120d0/2.0
-c     mu2 = mu*mu
-c     M2 = M*M
-c     x = KMR2_L(M2,y,mu2)
-c     write(7, *) M, x
-c     enddo
-c     close(7)
-
-
-      print*, 1     
-      call KMR2_Init(2000d0**2)
-      xmin = 10 
-      xmax = 200
-      open(7, file='1.dat')
-      do i=0, N
-      M = (xmin + i*(xmax-xmin)/N)
-      mu = M*0.618
-      mu2 = mu*mu
-      M2 = M*M
-      x = KMR2_L(M2,y,mu2)
-      write(7, *) M, x
-      enddo
-      close(7)
-      
-      print*, 2   
-      call KMR2_Init(8000d0**2)
-      xmin = 50
-      xmax = 900
-      open(7, file='2.dat')
-      do i=0, N
-      M = (xmin + i*(xmax-xmin)/N)
-      mu = M*0.618
-      mu2 = mu*mu
-      M2 = M*M
-      x = KMR2_L(M2,y,mu2)
-      write(7, *) M, x
-      enddo
-      close(7)
-
-      print*,3
-      call KMR2_Init(14000d0**2)
-      xmin = 50
-      xmax = 900
-      open(7, file='3.dat')
-      do i=0, N
-      M = (xmin + i*(xmax-xmin)/N)
-      mu = M*0.618
-      mu2 = mu*mu
-      M2 = M*M
-      x = KMR2_L(M2,y,mu2)
-      write(7,*) M, x
-      enddo
-      close(7)
-
-100   M = 120d0
-      print*,4
-      call KMR2_Init(2000d0**2)
-      open(7, file='4.dat')
-c     xmin = 1.68586 
-c     xmax = 1.68596
-      xmin = 0
-      xmax = 2.50
-      do i=0, N
-      y = (xmin + i*(xmax-xmin)/N)
-      mu = M*0.618
-      mu2 = mu*mu
-      M2 = M*M
-      x = KMR2_L(M2,y,mu2)
-      write(7,*) y, x
-      enddo
-      close(7)
-
-      
-      print*,5
-      call KMR2_Init(8000d0**2)
-      M = 120
-      xmin = 0.0
-      xmax = 3.5
-      open(7, file='5.dat')
-      do i=0, N
-      y = (xmin + i*(xmax-xmin)/N)
-      mu = M*0.618
-      mu2 = mu*mu
-      M2 = M*M
-      x = KMR2_L(M2,y,mu2)
-      write(7,*) y, x
-      enddo
-      close(7)
-
-         
-      print*,6
-      M = 120
-      call KMR2_Init(14000d0**2)
-      open(7, file='6.dat')
-      xmin = 0.0
-      xmax = 4.0
-      do i=0, N
-      y = (xmin + i*(xmax-xmin)/N)
-      mu = M*0.618
-      mu2 = mu*mu
-      M2 = M*M
-      x = KMR2_L(M2,y,mu2)
-      write(7,*) y, x
-c     print*, y, x
-      enddo
-      close(7)
-
-      STOP
-      END
-
-
-
-
-
-      subroutine KMR2_Init(s_)
-      include 'kmr2.inc'
-      double precision s_,HWUALF,k
+      double precision s_,HWUALF,k, uscale_, gapsurv_, q2cut_
       external HWUALF
-      integer alphaSorder,alphaSnfmax
+      integer alphaSorder,alphaSnfmax,delta_
       integer NN 
       save NN  
 
@@ -163,13 +20,18 @@ c      BottomMass = 4.6;
 c      CharmMass = 1.42;
 
       s = s_
-      if(abs(sqrt(s)-2000d0).lt.100d0) then
-        gapsurv = 0.1d0
-      elseif(abs(sqrt(s)-14000d0).lt.1000) then
-        gapsurv = 0.03d0
-      else
-        gapsurv = 1d0
-      endif
+      gapsurv = gapsurv_
+      uscale = uscale_
+      delta = delta_
+      q2cut = q2cut_
+
+c      if(abs(sqrt(s)-2000d0).lt.100d0) then
+c        gapsurv = 0.1d0
+c      elseif(abs(sqrt(s)-14000d0).lt.1000) then
+c        gapsurv = 0.03d0
+c      else
+c        gapsurv = 1d0
+c      endif
 
       pi = atan(1d0)*4d0
 
@@ -179,15 +41,11 @@ c      CharmMass = 1.42;
       print*, "  I  sqrt(s)= ", sqrt(s)
       print*, "  I  gap survival= ", gapsurv
       print*, "  I  iset =", iset
+      print*, "  I  scale =", uscale
+      print*, "  I  delta =", delta
+      print*, "  I  q2cut =", q2cut
       print*, "  I==========================I"
       
-c     if(NN.ne.1234) then
-c     NN = 1234
-c     call KMR2_example()
-c     print*, "aaa", NN
-c     endif
-
-
       end
 
 
@@ -215,12 +73,12 @@ c     endif
  
 
       double precision function ExHuME_AlphaS(Q2)
-      implicit none
+      include 'kmr2.inc'
       double precision Q2
       double precision ASConst, Freeze, LambdaQCD, Q
       ASConst = 12d0*3.14159/22d0/2d0
       LambdaQCD = 80d-3
-      Freeze = sqrt(2d0) 
+      Freeze = sqrt(Q2cut) 
       Q = sqrt(Q2)
       if(Q>Freeze) then
         ExHuME_AlphaS = ASConst/log(Q/LambdaQCD)
@@ -230,23 +88,6 @@ c     endif
       return
       end
       
-      subroutine KMR2_test() 
-      include 'kmr2.inc'
-      integer i
-      double precision KMR2_alphas, Q2,AS1,AS2,AS3,AS4,AS5
-      double precision alpha_s,CHIDeas,HWUALF,MRSTW_ALPHAS,ExHuME_alphas
-      external alpha_s,CHIDeas,HWUALF,MRSTW_ALPHAS,Exhume_alphas
-      Q2=HWUALF(0,0d0)
-      DO i = 1, 1000
-      Q2 = i/10d0
-c     AS1 = MRSTW_ALPHAS(sqrt(Q2))
-      AS2 = HWUALF(1,sqrt(Q2))
-      AS3 = CHIDeas(Q2)! implemented in CHIDe files
-      AS4 = ExHuME_AlphaS(Q2)
-      print *, "AAAAAAAAA", Q2, AS1, AS2, AS3, AS4
-      ENDDO
-      end
-  
       function KMR2_alphas(Q2) 
       include 'kmr2.inc'
       double precision KMR2_alphas, Q2
@@ -273,7 +114,6 @@ c      KMR2_xg = GetOnePDF(prefix,iset,x,Q,0)
       return
       end
 
-      
       function KMR2_dT(lnkT2,par)
       include 'kmr2.inc'
       double precision KMR2_dT, lnkT2, par(10), kT2
@@ -283,7 +123,13 @@ c      KMR2_xg = GetOnePDF(prefix,iset,x,Q,0)
       kT2 = exp(lnkT2)
       kT = sqrt(kT2)
       mu = sqrt(par(1))
-      I = KMR2_IntxPgg(mu/(mu+kT),kT) 
+      if(delta .eq. 1) then
+        I = KMR2_IntxPgg(1-kT/(mu+kT),kT) 
+      elseif(delta .eq. 2) then
+        I = KMR2_IntxPgg(1-kT/mu,kT) 
+      else
+        I = 0
+      endif
       AS = KMR2_alphas(kT2)
       KMR2_dT = AS/(2d0*pi)*I
       return
@@ -375,8 +221,8 @@ c     ddT = KMR2_alphas(QT2)/(4.0*pi)*KMR2_IntxPgg(mu/(q+mu),q)
       sss = sqrt(M2/s)
       x1 = dexp(y)*sss
       x2 = dexp(-y)*sss
-      Q2min = 2d0
-      Q2max = 1e6
+      Q2min = q2cut
+      Q2max = 1d6
       par(1) = x1
       par(2) = x2
       par(3) = mu2
@@ -396,7 +242,8 @@ c     ddT = KMR2_alphas(QT2)/(4.0*pi)*KMR2_IntxPgg(mu/(q+mu),q)
       N = N+1
       M2 = s*x1*x2
       y = 0.5*log(x1/x2)
-      mu2 = M2*0.618**2 ! (this is used in ExHuME)
+c     mu2 = M2*0.618**2 ! (this is used in ExHuME)
+      mu2 = M2*uscale**2 
       KMR2_GET_LUMI = KMR2_L(M2,y,mu2)/16d0 ! 16 = squared b=4.0 from
                                               ! t integration 
                             

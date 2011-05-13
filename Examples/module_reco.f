@@ -162,10 +162,10 @@ C     CHIDe Model
       CHIDeXP  =  UCHIDeXP
       CHIDeS2  =  UCHIDeS2
       CHIDeS   =  UECMS*UECMS
-      CHIDeX1MIN = UCHIDeX1MIN
-      CHIDeX1MAX = UCHIDeX1MAX
-      CHIDeX2MIN = UCHIDeX2MIN
-      CHIDeX2MAX = UCHIDeX2MAX
+      XI1MIN = UXI1MIN
+      XI1MAX = UXI1MAX
+      XI2MIN = UXI2MIN
+      XI2MAX = UXI2MAX
       CHIDeGapMin = UCHIDeGapMin
       CHIDeGapMax = UCHIDeGapMax
 C ... end R.S.
@@ -410,9 +410,8 @@ C-----------------------------------------------------------------------
       XG1=ABS(PHEP(4,8)/PHEP(4,4))
       XG2=ABS(PHEP(4,9)/PHEP(4,6))
 
-      
-      XG1B=XG1
-      XG2B=XG2
+      xg1b=xg1
+      xg2b=xg2
 
       ROOTS=2*SQRT(PHEP(4,1)*PHEP(4,2))
       CENTM=ROOTS*SQRT(XI1*XI2)

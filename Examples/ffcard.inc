@@ -5,7 +5,7 @@ C * Free data cards. They are used in the module.f, module_cms.f, etc.
 C----------------------------------------------------------------------- 
       integer UMAXEV, UIPROC, UNFLUX, UNRN1, UNRN2, UIFIT, UISOFTM,
      $ UAAANOM, UZION, UAION,
-     $ UCHIDeIGLU
+     $ UCHIDeIGLU, UKMR2DELTA
      
       real URMASS,UWMASS,UHMASS,UTMASS,UMST1,UMSB1,UECMS,
      $     UYJMIN,UYJMAX,UPTMIN,UPTMAX,UEMMIN, UEMMAX, UDKAPPA,
@@ -13,22 +13,26 @@ C-----------------------------------------------------------------------
      $   UANOMCUTOFF, UQ2WWMN, UQ2WWMX,UYWWMIN, UYWWMAX, UA0W, UACW,
      $   UA0Z, UACZ,
      $   UCHIDeX, UCHIDeXP, UCHIDeS2, ! R.S.
-     $   UCHIDeX1Min, UCHIDeX1Max, UCHIDeX2Min, UCHIDeX2Max,
-     $   UCHIDeGapMin, UCHIDeGapMax
+     $   UXI1Min, UXI1Max, UXI2Min, UXI2Max,
+     $   UCHIDeGapMin, UCHIDeGapMax,
+     $   UKMR2Q2CUT, UKMR2SURV, UKMR2SCALE
      
       COMMON /MYFFREAD1/ URMASS,UWMASS,UHMASS,UTMASS,UMST1,UMSB1,UECMS,
      $     UYJMIN, UYJMAX,UPTMIN, UPTMAX, UEMMIN, UEMMAX, UDKAPPA,
      $     UACW, UA0W, UA0Z, UACZ,
      $     UCHIDeX, UCHIDeXP, UCHIDeS2, ! R.S.
-     $   UCHIDeX1Min, UCHIDeX1Max, UCHIDeX2Min, UCHIDeX2Max,
-     $   UCHIDeGapMin, UCHIDeGapMax
+     $   UXI1Min, UXI1Max, UXI2Min, UXI2Max,
+     $   UCHIDeGapMin, UCHIDeGapMax,
+     $    UKMR2Q2CUT, UKMR2SURV, UKMR2SCALE
+ 
+
      
       COMMON /MYFFREAD2/ UDLAMBDA, UANOMCUTOFF, UYWWMIN, UYWWMAX,
      $ UQ2WWMN, UQ2WWMX
 
       COMMON /MYFFREAD3/ UMAXEV,UIPROC,UNFLUX,UNRN1,UNRN2,UIFIT, 
      $     UISOFTM, UZION, UAION, UAAANOM,
-     $     UCHIDeIGLU ! R.S.
+     $     UCHIDeIGLU, UKMR2DELTA ! R.S.
 
       character*1 UHADR
       COMMON /CC0/ UHADR

@@ -184,6 +184,18 @@ ext_CHIDeGG_obj_dest=$(ext_CHIDeGG_obj:%=$(OBJDIR)/%)
 $(ext_CHIDeGG_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/GG/%.f
 	$(F_COMP) -c $< -o $@ 
 
+# ----- Diphoton
+ext_CHIDeDiphoton=\
+CHIDe/Diphoton/CHIDeDiphoton.f \
+CHIDe/Diphoton/CHIDeDiphotonFunctions.f \
+CHIDe/Diphoton/CHIDeDiphotonAmplitudes.f \
+CHIDe/Diphoton/CHIDeDiphotonInit.f \
+
+ext_CHIDeDiphoton_obj=$(ext_CHIDeDiphoton:CHIDe/Diphoton/%.f=%.o)
+ext_CHIDeDiphoton_obj_dest=$(ext_CHIDeDiphoton_obj:%=$(OBJDIR)/%)
+$(ext_CHIDeDiphoton_obj_dest): $(OBJDIR)/%.o: $(EXTDIR)/CHIDe/Diphoton/%.f
+	$(F_COMP) -c $< -o $@ 
+
 ################################################
 
 
@@ -238,7 +250,7 @@ $(OBJDIR)/ffcard.o:Examples/ffcard.f Examples/ffcard.inc
 OBJSTAND=$(OBJDIR)/herwig6500.o  $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o
 OBJEXT=$(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_kmr_obj_dest)  $(ext_softc_obj_dest) \
        $(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_KMR2_obj_dest) \
-	$(ext_CHIDeGG_obj_dest) 
+	$(ext_CHIDeGG_obj_dest) $(ext_CHIDeDiphoton_obj_dest) 
 OBJUSR = $(OBJDIR)/ntuple.o
 LIBS=$(CERNLIB) $(LIB_OMEGA)
 OBJRECO = $(reco_obj_dest)
