@@ -47,13 +47,16 @@ c--- Anomalous coupling variables for anomalous AA->WW, AA-> ZZ
       COMMON /AAANOMAL/ D_KAPPA, LAMBDA, ANOMCUTOFF, A0W, ACW, A0Z, ACZ,
      &        AAANOM
       
-C ... begin R.S.
-C     CHIDe Model
+C     CHIDe
       integer CHIDeIGLU
       double precision CHIDeX, CHIDeXP, CHIDeS2, CHIDeS
       common /CHIDeFPMC/ CHIDeX, CHIDeXP, CHIDeS2, CHIDeS, CHIDeIGLU
-C ... end R.S.
-     
+    
+C     KMR2
+      integer KMR2DELTA
+      double precision KMR2Q2CUT, KMR2SURV, KMR2SCALE
+      common /KMR2FPMC/ KMR2Q2CUT, KMR2SURV, KMR2SCALE, KMR2DELTA
+
 c--- temporal variables
       DOUBLE PRECISION TMAXMAX, TMINMIN
       DOUBLE PRECISION SMAXMAX, SMINMIN

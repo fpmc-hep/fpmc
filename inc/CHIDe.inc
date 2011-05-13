@@ -4,8 +4,8 @@
       DOUBLE PRECISION CHIDePhi1, CHIDePhi2, CHIDePhi3
       DOUBLE PRECISION CHIDeK1(2), CHIDeK2(2), CHIDeK3(2)
       DOUBLE PRECISION CHIDeA1, CHIDeA2, CHIDeB1, CHIDeB2
-      DOUBLE PRECISION CHIDeX1Min, CHIDeX1Max
-      DOUBLE PRECISION CHIDeX2Min, CHIDeX2Max
+      DOUBLE PRECISION XI1Min, XI1Max
+      DOUBLE PRECISION XI2Min, XI2Max
       DOUBLE PRECISION CHIDeGapMin, CHIDeGapMax
       
       COMMON /CHIDe/ CHIDeQ1, CHIDeQ2, CHIDeQ3,
@@ -14,6 +14,6 @@
      &               CHIDeK1, CHIDeK2, CHIDeK3,
      &               CHIDeA1, CHIDeA2, CHIDeB1, CHIDeB2,
      &               CHIDeZ1, CHIDeZ2,
-     &               CHIDeX1Min, CHIDeX1Max,
-     &               CHIDeX2Min, CHIDeX2Max,
+     &               XI1Min, XI1Max,
+     &               XI2Min, XI2Max,
      &               CHIDeGapMin, CHIDeGapMax

@@ -156,20 +156,24 @@ c ---Anomalous coupling settings
       ACZ = UACZ
       ANOMCUTOFF = UANOMCUTOFF
 
-C ... begin R.S.
-C     CHIDe Model
+C     CHIDe
       CHIDeIGLU = UCHIDeIGLU
       CHIDeX   =  UCHIDeX
       CHIDeXP  =  UCHIDeXP
       CHIDeS2  =  UCHIDeS2
       CHIDeS   =  UECMS*UECMS
-      CHIDeX1Min = UCHIDeX1Min
-      CHIDeX1Max = UCHIDeX1Max
-      CHIDeX2Min = UCHIDeX2Min
-      CHIDeX2Max = UCHIDeX2Max
+      XI1Min = UXI1Min
+      XI1Max = UXI1Max
+      XI2Min = UXI2Min
+      XI2Max = UXI2Max
       CHIDeGapMin = UCHIDeGapMin
       CHIDeGapMax = UCHIDeGapMax
-C ... end R.S.
+
+C     KMR2
+      KMR2Q2CUT=UKMR2Q2CUT
+      KMR2SURV=UKMR2SURV
+      KMR2SCALE=UKMR2SCALE
+      KMR2DELTA=UKMR2DELTA
 
 c---Set normalisations for Exclusive processes
 c... option for soft corrections : ISOFTM = 0 : no correction

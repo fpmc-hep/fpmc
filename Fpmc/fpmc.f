@@ -385,13 +385,13 @@ C ... begin R.S.
         PRINT*, ' '
         STOP
         ELSEIF(NFLUX.EQ.18 .AND. .NOT.(IPROC.EQ.19999 
-     &  .OR. IPROC.EQ.16012)) THEN
+     &  .OR. IPROC.EQ.16012.OR.IPROC.EQ.16059)) THEN
         PRINT*, ' '
         PRINT*, ' FPMC - You requested a CHIDe model'
-        PRINT*, '          with a photon initiated hard process:'
+        PRINT*, '          with wrong IPROC:'
         PRINT*, '          NFLUX  = ', NFLUX
-        PRINT*, '          TYPINT = ', TYPINT 
-        PRINT*, ' NFLUX=18 should be used with TYPINT=QCD'
+        PRINT*, '          IPROC = ', IPROC 
+        PRINT*, ' Availiable IPROC: 19999, 16012, 16059'
         PRINT*, ' '
         PRINT*, ' - STOP'
         PRINT*, ' '
@@ -634,13 +634,13 @@ c--- Initialize soft correction code (from A.Kupco)
 c--- Initialize KMR calculation
 
       IF(NFLUX.EQ.16) THEN
-         IF(PBEAM1.LE.1d3) THEN
-*            CALL KMRINI(1)
-            CALL KMRINI(99,CHIDeS)
-         ELSEIF(PBEAM1.GE.6.5d3) THEN
-*            CALL KMRINI(2)
-            CALL KMRINI(99,CHIDeS)
-        ENDIF
+       IF(PBEAM1.LE.1d3) THEN
+*         CALL KMRINI(1)
+          CALL KMRINI(99,CHIDeS,KMR2SURV,KMR2SCALE,KMR2DELTA,KMR2Q2CUT)
+       ELSEIF(PBEAM1.GE.6.5d3) THEN
+*          CALL KMRINI(2)
+          CALL KMRINI(99,CHIDeS,KMR2SURV,KMR2SCALE,KMR2DELTA,KMR2Q2CUT)
+       ENDIF
       ENDIF
 
 C ... begin R.S.
@@ -664,11 +664,24 @@ C     Rapidity Gap Survival
         sudatab="External/CHIDe/Data/ggsudatab.d"
         CALL CHIDeGGInit(CHIDeS,DBLE(PTMIN),CHIDeS2,
      &       CHIDeX,CHIDeXP,CHIDeIGLU,
-     &       CHIDeX1Min, CHIDeX1Max, CHIDeX2Min, CHIDeX2Max,
+     &       XI1Min, XI1Max, XI2Min, XI2Max,
      &       DBLE(YJMIN), DBLE(YJMAX))
-        CHIDeX1MIN=CHIDeX1MIN/1d3! CHIDeZ1 = CHIDeB1 + CHIDeB2 
-c        CHIDeX1MIN=1d-10 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
-c       CHIDeX1MAX=1d0 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
+        XI1MIN=XI1MIN/1d3! CHIDeZ1 = CHIDeB1 + CHIDeB2 
+c        XI1MIN=1d-10 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
+c       XI1MAX=1d0 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
+      ELSEIF(NFLUX.EQ.18 .AND. IPROC.EQ.16059) THEN
+        dgdtab1="External/CHIDe/Data/dgdtab1.d"
+        dgdtab2="External/CHIDe/Data/dgdtab2.d"
+        dgdtab3="External/CHIDe/Data/dgdtab3.d"
+        dgdtab4="External/CHIDe/Data/dgdtab4.d"
+        sudatab="External/CHIDe/Data/ggsudatab.d"
+        CALL CHIDeDiphotonInit(CHIDeS,DBLE(PTMIN),CHIDeS2,
+     &       CHIDeX,CHIDeXP,CHIDeIGLU,
+     &       XI1Min, XI1Max, XI2Min, XI2Max,
+     &       DBLE(YJMIN), DBLE(YJMAX))
+        XI1MIN=XI1MIN/1d3! CHIDeZ1 = CHIDeB1 + CHIDeB2 
+c        XI1MIN=1d-10 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
+c       XI1MAX=1d0 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
       ENDIF
 C ... end R.S.
 
@@ -1041,7 +1054,7 @@ C ... begin R.S.
       DOUBLE PRECISION CHIDe_C, CHIDe_B
       DOUBLE PRECISION S, AA, BB, CC, DELTA
 
-      LOGICAL IsCHIDeHiggs, IsCHIDeGG, IsCHIDe
+      LOGICAL IsCHIDeHiggs, IsCHIDeGG, IsCHIDe, IsCHIDeDiphoton
       DOUBLE PRECISION CHIDeKmax, CHIDeK2max
       DOUBLE PRECISION CHIDedotdiff
       EXTERNAL CHIDedotdiff
@@ -1053,6 +1066,7 @@ C ... begin R.S.
       
       IsCHIDe = (NFLUX.EQ.18)
       IsCHIDeGG = (IPROC.EQ.16012 .AND. NFLUX.EQ.18)
+      IsCHIDeDiphoton = (IPROC.EQ.16059 .AND. NFLUX.EQ.18)
       IsCHIDeHiggs = (IPROC.EQ.19999 .AND. NFLUX.EQ.18)
       
 C ... end R.S.
@@ -1218,8 +1232,8 @@ C ... M.B. : set boundaries properly for Exclusive case
              ZMAX = YWWMAX
              ZMIN = RMASS(201)**2/SS**2/ZMAX
              !R.S.
-             CHIDeX1Min = max(CHIDeX1Min,RMASS(201)**2/SS**2/CHIDeX2Max)
-             CHIDeX2Min = min(CHIDeX2Min,RMASS(201)**2/SS**2/CHIDeX1Max)
+             XI1Min = max(XI1Min,RMASS(201)**2/SS**2/XI2Max)
+             XI2Min = min(XI2Min,RMASS(201)**2/SS**2/XI1Max)
           ENDIF
           IF(EXCKINE) THEN  ! M.R. ExcChi
             ZMAX = YWWMAX
@@ -1243,12 +1257,12 @@ C---APPLY USER DEFINED CUTS YWWMIN,YWWMAX AND INDIRECT LIMITS ON Z
         ZMIN=MAX(ZMIN,YWWMIN,SQRT(Q2WWMN)/ABS(PHEP(3,IHEP)))
 
 C ... begin R.S.
-       IF(IHEP.EQ.1 .AND. NFLUX.EQ.18) THEN
-         ZMIN=CHIDeX1Min
-         ZMax=CHIDeX1Max
-       ELSEIF(IHEP.EQ.2 .AND. NFLUX.EQ.18) THEN
-         ZMIN=CHIDeX2Min
-         ZMax=CHIDeX2Max
+       IF(IHEP.EQ.1 .AND. (NFLUX.EQ.18 .OR. NFLUX.EQ.16)) THEN
+         ZMIN=XI1Min
+         ZMax=XI1Max
+       ELSEIF(IHEP.EQ.2 .AND. (NFLUX.EQ.18 .OR. NFLUX.EQ.16)) THEN
+         ZMIN=XI2Min
+         ZMax=XI2Max
        ENDIF 
 C ... end R.S.        
         ZMAX=MIN(ZMAX,YWWMAX)
@@ -1314,7 +1328,7 @@ c       CHIDeZ2 = (-BB + sqrt(DELTA))/2./AA
 c       print*, RMASS(201), sqrt(CHIDeZ1*CHIDeZ2)*SS
 c       stop
         ZGAM = CHIDeZ1
-      ELSEIF(IsCHIDeGG .AND. IHEP.EQ.1) THEN
+      ELSEIF( (IsCHIDeGG.OR.IsCHIDeDiphoton) .AND. IHEP.EQ.1) THEN
         CHIDeK2max =PTMIN+100d0
         CHIDe_B = 0.2d0! Only matters for generation efficiency
         CHIDe_C=CHIDe_B/(DEXP(-CHIDe_B*PTMIN)-DEXP(-CHIDe_B*CHIDeK2max))
@@ -1344,10 +1358,10 @@ c       stop
         CHIDeK3(1) =  CHIDeQ3*cos(CHIDePhi3)
         CHIDeK3(2) =  CHIDeQ3*sin(CHIDePhi3)
        
-        CHIDeB1 = (CHIDeX1MIN/CHIDeX1MAX)**HWRGEN(1)*CHIDeX1MAX
-        CHIDeB2 = (CHIDeX1MIN/CHIDeX1MAX)**HWRGEN(2)*CHIDeX1MAX
-        GAMWT = GAMWT*DLOG(CHIDeX1MAX/(CHIDeX1MIN))*CHIDeB1
-        GAMWT = GAMWT*DLOG(CHIDeX1MAX/(CHIDeX1MIN))*CHIDeB2
+        CHIDeB1 = (XI1MIN/XI1MAX)**HWRGEN(1)*XI1MAX
+        CHIDeB2 = (XI1MIN/XI1MAX)**HWRGEN(2)*XI1MAX
+        GAMWT = GAMWT*DLOG(XI1MAX/(XI1MIN))*CHIDeB1
+        GAMWT = GAMWT*DLOG(XI1MAX/(XI1MIN))*CHIDeB2
 
         CHIDeA1=CHIDedotdiff(CHIDeK1,CHIDeK2,CHIDeK1,CHIDeK2)
      &           /CHIDeS/CHIDeB1
@@ -1379,7 +1393,7 @@ C ... begin R.S
            CALL FLUX(F,ZGAM2,QQMIN,QQMAX,IPRO,2)
            GAMWT = GAMWT * F * ZGAM2
          ENDIF
-        IF(ZGAM.GT.CHIDeX1Max.OR.ZGAM2.GT.CHIDeX2Max) THEN 
+        IF(ZGAM.GT.XI1Max.OR.ZGAM2.GT.XI2Max) THEN 
 C ... end R.S.
 c       IF(ZGAM.GT.YWWMAX.OR.ZGAM2.GT.YWWMAX) THEN 
           PRINT*, '!!! HWEGAM : ZGAM OUT OF RANGE !!!'
@@ -2654,7 +2668,7 @@ C Generate event
   999 END
 C-----------------------------------------------------------------------
       SUBROUTINE HWHQPM
-C     HARD PROCESS: GAMGAM --> QQBAR/LLBAR/W+W-/ZZ
+C     HARD PROCESS: GAMGAM --> QQBAR/LLBAR/W+W-/ZZ/GAMGAM
 C     MEAN EVENT WEIGHT = CROSS-SECTION IN NB AFTER CUTS ON PT
 C
 C     M.Boonekamp T.Kucs, Aug 2003 : 
@@ -2685,7 +2699,7 @@ c --- edited by Oldrich Kepka
 C ... begin R.S.
       include 'CHIDe.inc'
       INTEGER CHIDeN, CHIDeI
-      LOGICAL IsCHIDeGG
+      LOGICAL IsCHIDeGG,IsCHIDeDiphoton
       DOUBLE PRECISION CHIDeSigma, CHIDeJac
 
       DOUBLE PRECISION CHIDeQ, CHIDeQp
@@ -2697,6 +2711,7 @@ C ... begin R.S.
       EXTERNAL CHIDedotdiff,CHIDedot
 
       IsCHIDeGG = (NFLUX.EQ.18 .AND. IPROC.EQ.16012)
+      IsCHIDeDiphoton = (NFLUX.EQ.18 .AND. IPROC.EQ.16059)
 C ... end R.S.      
       
       IF (GENEV) THEN
@@ -2740,11 +2755,9 @@ C Kinematics
 
            RGEN1=HWRGEN(1)
            RGEN2=HWRGEN(2)
-C ... begin R.S.
-           IF(IsCHIDeGG) THEN
+           IF(IsCHIDeGG.OR.IsCHIDeDiphoton) THEN
              T = -CHIDeQQ2*(CHIDeB1+CHIDeB2)/CHIDeB1
            ELSE
-C ... end R.S.
              T=-(TMAX/TMIN)**RGEN1*TMIN
              IF(RGEN2.GT.HALF) T=-S-T
            ENDIF
@@ -2763,7 +2776,8 @@ c     this is for lepton - antilepton
      $            *((U-4*EMSQ)/T+(T-4*EMSQ)/U-4*(EMSQ/T+EMSQ/U)**2)
 c ... If QCD / EXC take the Jz=0, color singlet QCD cross-section
           ELSEIF(TYPINT.EQ.'QCD'.AND.TYPEPR.EQ.'EXC') THEN
-          if(.NOT.IsCHIDeGG) TFACT=PIFAC*HWUALF(1,EMSCA)**2/3.D0
+          if(.NOT.(IsCHIDeGG.OR.IsCHIDeDiphoton)) 
+     &        TFACT=PIFAC*HWUALF(1,EMSCA)**2/3.D0
             SGGQQ=0d0 
             SGGGG=0d0
             SINSQ=(1.D0-COSTH)*(1.D0+COSTH)
@@ -2786,8 +2800,7 @@ c ...... gg -> qq
               ENDIF
             ENDIF
             ENDDO 
-C ... begin R.S.               
-            ELSEIF(IsCHIDeGG) THEN
+            ELSEIF(IsCHIDeGG.OR.IsCHIDeDiphoton) THEN
             CHIDeN = 50
             FACTR = 0d0
             DO CHIDeI = 1, CHIDeN
@@ -2806,15 +2819,19 @@ C ... begin R.S.
             CHIDeKp(1)=CHIDeQp*cos(CHIDePhip)
             CHIDeKp(2)=CHIDeQp*sin(CHIDePhip) 
 
-            call CHIDeGG(CHIDeSigma,
+            if(IsCHIDeGG) call CHIDeGG(CHIDeSigma,
      &             CHIDeK,CHIDeKp,CHIDeK1,CHIDeK2,CHIDeK3, 
      &             CHIDeB1,CHIDeB2,CHIDeA1, CHIDeA2)
+
+            if(IsCHIDeDiphoton) call CHIDeDiphoton(CHIDeSigma,
+     &             CHIDeK,CHIDeKp,CHIDeK1,CHIDeK2,CHIDeK3, 
+     &             CHIDeB1,CHIDeB2,CHIDeA1, CHIDeA2)
+
             FACTR=FACTR+CHIDeSigma*CHIDeJac
             ENDDO
 
             FACTR=FACTR/CHIDeN
             IF(FACTR.LE.0) FACTR=ZERO
-C ... end R.S.           
 
 c ...... gg -> gg : include a factor 1/2! to compensate for double PhSp integration
             ELSEIF(HQ.EQ.13) THEN
@@ -2824,7 +2841,7 @@ c ...... gg -> gg : include a factor 1/2! to compensate for double PhSp integrat
             SGGGG=TFACT*(27.D0/2.D0)/ETSQ**2 / 2d0
           ENDIF
 c ...... Total 
-          if(.not.IsCHIDeGG) 
+          if(.not.(IsCHIDeGG.OR.IsCHIDeDiphoton)) 
      &        FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)*(SGGQQ+SGGGG)
         ELSE
           PRINT*, 'In HWHQPM : settings not consistent',TYPINT,TYPEPR,
@@ -2942,7 +2959,12 @@ C ... For 'QCD' no EM charge, it is set to ONE
         XX(1)=1.
         XX(2)=1.
         IF(GENEV) THEN
-           IF(IsCHIDeGG .OR. HWRGEN(0)*(SGGQQ+SGGGG).LE.SGGGG) THEN
+           IF(IsCHIDeDiphoton) THEN
+            ID3=59           ! photons in the final state 
+            ID4=59
+            CALL HWHQCP(ID3,ID4,1243,61,*99)
+            GOTO 99
+          ELSEIF(IsCHIDeGG .OR. (HWRGEN(0)*(SGGQQ+SGGGG).LE.SGGGG)) THEN
             ID3=13           ! gluons in the final state 
             ID4=13
             CALL HWHQCP(ID3,ID4,1243,61,*99)
@@ -2968,7 +2990,7 @@ c---End modif by Tibor Kucs 08/14/2003
  99   IDN(1)=59
       IDN(2)=59      
       IDCMF=15
-      IF(IsCHIDeGG) THEN
+      IF(IsCHIDeGG.OR.IsCHIDeDiphoton) THEN
         CALL HWETWO_MOD(CHIDePhi2) ! not sure if this is
         ! the right angle
       ELSE 
