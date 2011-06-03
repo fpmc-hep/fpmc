@@ -66,8 +66,8 @@ c---FFC default initialiszation
       UXI2MAX= -1.0 
       UKMR2Q2CUT=2.0
       UKMR2SURV=0.03
-      UKMR2SCALE=1.0
-      UKMR2DELTA=2
+      UKMR2SCALE=0.618!1.0
+      UKMR2DELTA=1!2
 
 
       IF(READCARD) THEN
@@ -144,7 +144,7 @@ C     CHIDe Model
 C   Impact factor parameterisation
           IF(UCHIDeIGLU.LT.0.0) UCHIDeIGLU = 4
 C   Scaling lower limit of Sudakov factor integration
-          IF(UCHIDeXP.LT.0.0 .AND. (.NOT.UIPROC.EQ.16059)) UCHIDeXP = 0.5
+          IF(UCHIDeXP.LT.0.0.AND.(.NOT.(UIPROC.EQ.16059)))UCHIDeXP=0.5
           IF(UCHIDeXP.LT.0.0 .AND. UIPROC.EQ.16059) UCHIDeXP = 1.0
 C   Gap Survival Probability
           IF(UCHIDeS2.LT.0.0) THEN 
