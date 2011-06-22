@@ -685,10 +685,6 @@ c       XI1MAX=1d0 ! CHIDeZ1 = CHIDeB1 + CHIDeB2
       ENDIF
 C ... end R.S.
 
-c---Determination of the normalizations for PDFs inside pomeron:
-      NFLAVR=4 ! number of flavors considered + gluon
-      CALL NRMPDF(XPQNRM)
-      CALL NRMPRT(XPQNRM)
 
 c---Initialize the pomeron/regeon parameters
 c   OK 29/11/06
@@ -772,6 +768,11 @@ c...  H1 parameters with no interference (best fit to H1 F2D3 using POMWIG):
 *     PARAMETER (alphar=0.57,alpharp=0.90,Br=2.0,Cr=48.0)
 c------------------------------------------------------------------- 
       ELSEIF(NFLUX.EQ.11)THEN
+c---Determination of the normalizations for PDFs inside pomeron:
+      NFLAVR=4 ! number of flavors considered + gluon
+      CALL NRMPDF(XPQNRM)
+      CALL NRMPRT(XPQNRM)
+
 c...  Bialas-Landshoff model:
          alphaP=1.08
          alphaPp=0.25
