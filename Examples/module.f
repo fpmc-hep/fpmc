@@ -168,6 +168,7 @@ C     CHIDe
       XI2Max = UXI2Max
       CHIDeGapMin = UCHIDeGapMin
       CHIDeGapMax = UCHIDeGapMax
+      CHIDePATH = UCHIDePATH
 
 C     KMR2
       KMR2Q2CUT=UKMR2Q2CUT
