@@ -18,6 +18,7 @@
      &               CHIDeZ1, CHIDeZ2,
      &               XI1Min, XI1Max,
      &               XI2Min, XI2Max,
-     &               CHIDeGapMin, CHIDeGapMax,
-     &               CHIDePATH
+     &               CHIDeGapMin, CHIDeGapMax
+
+      COMMON /CHIDeEnv/ CHIDePATH
 
