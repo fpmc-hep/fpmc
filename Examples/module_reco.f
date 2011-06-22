@@ -168,6 +168,8 @@ C     CHIDe Model
       XI2MAX = UXI2MAX
       CHIDeGapMin = UCHIDeGapMin
       CHIDeGapMax = UCHIDeGapMax
+      CHIDePATH = UCHIDePATH
+
 C ... end R.S.
 
 

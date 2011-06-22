@@ -646,22 +646,22 @@ c--- Initialize KMR calculation
 C ... begin R.S.
 C ... Initialize CHIDe model
       IF(NFLUX.EQ.18 .AND. IPROC.EQ.19999) THEN
-        dgdtab1="External/CHIDe/Data/dgdtab1.d"
-        dgdtab2="External/CHIDe/Data/dgdtab2.d"
-        dgdtab3="External/CHIDe/Data/dgdtab3.d"
-        dgdtab4="External/CHIDe/Data/dgdtab4.d"
-        sudatab="External/CHIDe/Data/Higgssudatab.d"
+        dgdtab1=TRIM(CHIDePATH) // "dgdtab1.d"
+        dgdtab2=TRIM(CHIDePATH) // "dgdtab2.d"
+        dgdtab3=TRIM(CHIDePATH) // "dgdtab3.d"
+        dgdtab4=TRIM(CHIDePATH) // "dgdtab4.d"
+        sudatab=TRIM(CHIDePATH) // "Higgssudatab.d"
 C     Parameters: Higgs mass, top mass, cms energy^2, impact factor
 C     parameterisation, upper and lower limit scales of sudakov factor,
 C     Rapidity Gap Survival
         CALL CHIDeHiggsInit(RMASS(201),RMASS(6),CHIDeS,CHIDeIGLU,
      &  CHIDeX, CHIDeXP, CHIDeS2)
       ELSEIF(NFLUX.EQ.18 .AND. IPROC.EQ.16012) THEN
-        dgdtab1="External/CHIDe/Data/dgdtab1.d"
-        dgdtab2="External/CHIDe/Data/dgdtab2.d"
-        dgdtab3="External/CHIDe/Data/dgdtab3.d"
-        dgdtab4="External/CHIDe/Data/dgdtab4.d"
-        sudatab="External/CHIDe/Data/ggsudatab.d"
+        dgdtab1=TRIM(CHIDePATH) // "dgdtab1.d"
+        dgdtab2=TRIM(CHIDePATH) // "dgdtab2.d"
+        dgdtab3=TRIM(CHIDePATH) // "dgdtab3.d"
+        dgdtab4=TRIM(CHIDePATH) // "dgdtab4.d"
+        sudatab=TRIM(CHIDePATH) // "ggsudatab.d"
         CALL CHIDeGGInit(CHIDeS,DBLE(PTMIN),CHIDeS2,
      &       CHIDeX,CHIDeXP,CHIDeIGLU,
      &       XI1Min, XI1Max, XI2Min, XI2Max,
@@ -670,11 +670,11 @@ C     Rapidity Gap Survival
 c        XI1MIN=1d-10 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
 c       XI1MAX=1d0 ! CHIDeZ1 = CHIDeB1 + CHIDeB2 
       ELSEIF(NFLUX.EQ.18 .AND. IPROC.EQ.16059) THEN
-        dgdtab1="External/CHIDe/Data/dgdtab1.d"
-        dgdtab2="External/CHIDe/Data/dgdtab2.d"
-        dgdtab3="External/CHIDe/Data/dgdtab3.d"
-        dgdtab4="External/CHIDe/Data/dgdtab4.d"
-        sudatab="External/CHIDe/Data/ggsudatab.d"
+        dgdtab1=TRIM(CHIDePATH) // "dgdtab1.d"
+        dgdtab2=TRIM(CHIDePATH) // "dgdtab2.d"
+        dgdtab3=TRIM(CHIDePATH) // "dgdtab3.d"
+        dgdtab4=TRIM(CHIDePATH) // "dgdtab4.d"
+        sudatab=TRIM(CHIDePATH) // "ggsudatab.d"
         CALL CHIDeDiphotonInit(CHIDeS,DBLE(PTMIN),CHIDeS2,
      &       CHIDeX,CHIDeXP,CHIDeIGLU,
      &       XI1Min, XI1Max, XI2Min, XI2Max,

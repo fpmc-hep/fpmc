@@ -45,7 +45,9 @@ C-----------------------------------------------------------------------
       COMMON /CC3/ UPART1
       COMMON /CC4/ UPART2
 
-      character*32 UNTNAME
-      COMMON /CYFFLONG1/ UNTNAME
+      character*32 UNTNAME, UCHIDePATH
+      COMMON /CYFFLONG1/ UNTNAME, UCHIDePATH
+
+
 
 

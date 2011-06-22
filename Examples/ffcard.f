@@ -68,6 +68,7 @@ c---FFC default initialiszation
       UKMR2SURV=0.03
       UKMR2SCALE=0.618!1.0
       UKMR2DELTA=1!2
+      UCHIDePATH=''
 
 
       IF(READCARD) THEN
@@ -116,6 +117,7 @@ c---FFC default initialiszation
         call FFKEY('ANOMCUTOFF', UANOMCUTOFF,1,'real')
         UNTNAME = ''
         call FFKEY('NTNAME',UNTNAME,32,'mixed')
+        call FFKEY('CHIDePATH', UCHIDePATH, 32, 'mixed')
         call FFKEY('IGLU', UCHIDeIGLU, 1, 'integer')
         call FFKEY('USCALE',  UCHIDeX, 1, 'real')
         call FFKEY('LSCALE', UCHIDeXp, 1, 'real')
@@ -126,7 +128,6 @@ c---FFC default initialiszation
         call FFKEY('XI2Max', UXI2Max, 1, 'real')
         call FFKEY('CHIDeGapMin', UCHIDeGapMin, 1, 'real')
         call FFKEY('CHIDeGapMax', UCHIDeGapMax, 1, 'real')
-        
         call FFKEY('Q2CUT', UKMR2Q2CUT, 1, 'real')
         call FFKEY('SCALE', UKMR2SCALE, 1, 'real')
         call FFKEY('DELTA', UKMR2DELTA, 1, 'integer')
