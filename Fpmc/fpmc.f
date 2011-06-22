@@ -550,7 +550,7 @@ c---To pass the relative GAP Srv. prob factor for BL inclusive modified dist.
       CHARACTER(80) STABLE
 
 c ... begin R.S.
-      character*50  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
+      character*500  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
        common/CHIDePATH/ dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
 c ... end R.S.
        
@@ -566,26 +566,28 @@ c--- Initialization of the QCD subroutine
 c... Inc.DPE : cross-section normalization to the CDF measurement (NFLUX=11, 'INC')
 c      old factor CDFFAC = 3.8d0
 c OK 15/11/06  tuning to CDF Phys.Rev.Lett 85, 4215 (ptmin = 7GeV)
-       IF(IFITPDF.EQ.10) THEN
-         CDFFAC = 0.074d0/8d0
-       ELSEIF(IFITPDF.EQ.20) THEN
-         CDFFAC = 0.085d0/8d0
-       ELSEIF(IFITPDF.EQ.30) THEN
-         CDFFAC = 0.072d0/8d0
-       ELSEIF(IFITPDF.EQ.100) THEN
-         CDFFAC = 0.072d0/8d0
-       ELSEIF(IFITPDF.EQ.101) THEN
-         CDFFAC = 0.072d0/8d0
-       ELSEIF(IFITPDF.EQ.2) THEN
-         CDFFAC = 0.111d0/8d0
-       ELSEIF(IFITPDF.EQ.5) THEN
-         CDFFAC = 0.111d0/8d0
-       ELSEIF(IFITPDF.EQ.8) THEN  
-         CDFFAC = 0.111d0/8d0
-       ELSE 
-          print *, 'Non-standard choice of IFITPDF(2/5/8/10/20/30)' 
-          STOP
-      ENDIF  
+      IF(NFLUX.LE.11) THEN
+        IF(IFITPDF.EQ.10) THEN
+            CDFFAC = 0.074d0/8d0
+        ELSEIF(IFITPDF.EQ.20) THEN
+            CDFFAC = 0.085d0/8d0
+        ELSEIF(IFITPDF.EQ.30) THEN
+            CDFFAC = 0.072d0/8d0
+        ELSEIF(IFITPDF.EQ.100) THEN
+            CDFFAC = 0.072d0/8d0
+        ELSEIF(IFITPDF.EQ.101) THEN
+            CDFFAC = 0.072d0/8d0
+        ELSEIF(IFITPDF.EQ.2) THEN
+            CDFFAC = 0.111d0/8d0
+        ELSEIF(IFITPDF.EQ.5) THEN
+            CDFFAC = 0.111d0/8d0
+        ELSEIF(IFITPDF.EQ.8) THEN  
+            CDFFAC = 0.111d0/8d0
+        ELSE 
+            print *, 'Non-standard choice of IFITPDF(2/5/8/10/20/30)' 
+            STOP
+        ENDIF  
+      ENDIF
 
 c... option for soft corrections : ISOFTM = 0 : no correction
 c                                           1 : simple factor, see below
