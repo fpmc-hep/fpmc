@@ -68,7 +68,7 @@ c---FFC default initialiszation
       UKMR2SURV=0.03
       UKMR2SCALE=0.618!1.0
       UKMR2DELTA=1!2
-      UCHIDePATH=''
+      UCHIDePATH='External/CHIDe/Data/'
 
 
       IF(READCARD) THEN
