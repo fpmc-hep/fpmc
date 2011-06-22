@@ -42,7 +42,7 @@ C   ============================================================================
       common/sudaD/mmu2,s2
       common/cinterpol/dgdgrid,sudagrid
       common/higgs/mh
-      character*50  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
+      character*500  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
       common/CHIDePATH/ dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
 
       mh=mH_

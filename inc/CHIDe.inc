@@ -7,7 +7,7 @@
       DOUBLE PRECISION XI1Min, XI1Max
       DOUBLE PRECISION XI2Min, XI2Max
       DOUBLE PRECISION CHIDeGapMin, CHIDeGapMax
-      character*32 CHIDePATH
+      character*500 CHIDePATH
 
       
       COMMON /CHIDe/ CHIDeQ1, CHIDeQ2, CHIDeQ3,

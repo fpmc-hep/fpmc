@@ -52,7 +52,7 @@ C   ============================================================================
       common/param/s
       common/algo/Etjetveto,Rjj,Mjj,Mx,Rt,Mgg,Mj
 
-      character*50  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
+      character*500  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
       common/CHIDePATH/ dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
 
       
