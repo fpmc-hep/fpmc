@@ -1,5 +1,5 @@
 NTNAME      'tmpntuple.ntp'
-MAXEV       1000
+MAXEV       10000
 TYPEPR      'INC'
 TYPINT      'QED'
 ECMS        14000.

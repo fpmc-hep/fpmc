@@ -468,7 +468,7 @@ c      ACTID=IFITPDF-PDFID
 
       IF((NFLUX.GE.12).AND.(NFLUX.LE.15)) THEN
 
-         IF( (IPROC.EQ.16010.OR.IPROC.EQ.16015).AND.AAANOM.NE.2) THEN
+         IF( (IPROC.EQ.16015).AND.AAANOM.NE.2) THEN
             PRINT*, ' '
             PRINT*, ' FPMC - Anomalous AAZZ coupling available '
             PRINT*, '        only with AAANOM = 2'
