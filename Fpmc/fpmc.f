@@ -937,7 +937,7 @@ C ... end R.S.
 C------------------------------------------------------------------------
 
 C Code for the Budnev flux (thanks K.Piotrzkowski)
-      real function phi(q2,z)
+      double precision function phi(q2,z)
 
       IMPLICIT DOUBLE PRECISION(A-H,O-Z)
 
