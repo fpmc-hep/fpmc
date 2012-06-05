@@ -17,6 +17,7 @@ C-----------------------------------------------------------------------
       CALL FPMC_WELCOME
 
 c---FFC default initialiszation
+      UOUTPUT    =    1
       UNTNAME    =    'tmpntuple.ntp'
       UMAXEV     =    1000
       UTYPEPR    =    'EXC'
@@ -77,6 +78,7 @@ c---FFC default initialiszation
         call FFINIT(1000)
         !---JC read config file
         CALL FFSET('SIZE', 32)
+        call FFKEY('OUTPUT',UOUTPUT,1,'integer')
         call FFKEY('MAXEV',UMAXEV,1,'integer')
         call FFKEY('TYPEPR',UTYPEPR,3,'mixed')
         call FFKEY('TYPINT',UTYPINT,3,'mixed')
@@ -193,12 +195,9 @@ C   Gap Survival Probability
       WRITE (*,*) "     _|        _|        _|      _|    _|_|_| " 
       WRITE (*,*) ""
       WRITE (*,*) ""
-      WRITE (*,*) "     FPMC - Forward Physics Monte Carlo v1.0 beta",
-     &   " 12 Jun 2008"
+      WRITE (*,*) "     FPMC - Forward Physics Monte Carlo v1.0",
+     &   " 12 Jun 2012"
       WRITE (*,*) ""
-      WRITE (*,*) "     Authors: M. Boonekamp, O. Kepka, V. Juranek, M.
-     &Rangel"
-      WRITE (*,*) "              C. Royon"
       WRITE (*,*) "     www.cern.ch/fpmc"
       WRITE (*,*) ""
       WRITE (*,*) ""

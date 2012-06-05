@@ -3,7 +3,9 @@ C * 13/03/2008 Oldrich Kepka
 C * Common blocks and declarations needed for the use of Format 
 C * Free data cards. They are used in the module.f, module_cms.f, etc.
 C----------------------------------------------------------------------- 
-      integer UMAXEV, UIPROC, UNFLUX, UNRN1, UNRN2, UIFIT, UISOFTM,
+      integer 
+     $ UOUTPUT,
+     $ UMAXEV, UIPROC, UNFLUX, UNRN1, UNRN2, UIFIT, UISOFTM,
      $ UAAANOM, UZION, UAION,
      $ UCHIDeIGLU, UKMR2DELTA
      
@@ -30,7 +32,7 @@ C-----------------------------------------------------------------------
       COMMON /MYFFREAD2/ UDLAMBDA, UANOMCUTOFF, UYWWMIN, UYWWMAX,
      $ UQ2WWMN, UQ2WWMX
 
-      COMMON /MYFFREAD3/ UMAXEV,UIPROC,UNFLUX,UNRN1,UNRN2,UIFIT, 
+      COMMON /MYFFREAD3/ UOUTPUT,UMAXEV,UIPROC,UNFLUX,UNRN1,UNRN2,UIFIT, 
      $     UISOFTM, UZION, UAION, UAAANOM,
      $     UCHIDeIGLU, UKMR2DELTA ! R.S.
 

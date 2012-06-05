@@ -1,3 +1,4 @@
+OUTPUT 2
 CHIDePATH 'External/CHIDe/Data/'
 NTNAME     'out.hbook'
 MAXEV       1000

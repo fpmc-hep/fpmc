@@ -1,6 +1,7 @@
+OUTPUT 2
 CHIDePATH 'External/CHIDe/Data/'
 NTNAME     'out.hbook'
-MAXEV       1000
+MAXEV       100
 TYPEPR      'EXC'
 TYPINT      'QCD'
 ECMS        14000.
