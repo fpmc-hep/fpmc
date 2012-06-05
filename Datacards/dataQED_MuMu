@@ -1,3 +1,4 @@
+OUTPUT 2 
 NTNAME      'tmpntuple.ntp'
 MAXEV       1000
 TYPEPR      'EXC'

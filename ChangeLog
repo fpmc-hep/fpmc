@@ -1,2 +1,15 @@
 2011-05-09  Oldrich Kepka  <oldrich.kepka@cern.ch>
   * Tagging version fpmc_v01-05 - cleanup of nutples, version for testing 
+
+2012-06-05 Rafal Staszewski
+  * New Examples/fpmc_main.f created to supercede module.f and module_reco.f.
+  module and module_reco are disabled in the Makefile. The new exacutable is
+  called fpmc.
+  * The information from jet alg. was not stored into ntuple. A change in
+  External/ntuple.f was needed to fix it.
+  * New OUTPUT option added to steering, determining the generator output.
+  Possible values:
+    0 : Only the text output with the cross section at the end.
+    1 : Ntuple with few histograms and a list of particles for each event.
+    2 : Jet CONE algorithm is performed and its output is also stored in the
+    ntuple.

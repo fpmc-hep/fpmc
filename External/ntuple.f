@@ -12,6 +12,8 @@ c___ create ntuple
       SUBROUTINE NTINIT
 c______________________________________________________________________________ 
 
+      implicit none
+      INCLUDE '../Examples/ffcard.inc'
       REAL hmemor
       COMMON/pawc/hmemor(1000000)
  
@@ -27,17 +29,17 @@ c______________________________________________________________________________
      &     px,py,pz,e,m,id
 
 ***** common block - bjorken-x of the parton from pomeron         
-       common /remnant/xg1b,xg2b
+c       common /remnant/xg1b,xg2b
 
 
 c***** jets 
       integer njetmax
       parameter(njetmax=30)
+      integer njets
       real
      &     pxjet(njetmax),pyjet(njetmax),
      &     pzjet(njetmax),ejet(njetmax)
-      common/jets/
-     &     njetscel,
+      common/jets/njets,
      &     pxjet,pyjet,
      &     pzjet,ejet
 
@@ -54,13 +56,19 @@ c***** jets
       print *,'Creating the ntuple 777'
 
 
-       call hbname(777,'remnant',xg1b,'xg1,'//
-     & 'xg2')
+c       call hbname(777,'remnant',xg1b,'xg1,'//
+c     & 'xg2')
 
        
      
        call hbname(777,'gener',ngen,'ngen[0,1000]:I,'//
      &     'px(ngen),py(ngen),pz(ngen),e(ngen),rm(ngen),id(ngen)')
+
+       if(UOUTPUT.ge.2)
+     &  call hbname(777,'jets',njets,'njets[0,30]:I,'//            
+     & 'pxjet(njets),pyjet(njets),'//              
+     & 'pzjet(njets),pejet(njets)')
+
 
 
       END 

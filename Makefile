@@ -55,7 +55,8 @@ CERNLIB=`cernlib mathlib pawlib packlib` -L$(PWD) -lgfortran
 #-------------------------------------------------------------------------------------
 
 all: allModules 
-allModules: module module_reco
+#allModules: module module_reco fpmc
+allModules: fpmc
 examples:oldExamples
 allApp: Fpmc Herwig Externals examples allModules 
 	
@@ -268,6 +269,8 @@ $(pgm): % : Examples/%.f $(OBJSTAND) $(OBJEXT)
 oldExamples:$(pgm)
 
 ### modules to be used by the end user###
+fpmc: Examples/fpmc_main.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
+	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(OBJRECO) $(LIBS) -lstdc++  	
 module_reco: Examples/module_reco.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
 	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(OBJRECO) $(LIBS) -lstdc++  	
 module: Examples/module.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) \
