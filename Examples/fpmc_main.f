@@ -155,7 +155,6 @@ c ---Anomalous coupling settings
       ACZ = UACZ
       ANOMCUTOFF = UANOMCUTOFF
 
-C ... begin R.S.
 C     CHIDe Model
       CHIDeIGLU = UCHIDeIGLU
       CHIDeX   =  UCHIDeX
@@ -170,7 +169,12 @@ C     CHIDe Model
       CHIDeGapMax = UCHIDeGapMax
       CHIDePATH = UCHIDePATH
 
-C ... end R.S.
+C     KMR2
+      KMR2Q2CUT=UKMR2Q2CUT
+      KMR2SURV=UKMR2SURV
+      KMR2SCALE=UKMR2SCALE
+      KMR2DELTA=UKMR2DELTA
+
 
 
 c---Set normalisations for Exclusive processes
