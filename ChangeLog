@@ -1,3 +1,6 @@
+2013-03-26 Oldrich Kepka <oldrich.kepka@cern.ch>
+  * Adding setup_lxplus.sh, to be used on lxplus to configure CERNLIB
+
 2011-05-09  Oldrich Kepka  <oldrich.kepka@cern.ch>
   * Tagging version fpmc_v01-05 - cleanup of nutples, version for testing 
 
