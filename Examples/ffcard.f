@@ -52,6 +52,8 @@ c---FFC default initialiszation
       UACW       =    0.
       UA0Z       =    0.
       UACZ       =    0.
+      UA1A       =    0.
+      UA2A       =    0.
       UANOMCUTOFF =  -1.   ! if < 0 turns formfactor off
       UQ2WWMN    =    0.
       UQ2WWMX    =    4.
@@ -116,6 +118,8 @@ c---FFC default initialiszation
         call FFKEY('ACW', UACW,1,'real')
         call FFKEY('A0Z', UA0Z,1,'real')
         call FFKEY('ACZ', UACZ,1,'real')
+        call FFKEY('A1A', UA1A,1,'real')
+        call FFKEY('A2A', UA2A,1,'real')
         call FFKEY('ANOMCUTOFF', UANOMCUTOFF,1,'real')
         UNTNAME = ''
         call FFKEY('NTNAME',UNTNAME,32,'mixed')

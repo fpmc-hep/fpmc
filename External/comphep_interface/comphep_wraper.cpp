@@ -22,6 +22,14 @@
 
  void sqme_aazz_c_(double *_amp2, double *_s, double *_t, double *_alpha,
       double* _mz, double *_sw, double *_a0z, double *_aCz, double *_cutoff);
+
+ void sqme_aaaa_c__(double *_amp2, double *_s, double *_t, double *_alpha,
+      double* _mw, double *_sw, double *_dkappa, double *_lambda,
+      double *_a1a, double *_a2a, double *_cutoff);
+
+ void sqme_aaaa_c_(double *_amp2, double *_s, double *_t, double *_alpha,
+      double* _mw, double *_sw, double *_dkappa, double *_lambda,
+      double *_a1a, double *_a2a, double *_cutoff);
  #ifdef __cplusplus
  }
  #endif
@@ -38,6 +46,12 @@
       extern double sqme_deg(double, double, double);
       extern double sqme(double, double, double);
    }; // namespace anom_aazz
+
+   namespace anom_aaaa {
+      extern int asgn_(int,double);
+      extern double sqme_deg(double, double, double);
+      extern double sqme(double, double, double);
+   }; // namespace anom_aaaa
 
 
 
@@ -123,3 +137,47 @@ void sqme_aazz_c_(double *_amp2, double *_s, double *_t, double *_alpha,
    double amp2 = anom_aazz::sqme(*_s, *_t, mz);
    *_amp2 = amp2;
 }   
+
+
+//////////////////////////////////////////////////////////////////// 
+//wrapper for g77
+void sqme_aaaa_c__(double *_amp2, double *_s, double *_t, double *_alpha,
+      double* _mw, double *_sw, double *_dkappa, double *_lambda,
+      double *_a1a, double *_a2a, double *_cutoff) {
+
+    sqme_aaaa_c_(_amp2, _s, _t, _alpha,
+      _mw, _sw, _dkappa, _lambda,
+     _a1a, _a2a, _cutoff);
+ }
+
+void sqme_aaaa_c_(double *_amp2, double *_s, double *_t, double *_alpha,
+     double* _mw, double *_sw, double *_dkappa, double *_lambda,
+     double *_a1a, double *_a2a, double *_cutoff) {
+//////////////////////////////////////////////////////////////////// 
+// anomalous aaaa coupling:
+//    _cutoff_scale means the scale cutoff - if < 0, no formfactor used
+//////////////////////////////////////////////////////////////////// 
+
+   // apply cutoff  for anomalous couplings 
+   //R.S. Gupta arXiv:1111.3354 [hep-ph] 
+   double fact = (*_cutoff > 0 ) ? 1/(1+pow(*_s/ *_cutoff / *_cutoff, 2)) : 1;
+
+   double dkappa = *_dkappa*fact;
+   double lambda = *_lambda*fact;
+   double a1a = *_a1a*fact;
+   double a2a = *_a2a*fact;
+
+// mw in comphep can be set through sw and mz only. see service.c for 
+// details 
+
+//   double sw = anom_aaaa::va[2];
+   double sw = *_sw;
+   double cw = sqrt(1-sw*sw);
+   double mz = *_mw/cw;
+
+   anom_aaaa::asgn_(1, a1a);
+   anom_aaaa::asgn_(2, a2a);
+
+   double amp2 = anom_aaaa::sqme(*_s, *_t, *_mw);
+   *_amp2 = amp2;
+} 

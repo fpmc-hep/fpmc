@@ -41,11 +41,12 @@ c---FLUX - POMERON + REGEON PARAMETERS
       DOUBLE PRECISION alphaR,alphaRp,Breg,Cr
       COMMON /PRPARAMS/ alphaP,Bpom,alphaPp,alphaR,alphaRp,Breg,Cr,zh1
 
-c--- Anomalous coupling variables for anomalous AA->WW, AA-> ZZ
+c--- Anomalous coupling variables for anomalous AA->WW, AA-> ZZ, AA-> AA
       INTEGER AAANOM
-      DOUBLE PRECISION D_KAPPA, LAMBDA, ANOMCUTOFF, A0W, ACW, A0Z, ACZ
+      DOUBLE PRECISION D_KAPPA, LAMBDA, ANOMCUTOFF, A0W, ACW, A0Z, ACZ,
+     &        A1A, A2A
       COMMON /AAANOMAL/ D_KAPPA, LAMBDA, ANOMCUTOFF, A0W, ACW, A0Z, ACZ,
-     &        AAANOM
+     &        A1A, A2A, AAANOM
       
 C     CHIDe
       integer CHIDeIGLU

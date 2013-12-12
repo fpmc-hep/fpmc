@@ -154,6 +154,8 @@ c ---Anomalous coupling settings
       ACW = UACW
       A0Z = UA0Z
       ACZ = UACZ
+      A1A = UA1A
+      A2A = UA2A
       ANOMCUTOFF = UANOMCUTOFF
 
 C     CHIDe
@@ -224,6 +226,10 @@ c---Set the number of nucleons - for QED photon flux
       write(*,*) 'LAMBDA = ', LAMBDA
       write(*,*) 'A0W = ', A0W
       write(*,*) 'ACW = ', ACW
+      write(*,*) 'A0Z = ', A0Z
+      write(*,*) 'ACZ = ', ACZ
+      write(*,*) 'A1A = ', A1A
+      write(*,*) 'A2A = ', A2A
       write(*,*) 'ANOMCUTOFF= ', ANOMCUTOFF
       write(*,*)
 
