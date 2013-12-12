@@ -153,6 +153,8 @@ c ---Anomalous coupling settings
       ACW = UACW
       A0Z = UA0Z
       ACZ = UACZ
+      A1A = UA1A
+      A2A = UA2A
       ANOMCUTOFF = UANOMCUTOFF
 
 C     CHIDe Model

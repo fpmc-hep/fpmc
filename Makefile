@@ -216,7 +216,7 @@ $(ext_pdf_dest): $(OBJDIR)/%.o: $(EXTDIR)/pdf/%.f
 	$(F_COMP) -c $< -o $@
 
 # interface to comphep routines 
-ext_comphep_dest=$(OBJDIR)/comphep_wraper.o $(OBJDIR)/sqme_aaww.a $(OBJDIR)/sqme_aazz.a
+ext_comphep_dest=$(OBJDIR)/comphep_wraper.o $(OBJDIR)/sqme_aaww.a $(OBJDIR)/sqme_aazz.a $(OBJDIR)/sqme_aaaa.a
 
 $(OBJDIR)/sqme_aaww.a:
 	$(MAKE) -C $(EXTDIR)/comphep_interface/sqme_aaww	
@@ -226,12 +226,17 @@ $(OBJDIR)/sqme_aazz.a:
 	$(MAKE) -C $(EXTDIR)/comphep_interface/sqme_aazz	
 	cp -f $(EXTDIR)/comphep_interface/sqme_aazz/sqme_aazz.a $(OBJDIR)
 
+$(OBJDIR)/sqme_aaaa.a:
+	$(MAKE) -C $(EXTDIR)/comphep_interface/sqme_aaaa	
+	cp -f $(EXTDIR)/comphep_interface/sqme_aaaa/sqme_aaaa.a $(OBJDIR)
+
 $(OBJDIR)/comphep_wraper.o:$(EXTDIR)/comphep_interface/comphep_wraper.cpp
 	$(CC) -c -o $@ $<
 
 clean_sqme:
 	$(MAKE) -C $(EXTDIR)/comphep_interface/sqme_aaww clean
 	$(MAKE) -C $(EXTDIR)/comphep_interface/sqme_aazz clean
+	$(MAKE) -C $(EXTDIR)/comphep_interface/sqme_aaaa clean
 
 
 # ----- user objects
