@@ -1,6 +1,8 @@
 ####################################################
+# M. Saimpert - interface for aaaa coupling based on
+####################################################
 # Interface to anomalous aaww coupling from comphep
-# O. Kepka 13/12/2008 kepkao@fzu.cz
+# M. Kepka 13/12/2008 kepkao@fzu.cz
 # Original comphep rutines are in directory comphep
 # Model generated files + call_util.c in src
 ####################################################
