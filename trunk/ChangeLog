@@ -1,0 +1,25 @@
+2013-12-12 Matthias Saimpert <matthias.saimpert@cern.ch>
+  * Adding aa->aa anomalous couplings (IPROC=16016) based on arXiv:1311.6815 [hep-ph]
+  * Adding ~/External/comphep_interface/sqme_aaaa folder
+  * Modifications of ~/Examples/ffcard., module., module_reco., fpmc_main. and  ~/Fpmc/fpmc.
+
+2013-03-26 Oldrich Kepka <oldrich.kepka@cern.ch>
+  * Adding setup_lxplus.sh, to be used on lxplus to configure CERNLIB
+
+2012-06-05 Rafal Staszewski
+  * New Examples/fpmc_main.f created to supercede module.f and module_reco.f.
+  module and module_reco are disabled in the Makefile. The new exacutable is
+  called fpmc.
+  * The information from jet alg. was not stored into ntuple. A change in
+  External/ntuple.f was needed to fix it.
+  * New OUTPUT option added to steering, determining the generator output.
+  Possible values:
+    0 : Only the text output with the cross section at the end.
+    1 : Ntuple with few histograms and a list of particles for each event.
+    2 : Jet CONE algorithm is performed and its output is also stored in the
+    ntuple.
+
+2011-05-09  Oldrich Kepka  <oldrich.kepka@cern.ch>
+  * Tagging version fpmc_v01-05 - cleanup of nutples, version for testing 
+
+
