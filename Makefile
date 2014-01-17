@@ -47,6 +47,7 @@
 #########################################################################
 
 CERNLIB=`cernlib mathlib pawlib packlib` -L$(PWD) -lgfortran
+GSL=`gsl-config --cflags --libs`
 
 #########################################################################
 
@@ -60,7 +61,7 @@ allModules: fpmc
 examples:oldExamples
 allApp: Fpmc Herwig Externals examples allModules 
 	
-clean:clean_sqme
+clean:clean_sqme clean_excl_aaaa
 	@find ./ -name "*~" -exec rm -v {} \;
 	@find ./ -name ".*.swp" -exec rm -v {} \;
 	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod
@@ -239,6 +240,32 @@ clean_sqme:
 	$(MAKE) -C $(EXTDIR)/comphep_interface/sqme_aaaa clean
 
 
+# interface to excl aa->aa routines
+ext_excl_aaaa_dest=$(OBJDIR)/excl_aaaa_wraper.o $(OBJDIR)/sm_sqme_aaaa.a $(OBJDIR)/bsmf_sqme_aaaa.a $(OBJDIR)/bsmv_sqme_aaaa.a
+
+$(OBJDIR)/sm_sqme_aaaa.a:
+	$(MAKE) -C $(EXTDIR)/excl_aaaa/sm_sqme_aaaa	
+	cp -f $(EXTDIR)/excl_aaaa/sm_sqme_aaaa/sm_sqme_aaaa.a $(OBJDIR)
+
+$(OBJDIR)/bsmf_sqme_aaaa.a:
+	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmf_sqme_aaaa	
+	cp -f $(EXTDIR)/excl_aaaa/bsmf_sqme_aaaa/bsmf_sqme_aaaa.a $(OBJDIR)
+
+$(OBJDIR)/bsmv_sqme_aaaa.a:
+	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmv_sqme_aaaa	
+	cp -f $(EXTDIR)/excl_aaaa/bsmv_sqme_aaaa/bsmv_sqme_aaaa.a $(OBJDIR)
+
+$(OBJDIR)/excl_aaaa_wraper.o:$(EXTDIR)/excl_aaaa/excl_aaaa_wraper.cpp
+	$(CC) -c -o $@ $<
+
+clean_excl_aaaa:
+	$(MAKE) -C $(EXTDIR)/excl_aaaa/sm_sqme_aaaa clean
+	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmf_sqme_aaaa clean
+	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmv_sqme_aaaa clean
+
+
+
+
 # ----- user objects
 # ----------------------
 # ntuple
@@ -254,7 +281,7 @@ $(OBJDIR)/ffcard.o:Examples/ffcard.f Examples/ffcard.inc
 # Objects variables
 # ----------------
 OBJSTAND=$(OBJDIR)/herwig6500.o  $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o
-OBJEXT=$(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_kmr_obj_dest)  $(ext_softc_obj_dest) \
+OBJEXT=$(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_excl_aaaa_dest) $(ext_kmr_obj_dest)  $(ext_softc_obj_dest) \
        $(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_KMR2_obj_dest) \
 	$(ext_CHIDeGG_obj_dest) $(ext_CHIDeDiphoton_obj_dest) 
 OBJUSR = $(OBJDIR)/ntuple.o
