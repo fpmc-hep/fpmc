@@ -47,7 +47,7 @@
 #########################################################################
 
 CERNLIB=`cernlib mathlib pawlib packlib` -L$(PWD) -lgfortran
-GSL=`gsl-config --cflags --libs`
+GSLLIB=`gsl-config --cflags --libs`
 
 #########################################################################
 
@@ -285,7 +285,7 @@ OBJEXT=$(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_excl_aaaa_dest)
        $(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_KMR2_obj_dest) \
 	$(ext_CHIDeGG_obj_dest) $(ext_CHIDeDiphoton_obj_dest) 
 OBJUSR = $(OBJDIR)/ntuple.o
-LIBS=$(CERNLIB) $(LIB_OMEGA)
+LIBS=$(CERNLIB) $(GSLLIB) $(LIB_OMEGA)
 OBJRECO = $(reco_obj_dest)
 
 
