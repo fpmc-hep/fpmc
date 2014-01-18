@@ -124,7 +124,7 @@ double sqme(double s,double t,double mW,double m,double q,double n){
   // Costantini, DeTollis, Pistoni
 
   // the SM matrix element:
-  me_SM(Mpppp_vector,s,t,&re_SM,&im_SM,mW);
+  me_SM(Mpppp_fermion,s,t,&re_SM,&im_SM,mW);
 
   value += re_ex*(re_ex+2*re_SM) + im_ex*(im_ex+2*im_SM) ;
 
@@ -137,7 +137,7 @@ double sqme(double s,double t,double mW,double m,double q,double n){
   re_ex *= 8*alpha_em*alpha_em*weight_exotic;
   im_ex *= 8*alpha_em*alpha_em*weight_exotic;
 
-  me_SM(Mppmm_vector,s,t,&re_SM,&im_SM,mW);
+  me_SM(Mppmm_fermion,s,t,&re_SM,&im_SM,mW);
 
   value += re_ex*(re_ex+2*re_SM) + im_ex*(im_ex+2*im_SM) ;
 
@@ -147,7 +147,7 @@ double sqme(double s,double t,double mW,double m,double q,double n){
   re_ex *= 8*alpha_em*alpha_em*weight_exotic;
   im_ex *= 8*alpha_em*alpha_em*weight_exotic;
 
-  me_SM(Mpmmp_vector,s,t,&re_SM,&im_SM,mW);
+  me_SM(Mpmmp_fermion,s,t,&re_SM,&im_SM,mW);
 
   value += re_ex*(re_ex+2*re_SM) + im_ex*(im_ex+2*im_SM) ;
 
@@ -157,7 +157,7 @@ double sqme(double s,double t,double mW,double m,double q,double n){
   re_ex *= 8*alpha_em*alpha_em*weight_exotic;
   im_ex *= 8*alpha_em*alpha_em*weight_exotic;
 
-  me_SM(Mpmpm_vector,s,t,&re_SM,&im_SM,mW);
+  me_SM(Mpmpm_fermion,s,t,&re_SM,&im_SM,mW);
 
   value += re_ex*(re_ex+2*re_SM) + im_ex*(im_ex+2*im_SM) ;
 
@@ -167,7 +167,7 @@ double sqme(double s,double t,double mW,double m,double q,double n){
   re_ex *= 8*alpha_em*alpha_em*weight_exotic;
   im_ex *= 8*alpha_em*alpha_em*weight_exotic;
 
-  me_SM(Mpppm_vector,s,t,&re_SM,&im_SM,mW);
+  me_SM(Mpppm_fermion,s,t,&re_SM,&im_SM,mW);
 
   value += 4* (  re_ex*(re_ex+2*re_SM) + im_ex*(im_ex+2*im_SM) );
 
