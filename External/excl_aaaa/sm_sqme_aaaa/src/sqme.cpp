@@ -13,7 +13,7 @@ const double alpha_em = 1./137.036; // EM coupling at zero momentum (on shell sc
 // This routine computes the complex SM amplitude
 // The first argument can be any of the helicity amplitudes Mpppp,Mppmm,Mpmpm,Mpmmp,Mpppm
 void me_SM(void (*me)(double,double ,double *, double *),
-	  double s,double t, double *re, double*im, double mW){
+	  double s,double t, double *re, double*im, double mw){
 
 // SM fermion content: (e,mu,tau,u,c,t,d,s,b)
 // SM_weight equals (number of colors) * (el. charge)^4  
@@ -36,8 +36,7 @@ void me_SM(void (*me)(double,double ,double *, double *),
 
   // Add also the W contribution
 
-// M.S. W mass is now a parameter
-//  const double mW=80.385;  // W mass in GeV
+  const double mW=80.385;  // W mass in GeV
 
 
   if (me==Mpppp_fermion){
@@ -73,11 +72,14 @@ void me_SM(void (*me)(double,double ,double *, double *),
 
 
 // compute the SM squared matrix element, including leptons, quarks and the W boson
-double sqme(double s, double t, double mW){
+double sqme(double s, double t, double mw){
 
   double re;
   double im;
   double value=0;
+
+  const double mW=80.385;  // W mass in GeV
+
 
   if (s<0 || t >0 || t<-s ){
     cout<<"Invalid domain. Valid range is s>=0 and -s<=t<=0"<<endl;

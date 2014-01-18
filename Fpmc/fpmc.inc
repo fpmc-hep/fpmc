@@ -47,6 +47,11 @@ c--- Anomalous coupling variables for anomalous AA->WW, AA-> ZZ, AA-> AA
      &        A1A, A2A
       COMMON /AAANOMAL/ D_KAPPA, LAMBDA, ANOMCUTOFF, A0W, ACW, A0Z, ACZ,
      &        A1A, A2A, AAANOM
+ 
+c--- Variables for exotic  AA->AA
+      INTEGER AAEXOTIC
+      DOUBLE PRECISION AAM, AAQ, AAN
+      COMMON /AAEXOTICAL/ AAM, AAQ, AAN, AAEXOTIC
       
 C     CHIDe
       integer CHIDeIGLU

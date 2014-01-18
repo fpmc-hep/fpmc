@@ -157,6 +157,12 @@ c ---Anomalous coupling settings
       A2A = UA2A
       ANOMCUTOFF = UANOMCUTOFF
 
+c ---Exotic excl AA settings
+      AAEXOTIC = UAAEXOTIC
+      AAM = UAAM
+      AAQ = UAAQ
+      AAN = UAAN
+
 C     CHIDe Model
       CHIDeIGLU = UCHIDeIGLU
       CHIDeX   =  UCHIDeX
@@ -227,6 +233,7 @@ c---Set the number of nucleons - for QED photon flux
       write(*,*) 'DKAPPA = ', D_KAPPA
       write(*,*) 'DLAMBDA = ', LAMBDA
       write(*,*) 'ANOMCUTOFF= ', ANOMCUTOFF
+      write(*,*) 'AAEXOTIC = ', AAEXOTIC
       write(*,*)
 
 c---Initialize model/pdf dependant parameters
@@ -352,6 +359,7 @@ c---Histograms
       CALL HBOOK1(908,'D_KAPPA         ',1,0.,1.,0.)
       CALL HBOOK1(909,'LAMBDA        ',1,0.,1.,0.)
       CALL HBOOK1(910,'ANOMCUTOFF      ',1,0.,1.,0.)
+      CALL HBOOK1(911,'AAEXOTIC       ',1,0.,1.,0.)
       CALL HBOOK1(999,'XSECT[pb]       ',1,0.,1.,0.)
 
       ! save some settings into the ntuple
@@ -364,6 +372,7 @@ c---Histograms
       CALL HF1(907, 0.5, REAL(UAAANOM))
       CALL HF1(908, 0.5, REAL(UDKAPPA))
       CALL HF1(909, 0.5, REAL(UDLAMBDA))
+      CALL HF1(911, 0.5, REAL(UAAEXOTIC))
 
 c  simulation ntuple initialisation
       if(UOUTPUT.NE.0) CALL NTINIT

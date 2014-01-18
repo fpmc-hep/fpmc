@@ -541,6 +541,62 @@ c      ACTID=IFITPDF-PDFID
                PRINT *, 'Should be =0, 1, 2'
                STOP
          ENDIF
+
+         IF( (IPROC.EQ.16061).AND.AAEXOTIC.NE.1) THEN
+            PRINT*, ' '
+            PRINT*, ' FPMC - Exotic AAAA coupling available '
+            PRINT*, '        only with AAEXOTIC = 1'
+            PRINT*, ' - STOP'
+            PRINT*, ' '
+            PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
+            PRINT*, ' '
+            STOP
+         ENDIF
+
+         IF( (IPROC.EQ.16062).AND.AAEXOTIC.NE.1) THEN
+            PRINT*, ' '
+            PRINT*, ' FPMC - Exotic AAAA coupling available '
+            PRINT*, '        only with AAEXOTIC = 1'
+            PRINT*, ' - STOP'
+            PRINT*, ' '
+            PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
+            PRINT*, ' '
+            STOP
+         ENDIF
+
+         IF(AAEXOTIC.EQ.0)THEN
+         ELSEIF(AAEXOTIC.EQ.1)THEN
+            PRINT *, 'EXOTICS FOR EXCL AAAA'
+           IF( IPROC.NE.16061.AND.IPROC.NE.16062) THEN
+            PRINT*, ' '
+            PRINT*, ' FPMC - Exotic AAAA coupling available '
+            PRINT*, '        only for IPROC = 16061 -- Bosons'
+            PRINT*, '                 IPROC = 16062 -- Fermions'
+            PRINT*, ' - STOP'
+            PRINT*, ' '
+            PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
+            PRINT*, ' '
+            STOP
+           ELSEIF(IPROC.EQ.16061) THEN
+            PRINT *, 'G.von Gersdorff ME used for AA->AA '
+            PRINT *, 'With extra bosons         '
+            PRINT *, 'Exotic bosons parameters set to:'
+            PRINT *, '   AAM  = ', AAM 
+            PRINT *, '   AAQ = ', AAQ
+            PRINT *, '   AAN = ', AAN
+           ELSEIF(IPROC.EQ.16062) THEN
+            PRINT *, 'G.von Gersdorff ME used for AA->AA '
+            PRINT *, 'With extra fermions         '
+            PRINT *, 'Exotic fermions parameters set to:'
+            PRINT *, '   AAM  = ', AAM 
+            PRINT *, '   AAQ = ', AAQ
+            PRINT *, '   AAN = ', AAN
+           ENDIF
+         ELSE
+               PRINT *, 'Unknown AAEXOTIC = ', AAEXOTIC
+               PRINT *, 'Should be =0, 1'
+               STOP
+         ENDIF
       ENDIF   
                
 C ... Print out settings
@@ -2763,9 +2819,14 @@ C Checks on HQ
 c ... M.B. : if HQ=13, do not change it
 c ... O.K. : HQ=15 ZZ
 c ... M.S./O.K. : HQ=16 AA
+c ... M.S.      : HQ=60,61,62 SM AA + AAANOM=3 def
           IF (HQ.GT.6.AND.HQ.LE.10) HQ=2*HQ+107
           IF (HQ.EQ.15) HQ=200 ! ZZ
           IF (HQ.EQ.16) HQ=59 ! AA
+          IF (HQ.EQ.60.OR.HQ.EQ.61.OR.HQ.EQ.62) THEN
+            HQ=59 ! AA
+            AAANOM=3
+          ENDIF
           IF (HQ.EQ.127) HQ=198 
           IF (HQ.GE.21.AND.HQ.LE.26) THEN 
             HQ=HQ+400-20
@@ -2942,7 +3003,7 @@ c           IF (HWRGEN(2).GT.HALF) then
               COSTH=(2*T+S-2*EMSQ)/SQRT(S**2-4*EMSQ*S)
               EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U)) 
 
-C ... O.K. Calling anomalous aaww or aazz coupling or aaaa coupling (M.Saimpert/O.Kepka)
+C ... O.K./M.S. Calling anomalous aaww or aazz coupling or aaaa coupling
               IF(HQ.EQ.198) call sqme_aaww_c(AMP2, S, T, alphem,
      $        SQRT(EMSQ), SWEIN, D_KAPPA, LAMBDA, A0W, ACW, ANOMCUTOFF)
               IF(HQ.EQ.200) call sqme_aazz_c(AMP2, S, T, alphem,
@@ -2956,6 +3017,46 @@ c              FACTR1=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
 c     $             *6*pifac*cfac*alphem**2/s**2
 c     $             *(1-2*s*(2*s+3*emsq)/(3*(emsq-t)*(emsq-u))
 c     $           +2*s**2*(s**2+3*emsq*emsq)/(3*(emsq-t)**2*(emsq-u)**2))
+
+
+          ELSEIF(AAANOM.EQ.3)THEN
+c          PTMIN>0 only for AAAA
+              IF(HQ.EQ.59.AND.PTMIN.EQ.0) THEN
+                  PTMIN=1
+              ENDIF
+              TMIN=S/2*(1-SQRT(MAX(1-4*(EMSQ+PTMIN**2)/S,ZERO)))-EMSQ 
+              TMAX=S/2*(1-SQRT(MAX(1-4*(EMSQ+PTMAX**2)/S,ZERO)))-EMSQ
+              IF (TMIN.GE.TMAX) RETURN
+c           T=-(TMAX/TMIN)**WRGEN(1)*TMIN
+              T=-(TMAX/TMIN)**RGEN1*TMIN
+
+c           IF (HWRGEN(2).GT.HALF) then
+              IF (RGEN2.GT.HALF) then
+                     T=-S-T+2*EMSQ
+              ENDIF   
+              U=-S-T+2*EMSQ
+             
+
+              COSTH=(2*T+S-2*EMSQ)/SQRT(S**2-4*EMSQ*S)
+              EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U)) 
+
+C ... M.S. Calling SM exclusive photon pair production
+              IF(HQ.EQ.59.AND.IPROC.EQ.16060) THEN
+              call sm_sqme_aaaa_c(AMP2, S, T, SQRT(EMSQ))
+              ENDIF
+              IF(HQ.EQ.59.AND.IPROC.EQ.16061) THEN
+              call bsmv_sqme_aaaa_c(AMP2, S, T, SQRT(EMSQ),
+     $        AAM, AAQ, AAN)
+              ENDIF
+              IF(HQ.EQ.59.AND.IPROC.EQ.16062) THEN
+              call bsmf_sqme_aaaa_c(AMP2, S, T, SQRT(EMSQ),
+     $        AAM, AAQ, AAN)
+ 
+              ENDIF
+             FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
+     $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
+
+
           ELSE
              print *, 'Nonstandard choice of AAANOM=', AAANOM
              stop
@@ -4347,6 +4448,10 @@ C-----------------------------------------------------------------------
       write(*,*) '          A1A      = ',A1A
       write(*,*) '          A2A      = ',A2A
       write(*,*) '          ANOMCUTOFF = ',ANOMCUTOFF
+      write(*,*) '          AAEXOTIC = ',AAEXOTIC
+      write(*,*) '          AAM      = ',AAM
+      write(*,*) '          AAQ      = ',AAQ
+      write(*,*) '          AAN      = ',AAN
       write(*,*) '----------others-----------------'
       write(*,*) '          PTMAX    = ',PTMAX
       write(*,*)
