@@ -6,7 +6,7 @@ C-----------------------------------------------------------------------
       integer 
      $ UOUTPUT,
      $ UMAXEV, UIPROC, UNFLUX, UNRN1, UNRN2, UIFIT, UISOFTM,
-     $ UAAANOM, UZION, UAION,
+     $ UAAANOM, UZION, UAION, UAAEXOTIC,
      $ UCHIDeIGLU, UKMR2DELTA
      
       real URMASS,UWMASS,UHMASS,UTMASS,UMST1,UMSB1,UECMS,
@@ -14,6 +14,7 @@ C-----------------------------------------------------------------------
      $   UDLAMBDA,
      $   UANOMCUTOFF, UQ2WWMN, UQ2WWMX,UYWWMIN, UYWWMAX, UA0W, UACW,
      $   UA0Z, UACZ, UA1A, UA2A,
+     $   UAAM, UAAQ, UAAN,
      $   UCHIDeX, UCHIDeXP, UCHIDeS2, ! R.S.
      $   UXI1Min, UXI1Max, UXI2Min, UXI2Max,
      $   UCHIDeGapMin, UCHIDeGapMax,
@@ -22,6 +23,7 @@ C-----------------------------------------------------------------------
       COMMON /MYFFREAD1/ URMASS,UWMASS,UHMASS,UTMASS,UMST1,UMSB1,UECMS,
      $     UYJMIN, UYJMAX,UPTMIN, UPTMAX, UEMMIN, UEMMAX, UDKAPPA,
      $     UACW, UA0W, UA0Z, UACZ, UA1A, UA2A,
+     $     UAAM, UAAQ, UAAN,
      $     UCHIDeX, UCHIDeXP, UCHIDeS2, ! R.S.
      $   UXI1Min, UXI1Max, UXI2Min, UXI2Max,
      $   UCHIDeGapMin, UCHIDeGapMax,
@@ -33,7 +35,7 @@ C-----------------------------------------------------------------------
      $ UQ2WWMN, UQ2WWMX
 
       COMMON /MYFFREAD3/ UOUTPUT,UMAXEV,UIPROC,UNFLUX,UNRN1,UNRN2,UIFIT, 
-     $     UISOFTM, UZION, UAION, UAAANOM,
+     $     UISOFTM, UZION, UAION, UAAANOM, UAAEXOTIC,
      $     UCHIDeIGLU, UKMR2DELTA ! R.S.
 
       character*1 UHADR

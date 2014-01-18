@@ -55,6 +55,10 @@ c---FFC default initialiszation
       UA1A       =    0.
       UA2A       =    0.
       UANOMCUTOFF =  -1.   ! if < 0 turns formfactor off
+      UAAEXOTIC  =    0    ! SM Excl AAAA
+      UAAM       =    0.
+      UAAQ       =    0.
+      UAAN       =    0.
       UQ2WWMN    =    0.
       UQ2WWMX    =    4.
       UYWWMIN    =    0.
@@ -121,6 +125,10 @@ c---FFC default initialiszation
         call FFKEY('A1A', UA1A,1,'real')
         call FFKEY('A2A', UA2A,1,'real')
         call FFKEY('ANOMCUTOFF', UANOMCUTOFF,1,'real')
+        call FFKEY('AAEXOTIC', UAAEXOTIC,1,'integer')
+        call FFKEY('AAM', UAAM,1,'real')
+        call FFKEY('AAQ', UAAQ,1,'real')
+        call FFKEY('AAN', UAAN,1,'real')
         UNTNAME = ''
         call FFKEY('NTNAME',UNTNAME,32,'mixed')
         call FFKEY('CHIDePATH', UCHIDePATH, 32, 'mixed')
