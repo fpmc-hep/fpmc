@@ -1,3 +1,7 @@
+2014-01-21 Christophe Royon <christophe.royon@cea.fr>, Goergiy Stelmakh,
+add Reggeon (nflux=10), Pomeron-Reggeon (nflux=19), 
+Reggeon Pomeron (nflux=21), Photon-Pomeron (nflux=20),
+Pomeron-Photon (nflux=22)
 2013-12-12 Matthias Saimpert <matthias.saimpert@cern.ch>
   * Adding aa->aa anomalous couplings (IPROC=16016) based on arXiv:1311.6815 [hep-ph]
   * Adding ~/External/comphep_interface/sqme_aaaa folder

@@ -46,7 +46,7 @@
 # IMPORTANT USER SETUP
 #########################################################################
 
-CERNLIB=`cernlib mathlib pawlib packlib` -L$(PWD) -lgfortran
+CERNLIB=`cernlib mathlib pawlib packlib pdflib804` -L$(PWD) -lgfortran
 GSLLIB=`gsl-config --cflags --libs`
 
 #########################################################################
