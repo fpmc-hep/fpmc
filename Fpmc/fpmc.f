@@ -646,7 +646,8 @@ c--- Initialization of the QCD subroutine
 c... Inc.DPE : cross-section normalization to the CDF measurement (NFLUX=11, 'INC')
 c      old factor CDFFAC = 3.8d0
 c OK 15/11/06  tuning to CDF Phys.Rev.Lett 85, 4215 (ptmin = 7GeV)
-      IF(NFLUX.LE.11) THEN
+c CHR/YURA
+      IF(NFLUX.LE.11.OR.NFLUX.EQ.19.OR.NFLUX.EQ.21) THEN
         IF(IFITPDF.EQ.10) THEN
             CDFFAC = 0.074d0/8d0
         ELSEIF(IFITPDF.EQ.20) THEN
@@ -770,7 +771,14 @@ C ... end R.S.
 
 c---Initialize the pomeron/regeon parameters
 c   OK 29/11/06
-      IF ((NFLUX.EQ.9).OR.(NFLUX.EQ.10)) THEN
+c CHR/Yura add Reggeon...
+C nflux 19: Pomeron Reggeon
+c nflux 20: Photon Pomeron
+c nflux 21: Reggeon Pomeron
+c nflux 22: Pomeron Photon
+
+      IF ((NFLUX.EQ.9).OR.(NFLUX.EQ.10).OR.(NFLUX.EQ.19).OR.
+     +     (NFLUX.EQ.20).OR.(NFLUX.EQ.21).OR.(NFLUX.EQ.22)) THEN
 
                !1994 tables FitB: hep/ph 9708016
          IF((IFITPDF.EQ.2).OR.(IFITPDF.EQ.5)) THEN
@@ -823,16 +831,21 @@ c            zh1=0.003
          ELSEIF((IFITPDF.EQ.100).OR.(IFITPDF.EQ.101)) THEN
            IF(IFITPDF.EQ.100) THEN              ! ... H1 fit A
                   alphaP=1.118
+C CHR YURA
+		  Cr=0.0017
                ELSEIF(IFITPDF.EQ.101) THEN       ! ... H1 fit B
                   alphaP=1.111
+C CHR YURA
+		  Cr=0.0014
             ENDIF
             
             alphaPp=0.06
             Bpom=5.5                  ! pomeron
-            alphaR=0.
-            alphaRp=0.
-            Breg=1.
-            Cr=1.             ! reggeon only normalization from POMWIG
+c CHR/YURA modify values for reggeon	    
+            alphaR=0.5
+            alphaRp=0.3
+            Breg=1.6
+            Cr=0.0014             ! reggeon only normalization from POMWIG
             zh1=0.003
          ENDIF   
 c___________________________________________________________________          
@@ -884,6 +897,10 @@ C * NFLUX = 13   heavy ion-gamgam (heavy ions only)
 C * NFLUX = 14   Photon flux (E.Papageorgiu)
 C * NFLUX = 15   Correct Budnev flux (from K.Piotrzkowski)
 C * NFLUX = 16   KMR-like flux (from L.Lonnblad)
+C nflux 19: Pomeron Reggeon
+c nflux 20: Photon Pomeron
+c nflux 21: Reggeon Pomeron
+c nflux 22: Pomeron Photon
 C-----------------------------------------------------------------------
       SUBROUTINE FLUX(F,Z,TMIN,TMAX,IPRO,IND)
       IMPLICIT NONE
@@ -909,6 +926,13 @@ c... parameters for the Budnev flux (thanks K.Piotrzkowski)
 c... parameters for the KMR model
       DOUBLE PRECISION Z1KMR,Z2KMR,FLKMR
       SAVE Z1KMR,Z2KMR
+
+      integer IIND
+      
+      COMMON /YURA/ IIND
+c index of protons Yura/CHR      
+      IIND = IND
+
 
 c---Choice of flux parameters:
 c   OK 29/11/06 moved to MODINI  
@@ -992,6 +1016,31 @@ C---Budnev photon flux : in principle this is most precise for pp
          Q2MIN = Z*Z*0.88d0/(1d0-Z)/QSCALE
          Q2MAX = TMAX/QSCALE
          F = ALPHAE/PI*(1d0-Z)/Z*(PHI(Q2MAX,Z)-PHI(Q2MIN,Z))
+c nflux=20,22 CHR/Yura	 
+      ELSEIF(NFLUX.EQ.20) THEN
+         IF(IND.EQ.1) THEN
+         Q2MIN = Z*Z*0.88d0/(1d0-Z)/QSCALE
+         Q2MAX = TMAX/QSCALE
+         F = ALPHAE/PI*(1d0-Z)/Z*(PHI(Q2MAX,Z)-PHI(Q2MIN,Z))
+         ELSEIF(IND.EQ.2) THEN
+         V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
+     +        DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
+         W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
+         X = 1.D0/(Z**(2.D0*alphaP-1.D0))
+         F = X*W*V
+	 ENDIF
+      ELSEIF(NFLUX.EQ.22) THEN
+         IF(IND.EQ.2) THEN
+         Q2MIN = Z*Z*0.88d0/(1d0-Z)/QSCALE
+         Q2MAX = TMAX/QSCALE
+         F = ALPHAE/PI*(1d0-Z)/Z*(PHI(Q2MAX,Z)-PHI(Q2MIN,Z))
+         ELSEIF(IND.EQ.1) THEN
+         V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
+     +        DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
+         W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
+         X = 1.D0/(Z**(2.D0*alphaP-1.D0))
+         F = X*W*V
+	 ENDIF
       ELSEIF (NFLUX.EQ.16) THEN
 C---KMR flux
          IF(IND.EQ.1) THEN
@@ -1007,8 +1056,41 @@ C ... begin R.S.
       ELSEIF(NFLUX.EQ.18) THEN
          F = 1d0
 C ... end R.S.
+C CR YURA POm Reg
+      ELSEIF(NFLUX.EQ.19) THEN
+         IF(IND.EQ.1) THEN
+	 	V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
+     + 		  DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
+     		W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
+		X = 1.D0/(Z**(2.D0*alphaP-1.D0))
+		F = X*W*V
+c          print *,'F ind 1 :',Z,F
+c...Cox-Forshaw reggeon flux:
+         ELSEIF (IND.EQ.2) THEN  
+                V = DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMIN)-
+     +            DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMAX)
+                W = 1.D0/(Breg+2.D0*alphaRp*DLOG(1.D0/Z))
+                X = 1.D0/(Z**(2.D0*alphaR-1.D0))
+                F = Cr*X*W*V  
+c                print *,'F IND 2 :',Z,F
+	 ENDIF       
+      ELSEIF(NFLUX.EQ.21) THEN
+         IF(IND.EQ.2) THEN
+	 	V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
+     + 		  DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
+     		W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
+		X = 1.D0/(Z**(2.D0*alphaP-1.D0))
+		F = X*W*V
+c...Cox-Forshaw reggeon flux:
+         ELSEIF (IND.EQ.1) THEN  
+                V = DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMIN)-
+     +            DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMAX)
+                W = 1.D0/(Breg+2.D0*alphaRp*DLOG(1.D0/Z))
+                X = 1.D0/(Z**(2.D0*alphaR-1.D0))
+                F = Cr*X*W*V  
+	 ENDIF       
       ELSE
-         WRITE(*,*) 'In FLUX: NFLUX must be 9-16,18 in FPMC!'
+         WRITE(*,*) 'In FLUX: NFLUX must be 9-16,18-22 in FPMC!'
          STOP
       ENDIF
 
@@ -1146,6 +1228,8 @@ C ... begin R.S.
       DOUBLE PRECISION CHIDePhi, CHIDePhip
       DOUBLE PRECISION CHIDeK(2), CHIDeKp(2)
       integer II,N
+      integer IND
+      COMMON /YURA/ IND
       
       IsCHIDe = (NFLUX.EQ.18)
       IsCHIDeGG = (IPROC.EQ.16012 .AND. NFLUX.EQ.18)
@@ -1159,6 +1243,9 @@ c ... pomeron/regeon structure from the common block
       ALPHAPbl = alphaPp
       Bbl = Bpom
 
+
+C YURA/CHR IND=IHEP!!!!
+      IND = IHEP
 
       
 C ... end M.B. T.K.
@@ -1360,14 +1447,74 @@ C---Q2WWMN AND Q2WWMX ARE USER-DEFINED LIMITS IN THE Q**2 INTEGRATION
 C     IF (QQMIN.GT.QQMAX) CALL HWWARN('HWEGAM',50,*10)
 C---GENERATE GAMMA MOMENTUM FRACTION
       ZGAM=(ZMIN/ZMAX)**HWRGEN(1)*ZMAX
+c tempo debug CHR
+c      ZGAM=0.01D0      
       C=1.D0/DLOG(ZMAX/ZMIN)
 C---POMERON (REGGEON) FLUX ; calculate GAMWT     
-      CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
-      IF (NFLUX.EQ.9) THEN
+C CHR comment this line and put it in each flux to be simpler/clearer
+cc      CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+C changes CHR/YURA
+      IF ((NFLUX.EQ.9).OR.(NFLUX.EQ.10)) THEN
+         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP) 
          CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
          GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)   
-      ELSEIF ((NFLUX.GE.10).AND.(NFLUX.LE.16)) THEN 
+C CHR NFLUX=9 should be also true for nflux=10
+      ELSEIF ((NFLUX.GE.11).AND.(NFLUX.LE.16)) THEN 
+         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
          GAMWT = GAMWT*F*ZGAM/C
+C CHR Yura modif 10/2013 Pom Reg
+      ELSEIF (NFLUX.EQ.19) THEN
+c         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+c         IF(IND.EQ.1) THEN
+             CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+             CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
+             GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)   
+c         ELSEIF(IND.EQ.2) THEN
+c             GAMWT = GAMWT*F*ZGAM/C
+c	 ENDIF 
+C CHR Yura modif Reg Pom              
+      ELSEIF (NFLUX.EQ.21) THEN
+             CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+             CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
+             GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)   
+c         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+c         IF(IND.EQ.2) THEN
+c             CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
+c             GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)   
+c         ELSEIF(IND.EQ.1) THEN
+c             GAMWT = GAMWT*F*ZGAM/C
+c	 ENDIF               
+C CHR Yura modif 10/2013 gamma+P
+      ELSEIF (NFLUX.EQ.20) THEN
+c         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+         IF(IND.EQ.2) THEN
+             CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+             CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
+             GAMWT = GAMWT*F*ZGAM/(C*FN*zh1) 
+c	     print *,'f fn gamwt :',f,fn,gamwt
+	 ELSEIF(IND.EQ.1) THEN      
+             CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+             GAMWT = GAMWT*F*ZGAM/C
+c	     print *,'f fn gamwt ind 1:',f,fn,gamwt
+	 ENDIF    
+C CHR Yura P + gamma           
+      ELSEIF (NFLUX.EQ.22) THEN
+         IF(IND.EQ.1) THEN
+             CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+             CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
+             GAMWT = GAMWT*F*ZGAM/(C*FN*zh1) 
+c	     print *,'f fn gamwt :',f,fn,gamwt
+	 ELSEIF(IND.EQ.2) THEN      
+             CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+             GAMWT = GAMWT*F*ZGAM/C
+c	     print *,'f fn gamwt ind 2:',f,fn,gamwt
+	 ENDIF    
+
+c         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+c         IF(IND.EQ.1) THEN
+c             CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
+c             GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)   
+c	 ENDIF               
 C ... begin R.S.
 C     In CHIDe model the integrand is not factorised into flux and hard
 C     process, therefore there is no flux here.
@@ -1458,7 +1605,7 @@ c       stop
         ZGAM =  CHIDeZ2
 c ... end R.S.
       ELSE
-         WRITE(*,*) 'In HWEGAM : NFLUX MUST BE 9-16,18 IN FPMC'
+         WRITE(*,*) 'In HWEGAM : NFLUX MUST BE 9-16,18-22 IN FPMC'
          STOP
       ENDIF
 
@@ -1558,6 +1705,71 @@ C .... QED Proton : "Dirac Form Factor"
         RNGEN=HWRGEN(1) 
         Q2 = (QPSQ**RNGEN)*((ZGAM*ZGAM/(1-ZGAM)*PMASS*PMASS)
      & **(1.-RNGEN))
+C Yura/CHR Pom+gamma
+      ELSEIF(NFLUX.EQ.20) THEN
+       IF(IND.EQ.1) THEN   
+C O.K.... QED Proton : "Dirac Form Factor"
+c         NFLUX = 15 according to Budnev flux, Rejection Technique
+         Q2MINPROT = ZGAM*ZGAM*0.88d0/(1d0-ZGAM)
+        IF(QQMIN.LT.Q2MINPROT) QQMIN = Q2MINPROT
+        IF(QQMIN.GE.QQMAX) THEN
+            GAMWT=ZERO
+            RETURN
+        ENDIF    
+            
+        LOOP=.TRUE.
+        DO WHILE(LOOP)
+         RNGEN=HWRGEN(1) 
+         Q2 = (QQMIN**RNGEN)*(QQMAX**(1-RNGEN));
+C        function envelope is 1/ebeam/z*alpha/pifac/Q2         
+         MAXFLUX = HWRUNI(1, ZERO, 
+     &                     1D0/PHEP(4, IHEP)/ZGAM*ALPHEM/PIFAC/Q2)
+         RNDFLUX = HWRUNI(1, ZERO, MAXFLUX)
+         BFLUX = BUDNEVFLUX(ZGAM, Q2)/PHEP(4, IHEP) 
+            IF(RNDFLUX.LT.BFLUX) THEN
+               LOOP=.FALSE.
+            ENDIF   
+        END DO
+       ELSEIF(IND.EQ.2) THEN
+C ......   H1 Pomeron
+           C=Bpom+2.0*alphaPp*DLOG(1.D0/ZGAM)
+           Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
+     +     (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
+       ENDIF
+c       print *,'nflux 20 gamwt :',gamwt
+C CHR/Yura Pom photon
+      ELSEIF(NFLUX.EQ.22) THEN
+       IF(IND.EQ.2) THEN   
+C O.K.... QED Proton : "Dirac Form Factor"
+c         NFLUX = 15 according to Budnev flux, Rejection Technique
+         Q2MINPROT = ZGAM*ZGAM*0.88d0/(1d0-ZGAM)
+        IF(QQMIN.LT.Q2MINPROT) QQMIN = Q2MINPROT
+        IF(QQMIN.GE.QQMAX) THEN
+            GAMWT=ZERO
+            RETURN
+        ENDIF    
+            
+        LOOP=.TRUE.
+        DO WHILE(LOOP)
+         RNGEN=HWRGEN(1) 
+         Q2 = (QQMIN**RNGEN)*(QQMAX**(1-RNGEN));
+C        function envelope is 1/ebeam/z*alpha/pifac/Q2         
+         MAXFLUX = HWRUNI(1, ZERO, 
+     &                     1D0/PHEP(4, IHEP)/ZGAM*ALPHEM/PIFAC/Q2)
+         RNDFLUX = HWRUNI(1, ZERO, MAXFLUX)
+         BFLUX = BUDNEVFLUX(ZGAM, Q2)/PHEP(4, IHEP) 
+            IF(RNDFLUX.LT.BFLUX) THEN
+               LOOP=.FALSE.
+            ENDIF   
+        END DO
+       ELSEIF(IND.EQ.1) THEN
+C ......   H1 Pomeron
+           C=Bpom+2.0*alphaPp*DLOG(1.D0/ZGAM)
+           Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
+     +     (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
+       ENDIF
+c       print *,'nflux 22 gamwt :',gamwt
+
        ELSEIF(NFLUX.EQ.15) THEN   
 C O.K.... QED Proton : "Dirac Form Factor"
 c      NFLUX = 15 according to Budnev flux, Rejection Technique
@@ -1585,6 +1797,35 @@ C        function envelope is 1/ebeam/z*alpha/pifac/Q2
         C=Bkmr
         Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
      +     (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
+
+c CHR + Yura Pom Reg
+      ELSEIF(NFLUX.EQ.19) THEN        
+C ...... H1 Pomeron
+        IF(IND.EQ.1) THEN
+           C=Bpom+2.0*alphaPp*DLOG(1.D0/ZGAM)
+           Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
+     +       (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
+        ELSEIF(IND.EQ.2) THEN   
+C ...... H1 Reggeon
+           C=Breg+2.0*alphaRp*DLOG(1.D0/ZGAM)
+           Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
+     +        (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
+        ENDIF
+C CHR Yura Pom Reg
+      ELSEIF(NFLUX.EQ.21) THEN        
+C ...... H1 Pomeron
+        IF(IND.EQ.2) THEN
+           C=Bpom+2.0*alphaPp*DLOG(1.D0/ZGAM)
+           Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
+     +       (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
+        ELSEIF(IND.EQ.1) THEN   
+C ...... H1 Reggeon
+           C=Breg+2.0*alphaRp*DLOG(1.D0/ZGAM)
+           Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
+     +        (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
+        ENDIF
+
+
 C ... begin R.S.
       ELSEIF(IsCHIDe) THEN
         IF(IHEP.EQ.1) Q2 = CHIDeQQ1
@@ -1672,7 +1913,9 @@ C ... Apply soft survival probability
          IF(DPHI.GT.+PI) DPHI=DPHI-2*PI
          SOFTC = 1d0
 c ...... CF model : survival factor
-         IF(NFLUX.GE.9.AND.NFLUX.LE.10) THEN
+c CHR YURA change
+         IF((NFLUX.GE.9.AND.NFLUX.LE.10).or.(NFLUX.EQ.19).or.
+     &       (NFLUX.EQ.21)) THEN
             IF(ISOFTM.EQ.1) THEN
                SOFTC = GAPSPR
             ELSEIF(ISOFTM.GT.1) THEN
@@ -2381,7 +2624,12 @@ C-----------------------------------------------------------------------
       DOUBLE PRECISION PMOM,PRESC
       INTEGER I,J,ISEC,IPOM,IREG
       LOGICAL INIFX
+      integer ind
       DATA IPOM/67/,IREG/68/
+
+c CHR/YURA common      
+      COMMON /YURA/ IND
+      
 C Initialise :
       IF(INIFX) THEN
         RNAME(IPOM)='POMERON '
@@ -2416,15 +2664,46 @@ C DIS case : don't touch Beam1 (always e+/e-), modify only Beam2 (p,pbar)
           IF(NFLUX.EQ.10) THEN
             IDHW(ISEC)=IREG
             IDHEP(ISEC)=IDPDG(IREG)
+C CHR/Yura Pom Reg
+          ELSEIF(NFLUX.EQ.19) THEN
+	    IF(IND.EQ.1) THEN
+            IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)
+            ELSEIF(IND.EQ.2) THEN	    
+            IDHW(ISEC)=IREG
+            IDHEP(ISEC)=IDPDG(IREG)
+	    ENDIF
+C Yura/CHR Reg Pom
+          ELSEIF(NFLUX.EQ.21) THEN
+	    IF(IND.EQ.2) THEN
+            IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)
+            ELSEIF(IND.EQ.1) THEN	    
+            IDHW(ISEC)=IREG
+            IDHEP(ISEC)=IDPDG(IREG)
+	    ENDIF
           ELSEIF(NFLUX.LE.11.OR.NFLUX.EQ.16) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
+C Yura/CHR Photon Pom
+          ELSEIF(NFLUX.EQ.20) THEN
+            IF(IND.EQ.2) THEN
+	    IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)	    
+            ENDIF
+C Yura/CHR Pom Photon
+          ELSEIF(NFLUX.EQ.22) THEN
+            IF(IND.EQ.1) THEN
+	    IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)	    
+            ENDIF
           ENDIF
         ENDIF
 C Single Diffraction case
+C CHR Rafal Should it be 11 or 16 ???????
       ELSEIF((PART1.EQ.'E+'.OR.PART1.EQ.'E-').AND.
      &       (PART2.EQ.'P'.OR.PART2.EQ.'PBAR').AND.
-     &       NFLUX.GE.9.AND.NFLUX.LE.16) THEN
+     &       NFLUX.GE.9.AND.NFLUX.LE.11) THEN
          I=1
          J=5
          IDHW(I)=73
@@ -2438,14 +2717,47 @@ C Single Diffraction case
             IF(NFLUX.EQ.10) THEN
                IDHW(ISEC)=IREG
                IDHEP(ISEC)=IDPDG(IREG)
+C CHR/Yura Pom Reg
+            ELSEIF(NFLUX.EQ.19) THEN
+	     IF(IND.EQ.1) THEN
+              IDHW(ISEC)=IPOM
+              IDHEP(ISEC)=IDPDG(IPOM)
+              ELSEIF(IND.EQ.2) THEN	    
+               IDHW(ISEC)=IREG
+               IDHEP(ISEC)=IDPDG(IREG)
+	     ENDIF
+C CHR/Yura Reg Pom (non sense here)
+            ELSEIF(NFLUX.EQ.21) THEN
+	     IF(IND.EQ.2) THEN
+              IDHW(ISEC)=IPOM
+              IDHEP(ISEC)=IDPDG(IPOM)
+              ELSEIF(IND.EQ.1) THEN	    
+               IDHW(ISEC)=IREG
+               IDHEP(ISEC)=IDPDG(IREG)
+	     ENDIF
+C CHR/Yura Photon Pom (non sense here)
+            ELSEIF(NFLUX.EQ.20) THEN
+             IF(IND.EQ.2) THEN
+	      IDHW(ISEC)=IPOM
+              IDHEP(ISEC)=IDPDG(IPOM)
+	     ENDIF
+C CHR/Yura Pom Photon (non sense here)
+            ELSEIF(NFLUX.EQ.22) THEN
+             IF(IND.EQ.1) THEN
+	      IDHW(ISEC)=IPOM
+              IDHEP(ISEC)=IDPDG(IPOM)
+	     ENDIF
             ELSEIF(NFLUX.LE.11.OR.NFLUX.EQ.16) THEN
                IDHW(ISEC)=IPOM
                IDHEP(ISEC)=IDPDG(IPOM)
             ENDIF
          ENDIF
+
+
+C CHR/Rafal is it 16 or 11??????
       ELSEIF((PART1.EQ.'P'.OR.PART1.EQ.'PBAR').AND.
      &       (PART2.EQ.'E+'.OR.PART2.EQ.'E-').AND.
-     &       NFLUX.GE.9.AND.NFLUX.LE.16) THEN
+     &       NFLUX.GE.9.AND.NFLUX.LE.11) THEN
          I=2
          J=5
          IDHW(I)=73
@@ -2459,15 +2771,48 @@ C Single Diffraction case
             IF(NFLUX.EQ.10) THEN
                IDHW(ISEC)=IREG
                IDHEP(ISEC)=IDPDG(IREG)
+C CHR/Yura Pom Reg
+            ELSEIF(NFLUX.EQ.19) THEN
+	     IF(IND.EQ.1) THEN
+              IDHW(ISEC)=IPOM
+              IDHEP(ISEC)=IDPDG(IPOM)
+             ELSEIF(IND.EQ.2) THEN	    
+              IDHW(ISEC)=IREG
+              IDHEP(ISEC)=IDPDG(IREG)
+	     ENDIF
+C CHR/Yura Reg Pom (non sense here)
+            ELSEIF(NFLUX.EQ.21) THEN
+	     IF(IND.EQ.2) THEN
+              IDHW(ISEC)=IPOM
+              IDHEP(ISEC)=IDPDG(IPOM)
+             ELSEIF(IND.EQ.1) THEN	    
+              IDHW(ISEC)=IREG
+              IDHEP(ISEC)=IDPDG(IREG)
+	     ENDIF
+C CHR/Yura Pom Photon (non sense here)
+            ELSEIF(NFLUX.EQ.20) THEN
+             IF(IND.EQ.2) THEN
+	      IDHW(ISEC)=IPOM
+              IDHEP(ISEC)=IDPDG(IPOM)
+	     ENDIF
+C CHR/Yura Photon Pom (non sense here)
+            ELSEIF(NFLUX.EQ.22) THEN
+             IF(IND.EQ.1) THEN
+	      IDHW(ISEC)=IPOM
+              IDHEP(ISEC)=IDPDG(IPOM)
+	     ENDIF
             ELSEIF(NFLUX.LE.11.OR.NFLUX.EQ.16) THEN
                IDHW(ISEC)=IPOM
                IDHEP(ISEC)=IDPDG(IPOM)
             ENDIF
          ENDIF
+
+c CHR YURA modifs
 C DPE case
       ELSEIF((PART1.EQ.'E+'.OR.PART1.EQ.'E-').AND.
      &       (PART2.EQ.'E+'.OR.PART2.EQ.'E-').AND.
-     &       ((NFLUX.GE.9.AND.NFLUX.LE.16).OR.NFLUX.EQ.18)) THEN
+     &       ((NFLUX.GE.9.AND.NFLUX.LE.16).OR.NFLUX.EQ.18.OR.
+     &      NFLUX.GE.19)) THEN
 C ... Modify primary and secondary beams :
         DO I=1,2
            J=3+2*I
@@ -2485,6 +2830,36 @@ C ... Modify secondary beams :
               IF(NFLUX.EQ.10) THEN
                  IDHW(ISEC)=IREG
                  IDHEP(ISEC)=IDPDG(IREG)
+C CHR/Yura Pom Reg
+          ELSEIF(NFLUX.EQ.19) THEN
+	    IF(IND.EQ.1) THEN
+            IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)
+            ELSEIF(IND.EQ.2) THEN	    
+            IDHW(ISEC)=IREG
+            IDHEP(ISEC)=IDPDG(IREG)
+	    ENDIF
+C CHR/Yura  Reg Pom - finally, it makes sense
+          ELSEIF(NFLUX.EQ.21) THEN
+	    IF(IND.EQ.2) THEN
+            IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)
+            ELSEIF(IND.EQ.1) THEN	    
+            IDHW(ISEC)=IREG
+            IDHEP(ISEC)=IDPDG(IREG)
+	    ENDIF
+C CHR/Yura  Photon Pom - finally, it makes sense
+          ELSEIF(NFLUX.EQ.20) THEN
+            IF(IND.EQ.2) THEN
+	    IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)
+	    ENDIF
+C CHR/Yura  Pom Photon - finally, it makes sense
+          ELSEIF(NFLUX.EQ.22) THEN
+            IF(IND.EQ.1) THEN
+	    IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)
+	    ENDIF
               ELSEIF(NFLUX.LE.11.OR.NFLUX.EQ.16) THEN
                  IDHW(ISEC)=IPOM
                  IDHEP(ISEC)=IDPDG(IPOM)
@@ -3549,6 +3924,16 @@ C-----------------------------------------------------------------------
       PARAMETER(ifit=0)
       CHARACTER*20 PARMA(20)
       DOUBLE PRECISION valu(20)
+
+c init pdflib
+      logical first
+      data first/.true./
+
+* transmit proton Id in case of Pom+Reg
+      integer ind
+      
+      common /yura/ind
+
 * B.C. Pomwig
 
       SAVE QOLD,IOLD,NOLD,XOLD,SS,S,T,TMIN,TMAX,G,A,TX,TT,TB,IP,NX
@@ -3896,6 +4281,13 @@ c            DIST(10)=0
             DIST(13)=XPQ(0)
             GOTO 999
          ELSEIF (NFLUX.EQ.10) THEN
+C CHR YURA
+            if(first) then
+                PARMA(1)='init0'
+                VALU(1)=0.D0
+                call pdfset(PARMA, VALU)
+                first=.false.
+             endif
 C     Reggeon 
             parma(1)='NPTYPE'
             parma(2)='NGROUP'
@@ -3922,6 +4314,200 @@ C     Reggeon
             DIST(12)=0
             DIST(13)=GLU
             GOTO 999
+c Yura CHR Pom Reg	    
+	   ELSEIF (NFLUX.EQ.19) THEN
+c	   print *,'index in 19 :',ind,ibeam
+	   IF(IBEAM.EQ.1) THEN 
+           BCQ=QSCA*QSCA
+C Initialise xpq
+            DO ILOOP=-6,6
+               XPQ(ILOOP)=0.D0
+            ENDDO
+            XXX = X
+c            call QCD_1994(XXX,BCQ,XPQ,ifit)
+c CHR call to different QCD fits
+            CALL QCDFIT(XXX,BCQ,XPQ,ifit)
+            DIST(1)=XPQ(1)
+            DIST(2)=XPQ(2)
+            DIST(3)=XPQ(3)
+            DIST(4)=XPQ(4)
+c            DIST(4)=0
+            DIST(5)=0
+            DIST(6)=0
+            DIST(7)=XPQ(-1)
+            DIST(8)=XPQ(-2)
+            DIST(9)=XPQ(-3)
+            DIST(10)=XPQ(-4)
+c            DIST(10)=0
+            DIST(11)=0
+            DIST(12)=0
+            DIST(13)=XPQ(0)
+c            print *,'ind 1 glu :',xxx,qsca,dist(13)
+            GOTO 999
+            ELSEIF (IBEAM.EQ.2) THEN
+            if(first) then
+                PARMA(1)='init0'
+                VALU(1)=0.D0
+                call pdfset(PARMA, VALU)
+                first=.false.
+             endif
+C     Reggeon 
+            parma(1)='NPTYPE'
+            parma(2)='NGROUP'
+            parma(3)='NSET'
+            valu(1)=2
+c            valu(2)=5
+c            valu(3)=2            ! GRV-P LO
+            valu(2)=1
+            valu(3)=1            ! OWENS
+
+            CALL PDFSET(PARMA,VALU)
+            CALL STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BTM,TOP,GLU)
+            DIST(1)=(0.5D0*DNV)+DSEA
+            DIST(2)=(0.5D0*UPV)+USEA
+            DIST(3)=STR
+            DIST(4)=CHM
+            DIST(5)=0
+            DIST(6)=0
+            DIST(7)=(0.5D0*DNV)+DSEA
+            DIST(8)=(0.5D0*UPV)+USEA
+            DIST(9)=STR
+            DIST(10)=CHM
+            DIST(11)=0
+            DIST(12)=0
+            DIST(13)=GLU
+c            print *,'ind 2 glu :',x,qsca,dist(13)
+c	    print *,'enter glu pion :',glu
+            GOTO 999
+	    ENDIF
+
+c Yura CHR Pom Reg	    
+	   ELSEIF (NFLUX.EQ.21) THEN
+c	   print *,'index in 21 :',ind,ibeam
+	   IF(IBEAM.EQ.2) THEN 
+           BCQ=QSCA*QSCA
+C Initialise xpq
+            DO ILOOP=-6,6
+               XPQ(ILOOP)=0.D0
+            ENDDO
+            XXX = X
+c            call QCD_1994(XXX,BCQ,XPQ,ifit)
+c CHR call to different QCD fits
+            CALL QCDFIT(XXX,BCQ,XPQ,ifit)
+            DIST(1)=XPQ(1)
+            DIST(2)=XPQ(2)
+            DIST(3)=XPQ(3)
+            DIST(4)=XPQ(4)
+c            DIST(4)=0
+            DIST(5)=0
+            DIST(6)=0
+            DIST(7)=XPQ(-1)
+            DIST(8)=XPQ(-2)
+            DIST(9)=XPQ(-3)
+            DIST(10)=XPQ(-4)
+c            DIST(10)=0
+            DIST(11)=0
+            DIST(12)=0
+            DIST(13)=XPQ(0)
+            GOTO 999
+            ELSEIF (IBEAM.EQ.1) THEN
+            if(first) then
+                PARMA(1)='init0'
+                VALU(1)=0.D0
+                call pdfset(PARMA, VALU)
+                first=.false.
+             endif
+C     Reggeon 
+            parma(1)='NPTYPE'
+            parma(2)='NGROUP'
+            parma(3)='NSET'
+            valu(1)=2
+*            valu(2)=5
+*            valu(3)=2            ! GRV-P LO
+            valu(2)=1
+            valu(3)=1            ! OWENS
+
+            CALL PDFSET(PARMA,VALU)
+            CALL STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BTM,TOP,GLU)
+            DIST(1)=(0.5D0*DNV)+DSEA
+            DIST(2)=(0.5D0*UPV)+USEA
+            DIST(3)=STR
+            DIST(4)=CHM
+            DIST(5)=0
+            DIST(6)=0
+            DIST(7)=(0.5D0*DNV)+DSEA
+            DIST(8)=(0.5D0*UPV)+USEA
+            DIST(9)=STR
+            DIST(10)=CHM
+            DIST(11)=0
+            DIST(12)=0
+            DIST(13)=GLU
+c	    print *,'enter glu pion :',glu
+            GOTO 999
+	    ENDIF
+
+
+
+c Yura/CHR Photon pom
+         ELSEIF (NFLUX.EQ.20) THEN
+	 IF(IBEAM.EQ.2) THEN
+            BCQ=QSCA*QSCA
+C Initialise xpq
+            DO ILOOP=-6,6
+               XPQ(ILOOP)=0.D0
+            ENDDO
+            XXX = X
+c            call QCD_1994(XXX,BCQ,XPQ,ifit)
+c CHR call to different QCD fits
+            CALL QCDFIT(XXX,BCQ,XPQ,ifit)
+            DIST(1)=XPQ(1)
+            DIST(2)=XPQ(2)
+            DIST(3)=XPQ(3)
+            DIST(4)=XPQ(4)
+c            DIST(4)=0
+            DIST(5)=0
+            DIST(6)=0
+            DIST(7)=XPQ(-1)
+            DIST(8)=XPQ(-2)
+            DIST(9)=XPQ(-3)
+            DIST(10)=XPQ(-4)
+c            DIST(10)=0
+            DIST(11)=0
+            DIST(12)=0
+            DIST(13)=XPQ(0)
+            GOTO 999
+            ENDIF
+
+c Yura/CHR Pom Photon 
+         ELSEIF (NFLUX.EQ.22) THEN
+	 IF(IBEAM.EQ.1) THEN
+            BCQ=QSCA*QSCA
+C Initialise xpq
+            DO ILOOP=-6,6
+               XPQ(ILOOP)=0.D0
+            ENDDO
+            XXX = X
+c            call QCD_1994(XXX,BCQ,XPQ,ifit)
+c CHR call to different QCD fits
+            CALL QCDFIT(XXX,BCQ,XPQ,ifit)
+            DIST(1)=XPQ(1)
+            DIST(2)=XPQ(2)
+            DIST(3)=XPQ(3)
+            DIST(4)=XPQ(4)
+c            DIST(4)=0
+            DIST(5)=0
+            DIST(6)=0
+            DIST(7)=XPQ(-1)
+            DIST(8)=XPQ(-2)
+            DIST(9)=XPQ(-3)
+            DIST(10)=XPQ(-4)
+c            DIST(10)=0
+            DIST(11)=0
+            DIST(12)=0
+            DIST(13)=XPQ(0)
+            GOTO 999
+            ENDIF
+
          ELSEIF (NFLUX.EQ.11) THEN
 C     User defined pomeron structure
 C ... M.B.
