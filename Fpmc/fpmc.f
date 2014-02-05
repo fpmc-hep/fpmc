@@ -717,13 +717,12 @@ c--- Initialize soft correction code (from A.Kupco)
 c--- Initialize KMR calculation
 
       IF(NFLUX.EQ.16) THEN
-       IF(PBEAM1.LE.1d3) THEN
-*         CALL KMRINI(1)
-          CALL KMRINI(99,CHIDeS,KMR2SURV,KMR2SCALE,KMR2DELTA,KMR2Q2CUT)
-       ELSEIF(PBEAM1.GE.6.5d3) THEN
-*          CALL KMRINI(2)
-          CALL KMRINI(99,CHIDeS,KMR2SURV,KMR2SCALE,KMR2DELTA,KMR2Q2CUT)
-       ENDIF
+         CALL KMRINI(99,CHIDeS,KMR2SURV,KMR2SCALE,KMR2DELTA,KMR2Q2CUT)
+c      IF(PBEAM1.LE.1d3) THEN
+c         CALL KMRINI(1)
+c      ELSEIF(PBEAM1.GE.6.5d3) THEN
+c         CALL KMRINI(2)
+c      ENDIF
       ENDIF
 
 C ... begin R.S.
