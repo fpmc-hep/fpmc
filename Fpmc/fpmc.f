@@ -542,7 +542,8 @@ c      ACTID=IFITPDF-PDFID
                STOP
          ENDIF
 
-         IF( (IPROC.EQ.16061).AND.AAEXOTIC.NE.1) THEN
+C--M.S exclusive diphoton production
+         IF( (IPROC.EQ.16063).AND.AAEXOTIC.NE.1) THEN
             PRINT*, ' '
             PRINT*, ' FPMC - Exotic AAAA coupling available '
             PRINT*, '        only with AAEXOTIC = 1'
@@ -553,7 +554,7 @@ c      ACTID=IFITPDF-PDFID
             STOP
          ENDIF
 
-         IF( (IPROC.EQ.16062).AND.AAEXOTIC.NE.1) THEN
+         IF( (IPROC.EQ.16064).AND.AAEXOTIC.NE.1) THEN
             PRINT*, ' '
             PRINT*, ' FPMC - Exotic AAAA coupling available '
             PRINT*, '        only with AAEXOTIC = 1'
@@ -567,24 +568,24 @@ c      ACTID=IFITPDF-PDFID
          IF(AAEXOTIC.EQ.0)THEN
          ELSEIF(AAEXOTIC.EQ.1)THEN
             PRINT *, 'EXOTICS FOR EXCL AAAA'
-           IF( IPROC.NE.16061.AND.IPROC.NE.16062) THEN
+           IF( IPROC.NE.16063.AND.IPROC.NE.16064) THEN
             PRINT*, ' '
             PRINT*, ' FPMC - Exotic AAAA coupling available '
-            PRINT*, '        only for IPROC = 16061 -- Bosons'
-            PRINT*, '                 IPROC = 16062 -- Fermions'
+            PRINT*, '        only for IPROC = 16063 -- Bosons'
+            PRINT*, '                 IPROC = 16064 -- Fermions'
             PRINT*, ' - STOP'
             PRINT*, ' '
             PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
             PRINT*, ' '
             STOP
-           ELSEIF(IPROC.EQ.16061) THEN
+           ELSEIF(IPROC.EQ.16063) THEN
             PRINT *, 'G.von Gersdorff ME used for AA->AA '
             PRINT *, 'With extra bosons         '
             PRINT *, 'Exotic bosons parameters set to:'
             PRINT *, '   AAM  = ', AAM 
             PRINT *, '   AAQ = ', AAQ
             PRINT *, '   AAN = ', AAN
-           ELSEIF(IPROC.EQ.16062) THEN
+           ELSEIF(IPROC.EQ.16064) THEN
             PRINT *, 'G.von Gersdorff ME used for AA->AA '
             PRINT *, 'With extra fermions         '
             PRINT *, 'Exotic fermions parameters set to:'
@@ -3193,11 +3194,11 @@ C Checks on HQ
 c ... M.B. : if HQ=13, do not change it
 c ... O.K. : HQ=15 ZZ
 c ... M.S./O.K. : HQ=16 AA
-c ... M.S.      : HQ=60,61,62 SM AA + AAANOM=3 def
+c ... M.S.      : HQ=60,61,62,63,64 SM AA + AAANOM=3 def
           IF (HQ.GT.6.AND.HQ.LE.10) HQ=2*HQ+107
           IF (HQ.EQ.15) HQ=200 ! ZZ
           IF (HQ.EQ.16) HQ=59 ! AA
-          IF (HQ.EQ.60.OR.HQ.EQ.61.OR.HQ.EQ.62) THEN
+          IF (HQ.GE.60.AND.HQ.LE.64) THEN
             HQ=59 ! AA
             AAANOM=3
           ENDIF
@@ -3414,16 +3415,22 @@ c           IF (HWRGEN(2).GT.HALF) then
               COSTH=(2*T+S-2*EMSQ)/SQRT(S**2-4*EMSQ*S)
               EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U)) 
 
-C ... M.S. Calling SM exclusive photon pair production
+C ... M.S. Calling SM and EXOTIC exclusive photon pair production
               IF(HQ.EQ.59.AND.IPROC.EQ.16060) THEN
-              call sm_sqme_aaaa_c(AMP2, S, T, SQRT(EMSQ))
+              call sm_sqme_aaaa_c(AMP2, S, T, 0)
               ENDIF
               IF(HQ.EQ.59.AND.IPROC.EQ.16061) THEN
-              call bsmv_sqme_aaaa_c(AMP2, S, T, SQRT(EMSQ),
+              call sm_sqme_aaaa_c(AMP2, S, T, 1)
+              ENDIF       
+              IF(HQ.EQ.59.AND.IPROC.EQ.16062) THEN
+              call sm_sqme_aaaa_c(AMP2, S, T, 2)
+              ENDIF               
+              IF(HQ.EQ.59.AND.IPROC.EQ.16063) THEN
+              call bsmv_sqme_aaaa_c(AMP2, S, T, 1, 0,
      $        AAM, AAQ, AAN)
               ENDIF
-              IF(HQ.EQ.59.AND.IPROC.EQ.16062) THEN
-              call bsmf_sqme_aaaa_c(AMP2, S, T, SQRT(EMSQ),
+              IF(HQ.EQ.59.AND.IPROC.EQ.16064) THEN
+              call bsmf_sqme_aaaa_c(AMP2, S, T, 1, 0,
      $        AAM, AAQ, AAN)
  
               ENDIF

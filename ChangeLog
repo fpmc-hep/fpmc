@@ -1,7 +1,22 @@
-2014-01-21 Christophe Royon <christophe.royon@cea.fr>, Goergiy Stelmakh,
-add Reggeon (nflux=10), Pomeron-Reggeon (nflux=19), 
-Reggeon Pomeron (nflux=21), Photon-Pomeron (nflux=20),
-Pomeron-Photon (nflux=22)
+2014-03-20 Matthias Saimpert <matthias.saimpert@cern.ch>
+  * General update/upgrade of the QED Diphoton exclusive process
+  * IPROC=16060, SM QED Exc diphoton production (W + massive fermions loops included)
+  * (old routine is IPROC=19800 kept for comparison purpose but is most likely
+  to be WRONG)
+  * IPROC=16061, SM QED Exc diphoton production at high mass (massive fermion
+  loops EXCLUDED)
+  * IPROC=16062, SM QED  Exc diphoton production at low mass (W loop EXCLUDED)
+  * IPROC=16063, General exotic vector contributions with SM interf (SM fermion
+   loops EXCLUDED
+  * IPROC=16064, General exotic fermion contributions with SM interf (SM
+  fermion EXCLUDED)
+  * Corresponding datacards added
+
+2014-01-21 Christophe Royon <christophe.royon@cea.fr>
+  * with Goergiy Stelmakh,
+  * add Reggeon (nflux=10), Pomeron-Reggeon (nflux=19), Reggeon Pomeron (nflux=21)
+  * Photon-Pomeron (nflux=20), Pomeron-Photon (nflux=22)
+
 2013-12-12 Matthias Saimpert <matthias.saimpert@cern.ch>
   * Adding aa->aa anomalous couplings (IPROC=16016) based on arXiv:1311.6815 [hep-ph]
   * Adding ~/External/comphep_interface/sqme_aaaa folder
