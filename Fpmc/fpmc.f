@@ -3426,11 +3426,11 @@ C ... M.S. Calling SM and EXOTIC exclusive photon pair production
               call sm_sqme_aaaa_c(AMP2, S, T, 2)
               ENDIF               
               IF(HQ.EQ.59.AND.IPROC.EQ.16063) THEN
-              call bsmv_sqme_aaaa_c(AMP2, S, T, 1, 0,
+              call bsmv_sqme_aaaa_c(AMP2, S, T, 0, 0,
      $        AAM, AAQ, AAN)
               ENDIF
               IF(HQ.EQ.59.AND.IPROC.EQ.16064) THEN
-              call bsmf_sqme_aaaa_c(AMP2, S, T, 1, 0,
+              call bsmf_sqme_aaaa_c(AMP2, S, T, 0, 0,
      $        AAM, AAQ, AAN)
  
               ENDIF

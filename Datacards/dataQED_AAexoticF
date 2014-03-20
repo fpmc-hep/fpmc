@@ -8,10 +8,10 @@ NFLUX       15
 NRN1        17673
 NRN2        63565
 PTMIN       10.
-YWWMIN      0.
-YWWMAX      1.
+YWWMIN      0.015
+YWWMAX      0.15
 ISOFTM      0
 AAEXOTIC    1
-AAM         1000.
+AAM         500.
 AAQ         4.
 AAN         1.
