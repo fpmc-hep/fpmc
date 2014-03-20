@@ -41,39 +41,46 @@ void Mxxxx_fermion(double x, double y, double * re, double * im){
 
 };
 
-void Mpppp_fermion(double sred, double tred, double *re, double *im){
+void Mpppp_fermion(double sred, double tred, double *re, double *im, int exclude_loops){
   // M++++ from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
-  Mxxxx_fermion(sred,tred,re,im);
+if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
+else{   Mxxxx_fermion(sred,tred,re,im); }
 
   return;
 
 };
 
-void Mpmmp_fermion(double sred, double tred, double *re, double *im){
+void Mpmmp_fermion(double sred, double tred, double *re, double *im, int exclude_loops){
   // M+--+ from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
-  Mxxxx_fermion(tred,sred,re,im);
+if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
+else{   Mxxxx_fermion(tred,sred,re,im); }
 
   return;
 
 };
 
-void Mpmpm_fermion(double sred, double tred, double *re, double *im){
+void Mpmpm_fermion(double sred, double tred, double *re, double *im, int exclude_loops){
 // M+-+- from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
-  Mxxxx_fermion(-tred-sred,tred,re,im);
+if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
+else{   Mxxxx_fermion(-tred-sred,tred,re,im); }
 
   return;
 
 };
 
-void Mpppm_fermion(double sred, double tred, double * re, double * im){
+void Mpppm_fermion(double sred, double tred, double * re, double * im, int exclude_loops){
   // M+--- from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
   double temp;
 
   double ured=-sred-tred;
+
+
+if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
+else{ 
 
   *re=-1;
   *im=0;
@@ -94,16 +101,21 @@ void Mpppm_fermion(double sred, double tred, double * re, double * im){
   *re += temp*ReI(tred,ured);
   *im += temp*ImI(tred,ured);
 
+     }
+
+
   return ;
 
 };
 
-void Mppmm_fermion(double sred, double tred, double * re, double * im){
+void Mppmm_fermion(double sred, double tred, double * re, double * im, int exclude_loops){
   // M++-- from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
   double temp;
   double ured = -sred-tred;
 
+if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
+else{ 
 
   *re=-1;
   *im=0;
@@ -119,6 +131,9 @@ void Mppmm_fermion(double sred, double tred, double * re, double * im){
   temp = 1/( 2 * tred * ured );
   *re += temp*ReI(tred,ured);
   *im += temp*ImI(tred,ured);
+
+      }
+
 
   return;
 
@@ -168,43 +183,59 @@ void Mxxxx_vector(double x, double y, double * re, double * im){
   
 };
 
-void Mpppp_vector(double sred, double tred, double *re, double *im){
+void Mpppp_vector(double sred, double tred, double *re, double *im, int exclude_loops){
 
-  Mxxxx_vector(sred,tred,re,im);
-
-  return;
-
-};
-
-void Mpmmp_vector(double sred, double tred, double *re, double *im){
-
-  Mxxxx_vector(tred,sred,re,im);
+if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
+else{   Mxxxx_vector(sred,tred,re,im);     }
 
   return;
 
 };
 
-void Mpmpm_vector(double sred, double tred, double *re, double *im){
+void Mpmmp_vector(double sred, double tred, double *re, double *im, int exclude_loops){
 
-  Mxxxx_vector(-tred-sred,tred,re,im);
+
+if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
+else{   Mxxxx_vector(tred,sred,re,im); }
 
   return;
 
 };
 
-void Mpppm_vector(double sred, double tred, double * re, double * im){
-  Mpppm_fermion(sred,tred,re,im);
+void Mpmpm_vector(double sred, double tred, double *re, double *im, int exclude_loops){
+
+
+if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
+else{   Mxxxx_vector(-tred-sred,tred,re,im); }
+
+  return;
+
+};
+
+void Mpppm_vector(double sred, double tred, double * re, double * im, int exclude_loops){
+
+if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
+else{ 
+
+   Mpppm_fermion(sred,tred,re,im,exclude_loops);
   *re *= -1.5;
   *im *= -1.5;
 
+    }
+
   return;
 };
 
-void Mppmm_vector(double sred, double tred, double * re, double * im){
+void Mppmm_vector(double sred, double tred, double * re, double * im, int exclude_loops){
 
-  Mppmm_fermion(sred,tred,re,im);
+if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
+else{   
+
+  Mppmm_fermion(sred,tred,re,im,exclude_loops);
   *re *= -1.5;
   *im *= -1.5;
+
+   }
 
   return;
 
