@@ -630,11 +630,13 @@ c---To pass the relative GAP Srv. prob factor for BL inclusive modified dist.
 
       CHARACTER(80) STABLE
 
+
 c ... begin R.S.
       character*500  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
        common/CHIDePATH/ dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
 c ... end R.S.
        
+
 c--- Initialization of the QCD subroutine
       IF(TYPEPR.NE.'EXC') THEN
          Q2=75D0        !dummy - just initialization
@@ -1771,11 +1773,15 @@ C ......   H1 Pomeron
 c       print *,'nflux 22 gamwt :',gamwt
 
        ELSEIF(NFLUX.EQ.15) THEN   
+
+
 C O.K.... QED Proton : "Dirac Form Factor"
 c      NFLUX = 15 according to Budnev flux, Rejection Technique
         Q2MINPROT = ZGAM*ZGAM*0.88d0/(1d0-ZGAM)
         IF(QQMIN.LT.Q2MINPROT) QQMIN = Q2MINPROT
+
         IF(QQMIN.GE.QQMAX) THEN
+c           print *, QQMIN, QQMAX, ZGAM
             GAMWT=ZERO
             RETURN
         ENDIF    
@@ -1783,16 +1789,55 @@ c      NFLUX = 15 according to Budnev flux, Rejection Technique
         LOOP=.TRUE.
         DO WHILE(LOOP)
          RNGEN=HWRGEN(1) 
-         Q2 = (QQMIN**RNGEN)*(QQMAX**(1-RNGEN));
+         Q2 = (QQMAX/QQMIN**RNGEN)*QQMIN;
 C        function envelope is 1/ebeam/z*alpha/pifac/Q2         
-         MAXFLUX = HWRUNI(1, ZERO, 
-     &                     1D0/PHEP(4, IHEP)/ZGAM*ALPHEM/PIFAC/Q2)
+         MAXFLUX =1D0/PHEP(4, IHEP)/ZGAM*ALPHEM/PIFAC/Q2
          RNDFLUX = HWRUNI(1, ZERO, MAXFLUX)
          BFLUX = BUDNEVFLUX(ZGAM, Q2)/PHEP(4, IHEP) 
             IF(RNDFLUX.LT.BFLUX) THEN
                LOOP=.FALSE.
             ENDIF   
-         END DO
+            IF(MAXFLUX.LT.BFLUX) THEN
+               PRINT *, " BFLUX larger than MAXFLUX, PROBLEM"
+            ENDIF   
+        END DO
+
+
+c        LOOP=.TRUE.
+c        DO WHILE(LOOP)
+c         RNGEN=HWRGEN(1) 
+c         Q2 = (QQMIN**(1-RNGEN))*(QQMAX**(RNGEN));
+c         Q2 = (QQMIN**RNGEN)*(QQMAX**(1-RNGEN));
+c         Q2 = (QQMAX/QQMIN**RNGEN)*QQMIN;
+c         Q2 = (QQMAX/QQMIN*RNGEN)*(QQMIN)
+c         Q2 = (QQMAX-QQMIN)*RNGEN+(QQMIN)
+C        function envelope is 1/ebeam/z*alpha/pifac/Q2         
+c         MAXFLUX = HWRUNI(1, ZERO, 
+c     &                     1D0/PHEP(4, IHEP)/ZGAM*ALPHEM/PIFAC/Q2)
+c         RNDFLUX = HWRUNI(1, ZERO, MAXFLUX)
+c         BFLUX = BUDNEVFLUX(ZGAM, Q2)/PHEP(4, IHEP) 
+c            IF(RNDFLUX.LT.BFLUX) THEN
+c               LOOP=.FALSE.
+c            ENDIF   
+c          LOOP=.FALSE.
+c        END DO
+c        CALL HF1(1111, REAL(Q2), 1.)
+c        CALL HF1(1112, REAL(LOG(Q2)/LOG(10d0)), 1.)
+
+c        LOOP=.TRUE.
+c        DO WHILE(LOOP)
+c         RNGEN=HWRGEN(1) 
+c         Q2 = (QQMAX-QQMIN*RNGEN)+ QQMIN;
+cC        function envelope is 1/ebeam/z*alpha/pifac/Q2         
+c         MAXFLUX = HWRUNI(1, ZERO, 
+c     &                      BUDNEVFLUX(ZGAM, QQMIN) )
+c         RNDFLUX = HWRUNI(1, ZERO, MAXFLUX)
+c         BFLUX = BUDNEVFLUX(ZGAM, Q2)/PHEP(4, IHEP) 
+c            IF(RNDFLUX.LT.BFLUX) THEN
+c               LOOP=.FALSE.
+c            ENDIF   
+c        END DO
+
       ELSEIF(NFLUX.EQ.16) THEN   
         C=Bkmr
         Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
