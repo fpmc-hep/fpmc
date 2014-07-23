@@ -31694,18 +31694,7 @@ C---GENERATE EVENT
  999  END
 CDECK  ID>, HWHSNM.
 *CMZ :-        -20/09/95  15.28.53  by  Mike Seymour
-*-- Author :	Mike Seymour
-C-----------------------------------------------------------------------
-*-- Author :	Mike Seymour, Mark Heyes, Brian Cox, Jeff Forshaw
-* Upgraded to remove asymptotic approximation
-C-----------------------------------------------------------------------
-*__ Author :	Graham Jones, James Monk 15.04.2008
-* Allow switch between original asymptotic version and upgraded version
-* for ATLAS
-* Switch depends on omega0 - omega0 > 0 runs the original (and uses that
-* omega0 va
-*			     omega0 < 0 runs the upgraded version
-* christophe modified for p not equal 0, bfkl nll
+*-- Author :    Mike Seymour
 C-----------------------------------------------------------------------
       FUNCTION HWHSNM(ID1,ID2,S,T)
 C     MATRIX ELEMENT SQUARED FOR COLOUR-SINGLET PARTON-PARTON SCATTERING
@@ -31719,324 +31708,57 @@ C-----------------------------------------------------------------------
      $ TOLD,QQ(13,13),ZETA3
       INTEGER ID1,ID2
       LOGICAL PHOTON
-      LOGICAL PRVSN
 C---ZETA3=RIEMANN ZETA FUNCTION(3)
       PARAMETER (ZETA3=1.202056903159594D0)
-C---paramtric fit to the function used in the Bartels/Forshaw/et al.
-calculation
-      DOUBLE PRECISION para,parb,parc,pard,pare !,alphas
-      double precision alphas
-      double precision parf,parg,parh,pari,parj,park
-      double precision parl,parm,parn
-c      PARAMETER (para=7.6155D0)
-c      PARAMETER (parb=-20.259D0)
-c      PARAMETER (parc=41.534D0)
-c      PARAMETER (pard=-2.6150D0)
-c      PARAMETER (pare=8.6744D0)
-      DOUBLE PRECISION Z
-
-      integer icox
-
-      double precision pt, beta0, rlambdaqcd
-      integer nf
-
-      SAVE ASQ,AINU,AINS,SOLD,TOLD,QQ
-      DATA ASQ,AINU,AINS,SOLD,TOLD,QQ/5*0,169*-1/
-      SAVE PRVSN
-      DATA PRVSN/.TRUE./
 C---PHOTON=.TRUE. FOR PHOTON EXCHANGE, .FALSE. FOR MUELLER-TANG
       PHOTON=MOD(IPROC,100).GE.50
-      OMEGA0 = -0.3D0
-      asfixd = 0.17D0
-
-c icox=1, cox forshaw, icox=2 BFKL LL all p
-c icox=3 BFKL NLL p=0, icox=4 BFKL NLL all p
-
-      icox=4
-
-      IF (OMEGA0.lt.0.) THEN
-      
-c        print *,'cafac cffac : ',cafac,cffac,asfixd,pifacHWHSNM
-
-c---This is the upgraded version:      
-
+      DATA ASQ,AINU,AINS,SOLD,TOLD,QQ/5*0,169*-1/
 C---QQ CACHES THE KINEMATIC-INDEPENDENT FACTORS, TO MAKE IT RUN FASTER
 C  (BEARING IN MIND THAT THIS ROUTINE IS CALLED 169 TIMES PER EVENT)
-	IF (QQ(ID1,ID2).LT.0) THEN
-	  IF(PRVSN) THEN 
-	    WRITE(*,*)
-     $      "	     USING UPGRADED HWHSNM FOR COLOUR SINGLET EXCHANGE" 
-	    PRVSN = .FALSE.
-	  ENDIF
-
-	  IF (PHOTON) THEN
-	    IF (ID1.EQ.13.OR.ID2.EQ.13) THEN
-	      QQ(ID1,ID2)=0
-	    ELSE
-	      QQ(ID1,ID2)=(QFCH(MOD(ID1-1,6)+1)*QFCH(MOD(ID2-1,6)+1))**2
-     $  	  *(4*PIFAC)**2
-	    ENDIF
-	  ELSE
-	    IF (ID1.EQ.13.AND.ID2.EQ.13) THEN
-	      QQ(ID1,ID2)=CAFAC**4
-	    ELSEIF (ID1.EQ.13.OR.ID2.EQ.13) THEN
-	      QQ(ID1,ID2)=(CAFAC*CFFAC)**2
-	    ELSE
-	      QQ(ID1,ID2)=CFFAC**4
-	    ENDIF
-	    QQ(ID1,ID2)=QQ(ID1,ID2)*16*PIFAC
-	  ENDIF
-	ENDIF
+      IF (QQ(ID1,ID2).LT.ZERO) THEN
+        IF (PHOTON) THEN
+          IF (ID1.EQ.13.OR.ID2.EQ.13) THEN
+            QQ(ID1,ID2)=0
+          ELSE
+            QQ(ID1,ID2)=(QFCH(MOD(ID1-1,6)+1)*QFCH(MOD(ID2-1,6)+1))**2
+     $           *(4*PIFAC)**2
+          ENDIF
+        ELSE
+          IF (ID1.EQ.13.AND.ID2.EQ.13) THEN
+            QQ(ID1,ID2)=CAFAC**4
+          ELSEIF (ID1.EQ.13.OR.ID2.EQ.13) THEN
+            QQ(ID1,ID2)=(CAFAC*CFFAC)**2
+          ELSE
+            QQ(ID1,ID2)=CFFAC**4
+          ENDIF
+          QQ(ID1,ID2)=QQ(ID1,ID2)*
+     $         PIFAC**3/(4*(3.5*ASFIXD*CAFAC*ZETA3)**3)
+     $         *(16*PIFAC)
+        ENDIF
+      ENDIF
 C---THE KINEMATIC-DEPENDENT PART IS ALSO CACHED
-	IF (S.NE.SOLD.OR.T.NE.TOLD) THEN
-	  IF (PHOTON) THEN
-	    AINS=HWUAEM(T)**2
-	    ASQ=2*(S**2+(S+T)**2)/T**2*AINS
-	    AINU=-2*S/T*AINS
-	    AINS=2*AINS-AINU
-	  ELSE
-c cox Forshaw fit
-            if(icox.eq.1) then
-	    Y=LOG(S/(-T))
-	    Z=(1.5/PIFAC)*asfixd*Y
-            para=7.6155D0
-            parb=-20.259D0
-            parc=41.534D0
-            pard=-2.6150D0
-            pare=8.6744D0
-
-	    ASQ=1.D0/(4.D0*PIFAC)*asfixd**4
-     &  	  *(para+parb*Z+parc*Z**2+exp(pard+pare*Z))
-     &  	  *(S/T)**2
-            endif
-
-            if(icox.eq.2) then
-c BFKL LL all p
-
-           para=10.605D0
-           parb=-169.62D0
-           parc=-248.47D0
-           pard=6.6070D0
-           pare=-11.745D0
-           parf=-3.3327D0
-           parg=91.706D0
-           parh=543.41D0
-           pari=-48.005D0
-           parj=166.22D0
-           park=0.70830D0
-           parl=0.44678D0
-
-            pt = dsqrt(-t)
-
-
-           Nf = 4
-           rlambdaqcd = 0.18D0
-           beta0 = (33.D0-2.D0*Nf)/12./3.14159
-           alphas = 3.D0/pifac/(beta0*dlog(pt**2.D0/rlambdaqcd**2))
-
-
-
-            Y=LOG(S/(-T))
-            Z=(1.5/PIFAC)*asfixd*Y
-            asq = para 
-            asq = asq + parj / (z + park)
-            asq = asq + parg / (z + parf)**2.D0
-            asq = asq + parc * z**2.D0
-            asq = asq + parh * z**3.D0
-            asq = asq + pari / (z + parl)**3.D0
-            asq = asq + dexp(pard + pare*z )
-            asq = asq / (4.D0 * pifac) * alphas**4.D0
-            asq = asq *(S/T)**2
-
-c            print *,'asq :',pt,y,z,s/t,asq
-c            endif
-
-
-
-
-
-            endif
-
-            if(icox.eq.3) then
-c BFKL NLL p=0
-
-           para=-1.5823D0
-           parb=39.146D0
-           parc=-84.443D0
-           pard=2.3911D0
-           pare=-8.9639D0
-           parf=-0.0013656D0
-           parg=0.012317D0
-           parh=-0.020299D0
-           pari=98.411D0
-           parl=0.032536D0
-           parm=-0.22770D0
-           parn=1.0172D0
-
-            pt = dsqrt(-t)
-
-
-           Nf = 4
-           rlambdaqcd = 0.18D0
-           beta0 = (33.D0-2.D0*Nf)/12./3.14159
-           alphas = 3.D0/pifac/(beta0*dlog(pt**2.D0/rlambdaqcd**2))
-
-
-
-            Y=LOG(S/(-T))
-            Z=(1.5/PIFAC)*alphas*Y
-            asq = para + parf*pt + parl*dsqrt(pt)
-            asq = asq + (parb+parg*pt+parm*dsqrt(pt))*z
-            asq = asq + (parc + parh*pt)* z**2.D0
-            asq = asq + (pari + parn*dsqrt(pt)) * z**3.D0
-c            asq = asq + parj / z
-c            asq = asq + park / z**2.D0
-            asq = asq + dexp(pard + pare*z )
-            asq = asq / (4.D0 * pifac) * alphas**4.D0
-            asq = asq *(S/T)**2
-
-c            print *,'asq :',pt,y,z,s/t,asq
-c            endif
-            endif
-
-
-
-            if(icox.eq.4) then
-c BFKL NLL all p
-
-           para=47.414D0
-           parb=-121.50D0
-           parc=119.93D0
-           pard=5.9833D0
-           pare=-17.199D0
-           parf=0.0072066D0
-           parg=-0.29812D0
-           parh=0.55726D0
-           pari=10.385D0
-           parl=1.5660D0
-           parm=-3.1149D0
-           parn=1.3812D0
-
-            pt = dsqrt(-t)
-
-
-           Nf = 4
-           rlambdaqcd = 0.18D0
-           beta0 = (33.D0-2.D0*Nf)/12./3.14159
-           alphas = 3.D0/pifac/(beta0*dlog(pt**2.D0/rlambdaqcd**2))
-
-            
-
-            Y=LOG(S/(-T))
-            Z=(1.5/PIFAC)*alphas*Y
-            asq = para + parf*pt + parl*dsqrt(pt)
-            asq = asq + (parb+parg*pt+parm*dsqrt(pt))*z
-            asq = asq + (parc + parh*pt)* z**2.D0
-            asq = asq + (pari + parn*dsqrt(pt)) * z**3.D0
-c            asq = asq + parj / z
-c            asq = asq + park / z**2.D0
-            asq = asq + dexp(pard + pare*z )
-            asq = asq / (4.D0 * pifac) * alphas**4.D0
-            asq = asq *(S/T)**2
-
-c            print *,'asq :',pt,y,z,s/t,asq
-            endif
-
-            if(icox.eq.5) then
-c BFKL LL p=0 (Cox Forshaw modified alphas running)
-
-            pt = dsqrt(-t)
-
-
-           Nf = 4
-           rlambdaqcd = 0.18D0
-           beta0 = (33.D0-2.D0*Nf)/12./3.14159
-           alphas = 3.D0/pifac/(beta0*dlog(pt**2.D0/rlambdaqcd**2))
-
-
-            Y=LOG(S/(-T))
-            Z=(1.5/PIFAC)*asfixd*Y
-            para=8.1157D0
-            parb=-49.014D0
-            parc=127.98D0
-            pard=0.13289D0
-            pare=6.0005D0
-            parf=-199.48D0
-
-            ASQ=1.D0/(4.D0*PIFAC)*alphas**4
-     &            *(para+parb*Z+parc*Z**2+parf*Z**3+exp(pard+pare*Z))
-     &            *(S/T)**2
-
-
-	    endif
-
-	    AINU=0
-	    AINS=0
-	  ENDIF
-	ENDIF
+      IF (S.NE.SOLD.OR.T.NE.TOLD) THEN
+        IF (PHOTON) THEN
+          AINS=HWUAEM(T)**2
+          ASQ=2*(S**2+(S+T)**2)/T**2*AINS
+          AINU=-4*S/T*AINS/NCOLO
+          AINS=4*AINS/NCOLO-AINU
+        ELSE
+          Y=LOG(S/(-T))+ONE
+          ASQ=HWUALF(1,EMSCA)**4*(S/T)**2*EXP(2*OMEGA0*Y)/Y**3
+          AINU=0
+          AINS=0
+        ENDIF
+      ENDIF
 C---THE FINAL ANSWER IS JUST THEIR PRODUCT
-	IF (ID1.EQ.ID2) THEN
-	  HWHSNM=QQ(ID1,ID2)*(ASQ+AINU)
-	ELSEIF (ABS(ID1-ID2).EQ.6) THEN
-	  HWHSNM=QQ(ID1,ID2)*(ASQ+AINS)
-	ELSE
-	  HWHSNM=QQ(ID1,ID2)*ASQ
-	ENDIF
+      IF (ID1.EQ.ID2) THEN
+        HWHSNM=QQ(ID1,ID2)*(ASQ+AINU)
+      ELSEIF (ABS(ID1-ID2).EQ.6) THEN
+        HWHSNM=QQ(ID1,ID2)*(ASQ+AINS)
       ELSE
-c---This is the original version:   
-	IF (QQ(ID1,ID2).LT.ZERO) THEN
-	
-	  IF(PRVSN) THEN 
-	    WRITE(*,*)
-     $      "	     USING ORIGINAL HWHSNM FOR COLOUR SINGLET EXCHANGE" 
-	    PRVSN=.FALSE.
-	  ENDIF
-	
-	  IF (PHOTON) THEN
-	    IF (ID1.EQ.13.OR.ID2.EQ.13) THEN
-	      QQ(ID1,ID2)=0
-	    ELSE
-	      QQ(ID1,ID2)=(QFCH(MOD(ID1-1,6)+1)*QFCH(MOD(ID2-1,6)+1))**2
-     $  	  *(4*PIFAC)**2
-	    ENDIF
-	  ELSE
-	    IF (ID1.EQ.13.AND.ID2.EQ.13) THEN
-	      QQ(ID1,ID2)=CAFAC**4
-	    ELSEIF (ID1.EQ.13.OR.ID2.EQ.13) THEN
-	      QQ(ID1,ID2)=(CAFAC*CFFAC)**2
-	    ELSE
-	      QQ(ID1,ID2)=CFFAC**4
-	    ENDIF
-	    QQ(ID1,ID2)=QQ(ID1,ID2)*
-     $  	PIFAC**3/(4*(3.5*ASFIXD*CAFAC*ZETA3)**3)
-     $  	*(16*PIFAC)
-	  ENDIF
-	ENDIF
-C---THE KINEMATIC-DEPENDENT PART IS ALSO CACHED
-	IF (S.NE.SOLD.OR.T.NE.TOLD) THEN
-	  IF (PHOTON) THEN
-	    AINS=HWUAEM(T)**2
-	    ASQ=2*(S**2+(S+T)**2)/T**2*AINS
-	    AINU=-4*S/T*AINS/NCOLO
-	    AINS=4*AINS/NCOLO-AINU
-	  ELSE
-	    Y=LOG(S/(-T))+ONE
-	    ASQ=HWUALF(1,EMSCA)**4*(S/T)**2*EXP(2*OMEGA0*Y)/Y**3
-	    AINU=0
-	    AINS=0
-	  ENDIF
-	ENDIF
-C---THE FINAL ANSWER IS JUST THEIR PRODUCT
-	IF (ID1.EQ.ID2) THEN
-	  HWHSNM=QQ(ID1,ID2)*(ASQ+AINU)
-	ELSEIF (ABS(ID1-ID2).EQ.6) THEN
-	  HWHSNM=QQ(ID1,ID2)*(ASQ+AINS)
-	ELSE
-	  HWHSNM=QQ(ID1,ID2)*ASQ
-	ENDIF
+        HWHSNM=QQ(ID1,ID2)*ASQ
       ENDIF
       END
-
 CDECK  ID>, HWHSPN.
 *CMZ :-        -01/10/01  19.41.18  by  Peter Richardson
 *-- Author :    Peter Richardson
@@ -60383,9 +60105,8 @@ C-----------------------------------------------------------------------
 CDECK  ID>, PDFSET.
 *CMZ :-        -26/04/91  11.11.54  by  Bryan Webber
 *-- Author :    Bryan Webber
-C CHR YURA
 C----------------------------------------------------------------------
-      SUBROUTINE PDFSETB(PARM,VAL)
+      SUBROUTINE PDFSET(PARM,VAL)
 C----------------------------------------------------------------------
 C     DUMMY SUBROUTINE: DELETE AND SET MODPDF(I)
 C     IN MAIN PROGRAM IF YOU USE PDFLIB CERN-LIBRARY
@@ -60515,8 +60236,7 @@ CDECK  ID>, STRUCTM.
 *CMZ :-        -26/04/91  11.11.54  by  Bryan Webber
 *-- Author :    Bryan Webber
 C-----------------------------------------------------------------------
-C CHR YURA
-      SUBROUTINE STRUCTMB(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU)
+      SUBROUTINE STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU)
 C-----------------------------------------------------------------------
 C     DUMMY SUBROUTINE: DELETE IF YOU USE PDFLIB CERN-LIBRARY
 C     PACKAGE FOR NUCLEON STRUCTURE FUNCTIONS
