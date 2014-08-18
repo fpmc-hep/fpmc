@@ -1,4 +1,4 @@
-NTNAME      'sm_qed_exoticVdiphoton.hbook'
+NTNAME      'tmpntuple.ntp'
 MAXEV       1000
 TYPEPR      'EXC'
 TYPINT      'QED'
@@ -12,6 +12,6 @@ YWWMIN      0.
 YWWMAX      1.
 ISOFTM      0
 AAEXOTIC    1
-AAM         1000.
-AAQ         4.
+AAM         7000.
+AAQ         10.
 AAN         1.
