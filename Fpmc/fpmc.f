@@ -3428,9 +3428,13 @@ C ... O.K./M.S. Calling anomalous aaww or aazz coupling or aaaa coupling
      $        SQRT(EMSQ), SWEIN, D_KAPPA, LAMBDA, A0W, ACW, ANOMCUTOFF)
               IF(HQ.EQ.200) call sqme_aazz_c(AMP2, S, T, alphem,
      $        SQRT(EMSQ), SWEIN, A0Z, ACZ, ANOMCUTOFF)
-              IF(HQ.EQ.59) call sqme_aaaa_c(AMP2, S, T, alphem,
-     $        SQRT(EMSQ), SWEIN, D_KAPPA, LAMBDA, A1A, A2A, ANOMCUTOFF)
-             FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
+              IF(HQ.EQ.59) THEN 
+C ... M.S. Former routine from compHEP
+c              call sqme_aaaa_c(AMP2, S, T, alphem,
+c     $        SQRT(EMSQ), SWEIN, D_KAPPA, LAMBDA, A1A, A2A, ANOMCUTOFF)
+              call eft_sqme_aaaa_c(AMP2, S, T, 1, A1A, A2A, ANOMCUTOFF)
+              ENDIF
+              FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
 
 c              FACTR1=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
@@ -3471,17 +3475,15 @@ C ... M.S. Calling SM and EXOTIC exclusive photon pair production
               call sm_sqme_aaaa_c(AMP2, S, T, 2)
               ENDIF               
               IF(HQ.EQ.59.AND.IPROC.EQ.16063) THEN
-              call bsmv_sqme_aaaa_c(AMP2, S, T, 0, 0,
+              call bsmv_sqme_aaaa_c(AMP2, S, T, 1, 0,
      $        AAM, AAQ, AAN)
               ENDIF
               IF(HQ.EQ.59.AND.IPROC.EQ.16064) THEN
-              call bsmf_sqme_aaaa_c(AMP2, S, T, 0, 0,
+              call bsmf_sqme_aaaa_c(AMP2, S, T, 1, 0,
      $        AAM, AAQ, AAN)
- 
               ENDIF
              FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
-
 
           ELSE
              print *, 'Nonstandard choice of AAANOM=', AAANOM

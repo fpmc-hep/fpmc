@@ -17,18 +17,18 @@ double ReB(double z){
     {
       b = sqrt( 1 - 1/z );
       //     return 0.5 * b * log( (1+b) / (b-1) ) - 1;
-      return b*atanh(1/b);
+      return b*atanh(1/b)-1;
     }
   else if ( z>=1 ) // 0 <= b < 1 
     {
       b = sqrt( 1 - 1/z );
       //      return 0.5 * b * log( (1+b) / (1-b) ) - 1;
-      return b*atanh(b);
+      return b*atanh(b)-1;
     }
   else // b is imaginary
     {
       b = sqrt( 1/z - 1 );
-      return  b * atan(1/b) ;
+      return  b * atan(1/b)-1 ;
     }
 
 };

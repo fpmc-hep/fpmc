@@ -3,7 +3,8 @@
 
 #include<math.h>
 #include"./functions.h"
-
+#include<iostream>
+#include<fstream>
 
 
 void Mxxxx_fermion(double x, double y, double * re, double * im){
@@ -16,6 +17,8 @@ void Mxxxx_fermion(double x, double y, double * re, double * im){
   double z = - x - y;
   
   double temp;
+
+
  
   temp = 2 * ( y*y + z*z ) / ( x * x ) - 2/x;
   *re += temp * ( ReT(y) + ReT(z) );
@@ -36,6 +39,8 @@ void Mxxxx_fermion(double x, double y, double * re, double * im){
   temp = 2* (y-z)/x;
   *re += temp * ( ReB(y) - ReB(z) );
   *im += temp * ( ImB(y) - ImB(z) );
+     
+
 
   return;
 
@@ -44,8 +49,28 @@ void Mxxxx_fermion(double x, double y, double * re, double * im){
 void Mpppp_fermion(double sred, double tred, double *re, double *im, int exclude_loops){
   // M++++ from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
+double ured=-sred-tred;
+
 if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
-else{   Mxxxx_fermion(sred,tred,re,im); }
+else{ 
+if(sred<0.001){ // EFT limit
+        *re= -4.*(4.*(-1./36.)  +3.*(7./90.) )  *sred*sred ;  
+        *im=0;  }
+else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
+{                // Forward and backward limit 
+*re= 1./(2.* sred*sred)*( 2.* sred*sred+(-2.*sred+4.*sred*sred)*ReB(sred)
++(2.*sred-8.*sred*sred)*ReB(-sred) +(-1.+2.*sred)*ReT(sred)+(-1.-2.*sred+4.*sred*sred)*ReT(-sred) )  ;
+*im= 1./(2.* sred*sred)*(               (-2.*sred+4.*sred*sred)*ImB(sred)
++(2.*sred-8.*sred*sred)*ImB(-sred) +(-1.+2.*sred)*ImT(sred)+(-1.-2.*sred+4.*sred*sred)*ImT(-sred) )  ;
+
+//std::cout <<"re pppp forward" <<"\t" << *re  << std::endl;
+
+}
+else{   Mxxxx_fermion(sred,tred,re,im);
+//std::cout <<"re pppp normal" <<"\t" << *re  << std::endl;
+ }
+    
+    } 
 
   return;
 
@@ -54,9 +79,26 @@ else{   Mxxxx_fermion(sred,tred,re,im); }
 void Mpmmp_fermion(double sred, double tred, double *re, double *im, int exclude_loops){
   // M+--+ from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
-if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
-else{   Mxxxx_fermion(tred,sred,re,im); }
+double ured=-sred-tred;
 
+if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
+else{
+
+if(sred<0.001){ // EFT limit
+        *re= -4.*(4.*(-1./36.)  +3.*(7./90.) )  *tred*tred ;
+        *im=0;  }
+else if(sred<10000. && sred>0.001 && -tred<0.0001*sred)
+{                // Forward limit 
+        *re=0.; *im=0.;
+}
+else if(sred<10000. && sred>0.001 && -ured<0.0001*sred)
+{                // Backward limit 
+*re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) )  ;
+*im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) )  ;
+}
+else{  Mxxxx_fermion(tred,sred,re,im); }
+
+    }
   return;
 
 };
@@ -64,9 +106,32 @@ else{   Mxxxx_fermion(tred,sred,re,im); }
 void Mpmpm_fermion(double sred, double tred, double *re, double *im, int exclude_loops){
 // M+-+- from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
-if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
-else{   Mxxxx_fermion(-tred-sred,tred,re,im); }
+double ured=-sred-tred;
 
+if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
+else{ 
+if(sred<0.001){ // EFT limit
+        *re= -4.*(4.*(-1./36.)  +3.*(7./90.) )  *ured*ured ;
+        *im=0;  }
+else if(sred<10000. && sred>0.001 && -tred<0.0001*sred)
+{                // Forward limit 
+*re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) )  ;
+*im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) )  ;
+
+//std::cout <<"re pmpm forward" <<"\t" << *re  << std::endl;
+
+}
+else if(sred<10000. && sred>0.001 && -ured<0.0001*sred)
+{                // Backward limit 
+         *re=0.; *im=0.;
+}
+else{   Mxxxx_fermion(ured,tred,re,im);
+
+//std::cout <<"re pmpm normal" <<"\t" << *re  << std::endl;
+
+ }
+    
+    }
   return;
 
 };
@@ -80,7 +145,14 @@ void Mpppm_fermion(double sred, double tred, double * re, double * im, int exclu
 
 
 if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
-else{ 
+else{
+ 
+if(sred<0.001){ // EFT limit
+             *re= 0.; *im=0.;}
+else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
+{                // Forward and backward limit 
+             *re= 0.; *im=0.;}
+else{
 
   *re=-1;
   *im=0;
@@ -100,6 +172,7 @@ else{
   temp = 1/sred + 1/( 2 * tred * ured );
   *re += temp*ReI(tred,ured);
   *im += temp*ImI(tred,ured);
+    }
 
      }
 
@@ -117,7 +190,16 @@ void Mppmm_fermion(double sred, double tred, double * re, double * im, int exclu
 if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
 else{ 
 
-  *re=-1;
+if(sred<0.001){ // EFT limit
+        *re= -4.*(4.*(-1./36.)  +(7./90.) )*(sred*sred+tred*tred+ured*ured); *im=0.;}
+else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
+{                // Forward and backward limit 
+*re=1./(2.*sred*sred)*( -2.*sred*sred-2.*sred*ReB(sred)+2.*sred*ReB(-sred)-ReT(sred)-ReT(-sred)  ) ; 
+*im=1./(2.*sred*sred)*(              -2.*sred*ImB(sred)+2.*sred*ImB(-sred)-ImT(sred)-ImT(-sred)  );
+}
+else{ 
+
+ *re=-1;
   *im=0;
     
   temp = 1/( 2 * sred * tred );
@@ -131,6 +213,8 @@ else{
   temp = 1/( 2 * tred * ured );
   *re += temp*ReI(tred,ured);
   *im += temp*ImI(tred,ured);
+
+    }
 
       }
 
@@ -154,6 +238,7 @@ void Mxxxx_vector(double x, double y, double * re, double * im){
   double temp;
 
 
+
   temp = -3* (y-z)/x;
   *re += temp * ( ReB(y) - ReB(z) );
   *im += temp * ( ImB(y) - ImB(z) );
@@ -175,7 +260,7 @@ void Mxxxx_vector(double x, double y, double * re, double * im){
   temp = -4*(x-0.25)*(x-0.75)/(x*z); ; 
   *re += temp * ReI(x,z); 
   *im += temp * ImI(x,z);
-
+    
 
   return;
 
@@ -185,41 +270,119 @@ void Mxxxx_vector(double x, double y, double * re, double * im){
 
 void Mpppp_vector(double sred, double tred, double *re, double *im, int exclude_loops){
 
-if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
-else{   Mxxxx_vector(sred,tred,re,im);     }
+double ured=-sred-tred;
 
+if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
+else{ 
+  if(sred<0.001){ // EFT limit
+*re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *sred*sred ;
+        *im=0;  }
+else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
+       {           // Forward and backward limit 
+*re=-3./2.+8.*(sred-0.25)*(sred-0.75)/sred*ReB(sred)+
+(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ReB(-sred)+
+4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ReT(sred)+
+(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ReT(-sred);
+*im=8.*(sred-0.25)*(sred-0.75)/sred*ImB(sred)+
+(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ImB(-sred)+
+4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ImT(sred)+
+(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ImT(-sred);
+
+//std::cout <<"re pppp forward" <<"\t" << *re  << std::endl;
+        }
+
+else{   Mxxxx_vector(sred,tred,re,im);  
+//std::cout <<"re pppp normal" <<"\t" << *re  << std::endl;
+   }
+    }
   return;
 
 };
 
 void Mpmmp_vector(double sred, double tred, double *re, double *im, int exclude_loops){
 
+double ured=-sred-tred;
 
 if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
-else{   Mxxxx_vector(tred,sred,re,im); }
+else{
+  if(sred<0.001){ // EFT limit
+*re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *tred*tred ;
+        *im=0;  }
+else if(sred<10000. && sred>0.001 && -tred<0.0001*sred)
+{                // Forward limit 
+        *re=0.; *im=0.;
+}
+else if(sred<10000. && sred>0.001 && -ured<0.0001*sred)
+{                // Backward limit 
+*re=-3./2.+8.*(sred-0.25)*(sred-0.75)/sred*ReB(sred)+
+(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ReB(-sred)+
+4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ReT(sred)+
+(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ReT(-sred);
+*im=8.*(sred-0.25)*(sred-0.75)/sred*ImB(sred)+
+(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ImB(-sred)+
+4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ImT(sred)+
+(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ImT(-sred);
+}
 
+else{    Mxxxx_vector(tred,sred,re,im); }
+
+    }
   return;
 
 };
 
 void Mpmpm_vector(double sred, double tred, double *re, double *im, int exclude_loops){
 
+double ured=-tred-sred;
 
 if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
-else{   Mxxxx_vector(-tred-sred,tred,re,im); }
+else{ 
+  if(sred<0.001){ *re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *ured*ured ;
+        *im=0;  }
+else if(sred<10000. && sred>0.001 && -tred<0.0001*sred)
+{                // Forward limit 
+*re=-3./2.+8.*(sred-0.25)*(sred-0.75)/sred*ReB(sred)+
+(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ReB(-sred)+
+4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ReT(sred)+
+(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ReT(-sred);
+*im=8.*(sred-0.25)*(sred-0.75)/sred*ImB(sred)+
+(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ImB(-sred)+
+4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ImT(sred)+
+(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ImT(-sred);
 
+//std::cout <<"re pmpm forward" <<"\t" << *re  << std::endl;
+
+}
+else if(sred<10000. && sred>0.001 && -ured<0.0001*sred)
+{                // Backward limit 
+         *re=0.; *im=0.;
+}
+else{   Mxxxx_vector(ured,tred,re,im); }
+
+    }
   return;
 
 };
 
 void Mpppm_vector(double sred, double tred, double * re, double * im, int exclude_loops){
 
+double ured=-tred-sred;
+
+
 if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
 else{ 
+
+if(sred<0.001){ // EFT limit
+		*re= 0.; *im=0.;}
+else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
+{                // Forward and backward limit 
+             *re= 0.; *im=0.;}
+else{
 
    Mpppm_fermion(sred,tred,re,im,exclude_loops);
   *re *= -1.5;
   *im *= -1.5;
+    }
 
     }
 
@@ -228,12 +391,26 @@ else{
 
 void Mppmm_vector(double sred, double tred, double * re, double * im, int exclude_loops){
 
+  double ured = -sred-tred;
+
 if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
 else{   
+
+if(sred<0.001){ // EFT limit 
+		*re= -4.*(4.*(-5./32.)  +(27./40.) )*(sred*sred+tred*tred+ured*ured); *im=0.;}
+else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
+{                // Forward and backward limit 
+*re=1./(2.*sred*sred)*( -2.*sred*sred-2.*sred*ReB(sred)+2.*sred*ReB(-sred)-ReT(sred)-ReT(-sred)  ) ; 
+*im=1./(2.*sred*sred)*(              -2.*sred*ImB(sred)+2.*sred*ImB(-sred)-ImT(sred)-ImT(-sred)  );
+  *re *= -1.5;
+  *im *= -1.5;
+}
+else{ 
 
   Mppmm_fermion(sred,tred,re,im,exclude_loops);
   *re *= -1.5;
   *im *= -1.5;
+     }
 
    }
 

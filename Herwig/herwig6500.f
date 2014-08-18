@@ -60105,8 +60105,9 @@ C-----------------------------------------------------------------------
 CDECK  ID>, PDFSET.
 *CMZ :-        -26/04/91  11.11.54  by  Bryan Webber
 *-- Author :    Bryan Webber
+C CHR YURA
 C----------------------------------------------------------------------
-      SUBROUTINE PDFSET(PARM,VAL)
+      SUBROUTINE PDFSETB(PARM,VAL)
 C----------------------------------------------------------------------
 C     DUMMY SUBROUTINE: DELETE AND SET MODPDF(I)
 C     IN MAIN PROGRAM IF YOU USE PDFLIB CERN-LIBRARY
@@ -60236,7 +60237,8 @@ CDECK  ID>, STRUCTM.
 *CMZ :-        -26/04/91  11.11.54  by  Bryan Webber
 *-- Author :    Bryan Webber
 C-----------------------------------------------------------------------
-      SUBROUTINE STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU)
+C CHR YURA
+      SUBROUTINE STRUCTMB(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BOT,TOP,GLU)
 C-----------------------------------------------------------------------
 C     DUMMY SUBROUTINE: DELETE IF YOU USE PDFLIB CERN-LIBRARY
 C     PACKAGE FOR NUCLEON STRUCTURE FUNCTIONS
