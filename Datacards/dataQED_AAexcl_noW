@@ -1,4 +1,4 @@
-NTNAME      'tmpnutple.ntp'
+NTNAME      'tmpntuple.ntp'
 MAXEV       1000
 TYPEPR      'EXC'
 TYPINT      'QED'
