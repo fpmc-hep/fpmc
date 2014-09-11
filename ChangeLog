@@ -1,3 +1,7 @@
+2014-09-11 Matthias Saimpert <matthias.saimpert@cern.ch>
+  * Fix for gg->gg, high energy limit implemented (sqrt(s)>>m)
+  * Final release for gg->gg :)
+
 2014-08-18 Matthias Saimpert <matthias.saimpert@cern.ch>
   * Anomalous aaaa with compHEP routine found to be wrong (around a factor 2.1
   too small)

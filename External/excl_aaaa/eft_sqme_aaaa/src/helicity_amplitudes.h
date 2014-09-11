@@ -1,7 +1,7 @@
 // Computes different helicity amplitudes as defined in 
 // Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
-
+int limits(double sred, double tred);
 
 void Mxxxx_fermion(double x, double y, double * re, double * im);
 
