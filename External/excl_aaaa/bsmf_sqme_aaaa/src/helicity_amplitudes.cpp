@@ -319,96 +319,137 @@ void Mxxxx_vector(double x, double y, double * re, double * im){
 
 void Mpppp_vector(double sred, double tred, double *re, double *im, int exclude_loops){
 
-double ured=-sred-tred;
+  double ured=-sred-tred;
 
-if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
-else{ 
-  if(sred<0.001){ // EFT limit
-*re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *sred*sred ;
-        *im=0;  }
-else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
-       {           // Forward and backward limit 
-*re=-3./2.+8.*(sred-0.25)*(sred-0.75)/sred*ReB(sred)+
-(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ReB(-sred)+
-4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ReT(sred)+
-(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ReT(-sred);
-*im=8.*(sred-0.25)*(sred-0.75)/sred*ImB(sred)+
-(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ImB(-sred)+
-4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ImT(sred)+
-(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ImT(-sred);
-
-//std::cout <<"re pppp forward" <<"\t" << *re  << std::endl;
-        }
-
-else{   Mxxxx_vector(sred,tred,re,im);  
-//std::cout <<"re pppp normal" <<"\t" << *re  << std::endl;
-   }
+  if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
+  else{ 
+    int region = limits (sred, tred, ured);
+    if( region == low ){ // EFT limit
+      *re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *sred*sred ;
+      *im=0;  }
+    else if ( region == forward || region == backward )
+      {           // Forward and backward limit 
+	*re=-3./2.+8.*(sred-0.25)*(sred-0.75)/sred*ReB(sred)+
+	  (-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ReB(-sred)+
+	  4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ReT(sred)+
+	  (4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ReT(-sred);
+	*im=8.*(sred-0.25)*(sred-0.75)/sred*ImB(sred)+
+	  (-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ImB(-sred)+
+	  4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ImT(sred)+
+	  (4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ImT(-sred);
+      }
+    else if (region == high)
+      {          // high energy limit
+	*re = - 1.*( 1.5 +  
+		  1.5* (ured-tred)/sred * log(ured/tred) +
+		  2. * ( 1. - 0.75 * tred*ured / (sred*sred) ) * ( pow( log(ured/tred),2) + PI*PI ) +
+		  2. * sred * sred * ( log(4.*sred)*log(-4.*tred)/(sred*tred)+
+				       log(4.*sred)*log(-4.*ured)/(sred*ured)+
+				       log(-4.*ured)*log(-4.*tred)/(ured*tred) )
+		  );
+	*im =  ( 2. * PI * sred*sred *( log(-4.*ured)  / (sred * ured) +
+					log(-4.*tred)  / (sred * tred ) ) 
+		  )  ;
+      }
+    else{   Mxxxx_vector(sred,tred,re,im);  
     }
+  }
   return;
 
 };
 
 void Mpmmp_vector(double sred, double tred, double *re, double *im, int exclude_loops){
 
-double ured=-sred-tred;
+  double ured=-sred-tred;
 
-if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
-else{
-  if(sred<0.001){ // EFT limit
-*re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *tred*tred ;
-        *im=0;  }
-else if(sred<10000. && sred>0.001 && -tred<0.0001*sred)
-{                // Forward limit 
+  if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
+  else{
+    int region = limits (sred, tred, ured);	
+    if( region == low ){ // EFT limit
+      *re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *tred*tred ;
+      *im=0;  }
+    else if( region == forward )
+      {                // Forward limit 
         *re=0.; *im=0.;
-}
-else if(sred<10000. && sred>0.001 && -ured<0.0001*sred)
-{                // Backward limit 
-*re=-3./2.+8.*(sred-0.25)*(sred-0.75)/sred*ReB(sred)+
-(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ReB(-sred)+
-4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ReT(sred)+
-(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ReT(-sred);
-*im=8.*(sred-0.25)*(sred-0.75)/sred*ImB(sred)+
-(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ImB(-sred)+
-4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ImT(sred)+
-(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ImT(-sred);
-}
-
-else{    Mxxxx_vector(tred,sred,re,im); }
-
-    }
+      }
+    else if( region == backward )
+      {                // Backward limit 
+	*re=-3./2.-8.*(-sred-0.25)*(-sred-0.75)/sred*ReB(-sred)+
+	  (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ReB(sred)+
+	  4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ReT(-sred)+
+	  (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ReT(sred);
+	*im=-8.*(-sred-0.25)*(-sred-0.75)/sred*ImB(-sred)+
+	  (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ImB(sred)+
+	  4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ImT(-sred)+
+	  (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ImT(sred);       
+      }
+    else if (region == high)
+      {  // high energy limit
+	*re = - ( 1.5 +  
+		  1.5* (ured-sred)/tred * log(-ured/sred) +
+		  2. * ( 1. - 0.75 * sred * ured / (tred*tred) ) *  pow( log( - ured/sred),2)   +
+		  2. * tred * tred * ( log(4.*sred)*log(-4.*tred)/(sred*tred)+
+				       log(4.*sred)*log(-4.*ured)/(sred*ured)+
+				       log(-4.*ured)*log(-4.*tred)/(ured*tred) )  
+		  );
+	
+	*im = - ( 1.5 * (sred-ured)/tred * (- PI)+ 
+		  2. * ( 1. - 0.75 * sred*ured / (tred*tred) ) * PI * 2. * log(-ured/sred) + 
+		  2. * (-PI) * tred*tred*  ( log(-4.*ured) / (ured*sred) +
+					     log(-4.*tred) / (tred*sred)  )
+		  )  ;
+      }
+    else{    Mxxxx_vector(tred,sred,re,im); }
+  }
   return;
 
 };
 
 void Mpmpm_vector(double sred, double tred, double *re, double *im, int exclude_loops){
 
-double ured=-tred-sred;
+  double ured=-tred-sred;
 
-if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
-else{ 
-  if(sred<0.001){ *re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *ured*ured ;
-        *im=0;  }
-else if(sred<10000. && sred>0.001 && -tred<0.0001*sred)
-{                // Forward limit 
-*re=-3./2.+8.*(sred-0.25)*(sred-0.75)/sred*ReB(sred)+
-(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ReB(-sred)+
-4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ReT(sred)+
-(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ReT(-sred);
-*im=8.*(sred-0.25)*(sred-0.75)/sred*ImB(sred)+
-(-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ImB(-sred)+
-4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ImT(sred)+
-(4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ImT(-sred);
-
-//std::cout <<"re pmpm forward" <<"\t" << *re  << std::endl;
-
-}
-else if(sred<10000. && sred>0.001 && -ured<0.0001*sred)
-{                // Backward limit 
-         *re=0.; *im=0.;
-}
-else{   Mxxxx_vector(ured,tred,re,im); }
-
-    }
+  if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
+  else{ 
+    int region = limits (sred,tred,ured);
+    if( region == low )
+      {     // EFT limit 
+	*re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *ured*ured ;
+	*im=0;  
+      }
+    else if( region == forward)
+      {                // Forward limit 
+ 	*re=-3./2.-8.*(-sred-0.25)*(-sred-0.75)/sred*ReB(-sred)+
+	  (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ReB(sred)+
+	  4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ReT(-sred)+
+	  (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ReT(sred);
+	*im=-8.*(-sred-0.25)*(-sred-0.75)/sred*ImB(-sred)+
+	  (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ImB(sred)+
+	  4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ImT(-sred)+
+	  (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ImT(sred);       
+      }
+    else if( region == backward )
+      {                // Backward limit 
+	*re=0.; *im=0.;
+      }
+    else if ( region == high )
+      {         // high energy limit
+	*re = - ( 1.5 +  
+		  1.5* (tred-sred)/ured * log(-tred/sred) +
+		  2. * ( 1. - 0.75 * sred * tred / (ured*ured) ) *  pow( log( - tred/sred),2)   +
+		  2. * ured * ured * ( log(4.*sred)*log(-4.*tred)/(sred*tred)+
+					      log(4.*sred)*log(-4.*ured)/(sred*ured)+
+					      log(-4.*ured)*log(-4.*tred)/(ured*tred) )
+		  );
+	*im = - ( 1.5 * (sred-tred)/ured * (- PI)+ 
+		  2. * ( 1. - 0.75 * sred*tred / (ured*ured) ) * PI * 2. * log(-tred/sred) + 
+		  2. * (-PI) * ured*ured*  ( log(-4.*ured) / (ured*sred) +
+					     log(-4.*tred) / (tred*sred)  )
+		  )  ;	
+      }
+    else{   Mxxxx_vector(ured,tred,re,im); }
+    
+  }
   return;
 
 };
