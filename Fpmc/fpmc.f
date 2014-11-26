@@ -403,6 +403,8 @@ C ... begin R.S.
 C ... end R.S.
       ELSEIF(TYPEPR.EQ.'EXC'.AND.IPR.NE.60.AND.IPR.NE.99.AND.IPR.NE.98
      &       .AND.IPR.NE.97.AND.IPR.NE.96) THEN
+C CHR to do t tbar higgs, does not exist in gamma gamma herwig
+c     &       .AND.IPR.NE.97.AND.IPR.NE.96.and.IPR.NE.25) THEN
         PRINT*, ' '
         PRINT*, ' FPMC - You requested an exclusive cross-section'
         PRINT*, '          with a bad IPROC:'
@@ -410,6 +412,7 @@ C ... end R.S.
         PRINT*, '          TYPEPR = ', TYPEPR
         PRINT*, ' TYPEPR=EXC needs IPROC=(1)60**, (1)96**, (1)97**, 
      & (1)98** or (1)99**'
+        PRINT*,'IPR :', IPR
         PRINT*, ' '
         PRINT*, ' - STOP'
         PRINT*, ' '
@@ -780,7 +783,8 @@ c nflux 21: Reggeon Pomeron
 c nflux 22: Pomeron Photon
 
       IF ((NFLUX.EQ.9).OR.(NFLUX.EQ.10).OR.(NFLUX.EQ.19).OR.
-     +     (NFLUX.EQ.20).OR.(NFLUX.EQ.21).OR.(NFLUX.EQ.22)) THEN
+     +     (NFLUX.EQ.20).OR.(NFLUX.EQ.21).OR.(NFLUX.EQ.22).OR.
+     +     (NFLUX.EQ.25).OR.(NFLUX.EQ.26)) THEN
 
                !1994 tables FitB: hep/ph 9708016
          IF((IFITPDF.EQ.2).OR.(IFITPDF.EQ.5)) THEN
@@ -903,6 +907,10 @@ C nflux 19: Pomeron Reggeon
 c nflux 20: Photon Pomeron
 c nflux 21: Reggeon Pomeron
 c nflux 22: Pomeron Photon
+c nflux 23: proton ion - photon photon
+c nflux 24: ion proton - photon photon
+c nflux 25: proton ion - pomeron photon
+c nflux 26: ion proton - photon pomeron
 C-----------------------------------------------------------------------
       SUBROUTINE FLUX(F,Z,TMIN,TMAX,IPRO,IND)
       IMPLICIT NONE
@@ -939,6 +947,7 @@ c index of protons Yura/CHR
 c---Choice of flux parameters:
 c   OK 29/11/06 moved to MODINI  
 
+c        print *,'**** NFLUX:',nflux
 c---Fluxes for different models:
 c...Cox-Forshaw pomeron flux:
       IF(NFLUX.EQ.9) THEN
@@ -985,16 +994,119 @@ c ......    divide a factor root(2*[Nc^2-1])
 C---Photon flux from ions : should be valid for all Z
 c ... T.K. : Implemented factorized flux (11) in Cahn, Jackson; PR D42 (1990) 3690
 c ... M.B. : coherency conditions are adapted for ions
+c corrections heavy ions CHR 10/2014
+c         goto 1516
+c         RZERO=1.2/FMCONV
+c         R=RZERO*(AION**(1./3.))
+c         BMIN=1.2*R ! f0actorized flux is a good approximation for larger radius
+c         XM=AION*AMASS
+c         ZZERO=1d0/XM/BMIN
+c         ARG=Z/ZZERO
+c         FAC=2.*(ZION**2)*ALPHAE/PI/ZZERO
+c         F1=DBESK0(ARG)*DBESK1(ARG)
+c         F2=0.5*ARG*(DBESK1(ARG)-DBESK0(ARG))*(DBESK1(ARG)+DBESK0(ARG))
+c         F=FAC*(F1-F2)
+c1516     continue
+c         print *,'con',FMCONV,AMASS
          RZERO=1.2/FMCONV
          R=RZERO*(AION**(1./3.))
-         BMIN=1.2*R ! factorized flux is a good approximation for larger radius
-         XM=AION*AMASS
-         ZZERO=1d0/XM/BMIN
-         ARG=Z/ZZERO
-         FAC=2.*(ZION**2)*ALPHAE/PI/ZZERO
-         F1=DBESK0(ARG)*DBESK1(ARG)
-         F2=0.5*ARG*(DBESK1(ARG)-DBESK0(ARG))*(DBESK1(ARG)+DBESK0(ARG))
-         F=FAC*(F1-F2)
+c         BMIN=1.2*R
+CHR 10/2014 The cutoff should be transmitted in the cards (depends on ion)
+         BMIN=RBMIN*R
+c         print *,'BMIN = ',RBMIN
+         ARG=Z*AMASS*BMIN
+         F=2.*ARG*DBESK0(ARG)*DBESK1(ARG)
+         F=F-ARG**2.D0*(DBESK1(ARG)**2.D0-DBESK0(ARG)**2.D0)
+         F=F*ZION**2.D0*ALPHAE/PI/Z
+
+      ELSEIF (NFLUX.EQ.23) THEN
+C---Photon flux from ions : should be valid for all Z
+c ... T.K. : Implemented factorized flux (11) in Cahn, Jackson; PR D42 (1990) 3690
+c ... M.B. : coherency conditions are adapted for ions
+c CHR ions 10/2014
+c         print *,'con',FMCONV,AMASS
+         IF(IND.EQ.1) THEN
+         Q2MIN = Z*Z*0.88d0/(1d0-Z)/QSCALE
+         Q2MAX = TMAX/QSCALE
+         F = ALPHAE/PI*(1d0-Z)/Z*(PHI(Q2MAX,Z)-PHI(Q2MIN,Z))
+         ELSEIF(IND.EQ.2) THEN
+         RZERO=1.2/FMCONV
+         R=RZERO*(AION**(1./3.))
+c         BMIN=1.2*R
+c         BMIN=1.1*R
+         BMIN=RBMIN*R
+         ARG=Z*AMASS*BMIN
+         F=2.*ARG*DBESK0(ARG)*DBESK1(ARG)
+         F=F-ARG**2.D0*(DBESK1(ARG)**2.D0-DBESK0(ARG)**2.D0)
+         F=F*ZION**2.D0*ALPHAE/PI/Z
+         ENDIF
+      ELSEIF (NFLUX.EQ.24) THEN
+C---Photon flux from ions : should be valid for all Z
+c ... T.K. : Implemented factorized flux (11) in Cahn, Jackson; PR D42 (1990) 3690
+c ... M.B. : coherency conditions are adapted for ions
+c CHR ions 10/2014
+c         print *,'con',FMCONV,AMASS
+         IF(IND.EQ.2) THEN
+         Q2MIN = Z*Z*0.88d0/(1d0-Z)/QSCALE
+         Q2MAX = TMAX/QSCALE
+         F = ALPHAE/PI*(1d0-Z)/Z*(PHI(Q2MAX,Z)-PHI(Q2MIN,Z))
+         ELSEIF(IND.EQ.1) THEN
+         RZERO=1.2/FMCONV
+         R=RZERO*(AION**(1./3.))
+c         BMIN=1.2*R
+c         BMIN=1.1*R
+         BMIN=RBMIN*R
+         ARG=Z*AMASS*BMIN
+         F=2.*ARG*DBESK0(ARG)*DBESK1(ARG)
+         F=F-ARG**2.D0*(DBESK1(ARG)**2.D0-DBESK0(ARG)**2.D0)
+         F=F*ZION**2.D0*ALPHAE/PI/Z
+         ENDIF
+      ELSEIF (NFLUX.EQ.25) THEN
+C---Photon flux from ions : should be valid for all Z
+c ... T.K. : Implemented factorized flux (11) in Cahn, Jackson; PR D42 (1990) 3690
+c ... M.B. : coherency conditions are adapted for ions
+c CHR ions 10/2014
+c         print *,'con',FMCONV,AMASS
+         IF(IND.EQ.1) THEN
+         V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
+     +        DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
+         W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
+         X = 1.D0/(Z**(2.D0*alphaP-1.D0))
+         F = X*W*V
+         ELSEIF(IND.EQ.2) THEN
+         RZERO=1.2/FMCONV
+         R=RZERO*(AION**(1./3.))
+c         BMIN=1.2*R
+c         BMIN=1.1*R
+         BMIN=RBMIN*R
+         ARG=Z*AMASS*BMIN
+         F=2.*ARG*DBESK0(ARG)*DBESK1(ARG)
+         F=F-ARG**2.D0*(DBESK1(ARG)**2.D0-DBESK0(ARG)**2.D0)
+         F=F*ZION**2.D0*ALPHAE/PI/Z
+         ENDIF
+      ELSEIF (NFLUX.EQ.26) THEN
+C---Photon flux from ions : should be valid for all Z
+c ... T.K. : Implemented factorized flux (11) in Cahn, Jackson; PR D42 (1990) 3690
+c ... M.B. : coherency conditions are adapted for ions
+c CHR ions 10/2014
+c         print *,'con',FMCONV,AMASS
+         IF(IND.EQ.2) THEN
+         V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
+     +        DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
+         W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
+         X = 1.D0/(Z**(2.D0*alphaP-1.D0))
+         F = X*W*V
+         ELSEIF(IND.EQ.1) THEN
+         RZERO=1.2/FMCONV
+         R=RZERO*(AION**(1./3.))
+c         BMIN=1.2*R
+c         BMIN=1.1*R
+         BMIN=RBMIN*R
+         ARG=Z*AMASS*BMIN
+         F=2.*ARG*DBESK0(ARG)*DBESK1(ARG)
+         F=F-ARG**2.D0*(DBESK1(ARG)**2.D0-DBESK0(ARG)**2.D0)
+         F=F*ZION**2.D0*ALPHAE/PI/Z
+         ENDIF
       ELSEIF (NFLUX.EQ.13) THEN
 C---Photon flux from heavy ions (Ca, Pb):
 c ... T.K. : Implemented (6) in Drees, Ellis, Zeppenfeld; PL B223 (1989) 455
@@ -1003,11 +1115,12 @@ c ... T.K. : Implemented (6) in Drees, Ellis, Zeppenfeld; PL B223 (1989) 455
          EI=DGAGNC(0.D0,EXPARG) / DEXP(EXPARG)
          F=(ALPHAE/PI/Z)*(-DEXP(-EXPARG)+(1.D0+EXPARG)*EI)
          F=F*(ZION**2)
+         print *,'*** data:',z,exparg,ei,f
       ELSEIF (NFLUX.EQ.14) THEN
 C---Photon flux in pp (use with ZION=AION=1 only)
 c ... M.B. : implement Papageorgiu; PL B250 (1995) 394
 c ...        This is equivalent to Cahn-Jackson, but taking R0=0.2 fm 
-c ...        and relaxing the p-p overlap cut a bit
+c0 ...        and relaxing the p-p overlap cut a bit
          RZERO=0.2/FMCONV
          BMIN=1.*RZERO
          XM=PMASS
@@ -1092,7 +1205,7 @@ c...Cox-Forshaw reggeon flux:
                 F = Cr*X*W*V  
 	 ENDIF       
       ELSE
-         WRITE(*,*) 'In FLUX: NFLUX must be 9-16,18-22 in FPMC!'
+         WRITE(*,*) 'In FLUX: NFLUX must be 9-16,18-26 in FPMC!'
          STOP
       ENDIF
 
@@ -1511,6 +1624,35 @@ c	     print *,'f fn gamwt :',f,fn,gamwt
              GAMWT = GAMWT*F*ZGAM/C
 c	     print *,'f fn gamwt ind 2:',f,fn,gamwt
 	 ENDIF    
+C CHR ion proton-ion gamma gamma
+      ELSEIF (NFLUX.EQ.23) THEN 
+         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+         GAMWT = GAMWT*F*ZGAM/C
+C CHR ion proton-ion gamma gamma
+      ELSEIF (NFLUX.EQ.24) THEN 
+         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+         GAMWT = GAMWT*F*ZGAM/C
+C CHR ion proton-ion pomeron gamma
+      ELSEIF (NFLUX.EQ.25) THEN 
+         IF(IND.EQ.1) THEN
+         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+         CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
+         GAMWT = GAMWT*F*ZGAM/(C*FN*zh1) 
+	 ELSEIF(IND.EQ.2) THEN      
+         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+         GAMWT = GAMWT*F*ZGAM/C
+	 ENDIF    
+C CHR ion proton-ion pomeron gamma
+      ELSEIF (NFLUX.EQ.26) THEN 
+         IF(IND.EQ.2) THEN
+         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+         CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
+         GAMWT = GAMWT*F*ZGAM/(C*FN*zh1) 
+	 ELSEIF(IND.EQ.1) THEN      
+         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
+         GAMWT = GAMWT*F*ZGAM/C
+	 ENDIF    
+
 
 c         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
 c         IF(IND.EQ.1) THEN
@@ -1607,7 +1749,7 @@ c       stop
         ZGAM =  CHIDeZ2
 c ... end R.S.
       ELSE
-         WRITE(*,*) 'In HWEGAM : NFLUX MUST BE 9-16,18-22 IN FPMC'
+         WRITE(*,*) 'In HWEGAM : NFLUX MUST BE 9-16,18-26 IN FPMC'
          STOP
       ENDIF
 
@@ -1701,6 +1843,99 @@ C...... Bialas-Landshoff Pomeron
 C...... QED Heavy Ion : exponential Form Factor, (60 MeV)**2 slope 
 C ..... (what about Z,A dependence?)
          Q2=1.D-3
+
+C CHR proton ion
+      ELSEIF((NFLUX.EQ.23).AND.ZION.GE.10) THEN   
+C...... QED Heavy Ion : exponential Form Factor, (60 MeV)**2 slope 
+C ..... (what about Z,A dependence?)
+       IF(IND.EQ.1) THEN   
+C O.K.... QED Proton : "Dirac Form Factor"
+c         NFLUX = 15 according to Budnev flux, Rejection Technique
+         Q2MINPROT = ZGAM*ZGAM*0.88d0/(1d0-ZGAM)
+        IF(QQMIN.LT.Q2MINPROT) QQMIN = Q2MINPROT
+        IF(QQMIN.GE.QQMAX) THEN
+            GAMWT=ZERO
+            RETURN
+        ENDIF    
+            
+        LOOP=.TRUE.
+        DO WHILE(LOOP)
+         RNGEN=HWRGEN(1) 
+         Q2 = (QQMIN**RNGEN)*(QQMAX**(1-RNGEN));
+C        function envelope is 1/ebeam/z*alpha/pifac/Q2         
+         MAXFLUX = HWRUNI(1, ZERO, 
+     &                     1D0/PHEP(4, IHEP)/ZGAM*ALPHEM/PIFAC/Q2)
+         RNDFLUX = HWRUNI(1, ZERO, MAXFLUX)
+         BFLUX = BUDNEVFLUX(ZGAM, Q2)/PHEP(4, IHEP) 
+            IF(RNDFLUX.LT.BFLUX) THEN
+               LOOP=.FALSE.
+            ENDIF   
+        END DO
+        ELSEIF(IND.EQ.2) THEN
+         Q2=1.D-3
+	ENDIF
+
+
+C CHR  ion proton
+      ELSEIF((NFLUX.EQ.24).AND.ZION.GE.10) THEN   
+C...... QED Heavy Ion : exponential Form Factor, (60 MeV)**2 slope 
+C ..... (what about Z,A dependence?)
+       IF(IND.EQ.2) THEN   
+C O.K.... QED Proton : "Dirac Form Factor"
+c         NFLUX = 15 according to Budnev flux, Rejection Technique
+         Q2MINPROT = ZGAM*ZGAM*0.88d0/(1d0-ZGAM)
+        IF(QQMIN.LT.Q2MINPROT) QQMIN = Q2MINPROT
+        IF(QQMIN.GE.QQMAX) THEN
+            GAMWT=ZERO
+            RETURN
+        ENDIF    
+            
+        LOOP=.TRUE.
+        DO WHILE(LOOP)
+         RNGEN=HWRGEN(1) 
+         Q2 = (QQMIN**RNGEN)*(QQMAX**(1-RNGEN));
+C        function envelope is 1/ebeam/z*alpha/pifac/Q2         
+         MAXFLUX = HWRUNI(1, ZERO, 
+     &                     1D0/PHEP(4, IHEP)/ZGAM*ALPHEM/PIFAC/Q2)
+         RNDFLUX = HWRUNI(1, ZERO, MAXFLUX)
+         BFLUX = BUDNEVFLUX(ZGAM, Q2)/PHEP(4, IHEP) 
+            IF(RNDFLUX.LT.BFLUX) THEN
+               LOOP=.FALSE.
+            ENDIF   
+        END DO
+        ELSEIF(IND.EQ.1) THEN
+         Q2=1.D-3
+	ENDIF
+
+C CHR proton ion Pomeron gamma
+      ELSEIF((NFLUX.EQ.25).AND.ZION.GE.10) THEN   
+C...... QED Heavy Ion : exponential Form Factor, (60 MeV)**2 slope 
+C ..... (what about Z,A dependence?)
+       IF(IND.EQ.1) THEN   
+C ......   H1 Pomeron
+           C=Bpom+2.0*alphaPp*DLOG(1.D0/ZGAM)
+           Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
+     +     (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
+       ELSEIF(IND.EQ.2) THEN
+         Q2=1.D-3
+	ENDIF
+
+
+
+C CHR ion proton Pomeron gamma
+      ELSEIF((NFLUX.EQ.26).AND.ZION.GE.10) THEN   
+C...... QED Heavy Ion : exponential Form Factor, (60 MeV)**2 slope 
+C ..... (what about Z,A dependence?)
+       IF(IND.EQ.2) THEN   
+C ......   H1 Pomeron
+           C=Bpom+2.0*alphaPp*DLOG(1.D0/ZGAM)
+           Q2=(1.D0/C)*DLOG(1.D0/(DEXP(-C*QQMAX)+HWRGEN(1)*
+     +     (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
+       ELSEIF(IND.EQ.1) THEN
+         Q2=1.D-3
+	ENDIF
+
+
       ELSEIF((NFLUX.EQ.12.AND.ZION.EQ.1)
      &        .OR.NFLUX.EQ.14) THEN
 C .... QED Proton : "Dirac Form Factor"
@@ -1771,6 +2006,8 @@ C ......   H1 Pomeron
      +     (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
        ENDIF
 c       print *,'nflux 22 gamwt :',gamwt
+
+
 
        ELSEIF(NFLUX.EQ.15) THEN   
 
@@ -2711,19 +2948,19 @@ C DIS case : don't touch Beam1 (always e+/e-), modify only Beam2 (p,pbar)
             IDHEP(ISEC)=IDPDG(IREG)
 C CHR/Yura Pom Reg
           ELSEIF(NFLUX.EQ.19) THEN
-	    IF(IND.EQ.1) THEN
+	    IF(I.EQ.1) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
-            ELSEIF(IND.EQ.2) THEN	    
+            ELSEIF(I.EQ.2) THEN	    
             IDHW(ISEC)=IREG
             IDHEP(ISEC)=IDPDG(IREG)
 	    ENDIF
 C Yura/CHR Reg Pom
           ELSEIF(NFLUX.EQ.21) THEN
-	    IF(IND.EQ.2) THEN
+	    IF(I.EQ.2) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
-            ELSEIF(IND.EQ.1) THEN	    
+            ELSEIF(I.EQ.1) THEN	    
             IDHW(ISEC)=IREG
             IDHEP(ISEC)=IDPDG(IREG)
 	    ENDIF
@@ -2732,13 +2969,13 @@ C Yura/CHR Reg Pom
             IDHEP(ISEC)=IDPDG(IPOM)
 C Yura/CHR Photon Pom
           ELSEIF(NFLUX.EQ.20) THEN
-            IF(IND.EQ.2) THEN
+            IF(I.EQ.2) THEN
 	    IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)	    
             ENDIF
 C Yura/CHR Pom Photon
           ELSEIF(NFLUX.EQ.22) THEN
-            IF(IND.EQ.1) THEN
+            IF(I.EQ.1) THEN
 	    IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)	    
             ENDIF
@@ -2764,31 +3001,31 @@ C CHR Rafal Should it be 11 or 16 ???????
                IDHEP(ISEC)=IDPDG(IREG)
 C CHR/Yura Pom Reg
             ELSEIF(NFLUX.EQ.19) THEN
-	     IF(IND.EQ.1) THEN
+	     IF(I.EQ.1) THEN
               IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
-              ELSEIF(IND.EQ.2) THEN	    
+              ELSEIF(I.EQ.2) THEN	    
                IDHW(ISEC)=IREG
                IDHEP(ISEC)=IDPDG(IREG)
 	     ENDIF
 C CHR/Yura Reg Pom (non sense here)
             ELSEIF(NFLUX.EQ.21) THEN
-	     IF(IND.EQ.2) THEN
+	     IF(I.EQ.2) THEN
               IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
-              ELSEIF(IND.EQ.1) THEN	    
+              ELSEIF(I.EQ.1) THEN	    
                IDHW(ISEC)=IREG
                IDHEP(ISEC)=IDPDG(IREG)
 	     ENDIF
 C CHR/Yura Photon Pom (non sense here)
             ELSEIF(NFLUX.EQ.20) THEN
-             IF(IND.EQ.2) THEN
+             IF(I.EQ.2) THEN
 	      IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
 	     ENDIF
 C CHR/Yura Pom Photon (non sense here)
             ELSEIF(NFLUX.EQ.22) THEN
-             IF(IND.EQ.1) THEN
+             IF(I.EQ.1) THEN
 	      IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
 	     ENDIF
@@ -2818,31 +3055,31 @@ C CHR/Rafal is it 16 or 11??????
                IDHEP(ISEC)=IDPDG(IREG)
 C CHR/Yura Pom Reg
             ELSEIF(NFLUX.EQ.19) THEN
-	     IF(IND.EQ.1) THEN
+	     IF(I.EQ.1) THEN
               IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
-             ELSEIF(IND.EQ.2) THEN	    
+             ELSEIF(I.EQ.2) THEN	    
               IDHW(ISEC)=IREG
               IDHEP(ISEC)=IDPDG(IREG)
 	     ENDIF
 C CHR/Yura Reg Pom (non sense here)
             ELSEIF(NFLUX.EQ.21) THEN
-	     IF(IND.EQ.2) THEN
+	     IF(I.EQ.2) THEN
               IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
-             ELSEIF(IND.EQ.1) THEN	    
+             ELSEIF(I.EQ.1) THEN	    
               IDHW(ISEC)=IREG
               IDHEP(ISEC)=IDPDG(IREG)
 	     ENDIF
 C CHR/Yura Pom Photon (non sense here)
             ELSEIF(NFLUX.EQ.20) THEN
-             IF(IND.EQ.2) THEN
+             IF(I.EQ.2) THEN
 	      IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
 	     ENDIF
 C CHR/Yura Photon Pom (non sense here)
             ELSEIF(NFLUX.EQ.22) THEN
-             IF(IND.EQ.1) THEN
+             IF(I.EQ.1) THEN
 	      IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
 	     ENDIF
@@ -2877,31 +3114,43 @@ C ... Modify secondary beams :
                  IDHEP(ISEC)=IDPDG(IREG)
 C CHR/Yura Pom Reg
           ELSEIF(NFLUX.EQ.19) THEN
-	    IF(IND.EQ.1) THEN
+	    IF(I.EQ.1) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
-            ELSEIF(IND.EQ.2) THEN	    
+            ELSEIF(I.EQ.2) THEN	    
             IDHW(ISEC)=IREG
             IDHEP(ISEC)=IDPDG(IREG)
 	    ENDIF
 C CHR/Yura  Reg Pom - finally, it makes sense
           ELSEIF(NFLUX.EQ.21) THEN
-	    IF(IND.EQ.2) THEN
+	    IF(I.EQ.2) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
-            ELSEIF(IND.EQ.1) THEN	    
+            ELSEIF(I.EQ.1) THEN	    
             IDHW(ISEC)=IREG
             IDHEP(ISEC)=IDPDG(IREG)
 	    ENDIF
 C CHR/Yura  Photon Pom - finally, it makes sense
           ELSEIF(NFLUX.EQ.20) THEN
-            IF(IND.EQ.2) THEN
+            IF(I.EQ.2) THEN
 	    IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
 	    ENDIF
 C CHR/Yura  Pom Photon - finally, it makes sense
           ELSEIF(NFLUX.EQ.22) THEN
-            IF(IND.EQ.1) THEN
+            IF(I.EQ.1) THEN
+	    IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)
+	    ENDIF
+C CHR 2014 Photon Pom heavy ion - finally, it makes sense
+          ELSEIF(NFLUX.EQ.26) THEN
+            IF(I.EQ.2) THEN
+	    IDHW(ISEC)=IPOM
+            IDHEP(ISEC)=IDPDG(IPOM)
+	    ENDIF
+C CHR 2014 Pom Photon heavy ion - finally, it makes sense
+          ELSEIF(NFLUX.EQ.25) THEN
+            IF(I.EQ.1) THEN
 	    IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
 	    ENDIF

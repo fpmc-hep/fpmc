@@ -194,6 +194,7 @@ c---Events printed
 c---Set the number of nucleons - for QED photon flux
       ZION = UZION
       AION = UAION
+      RBMIN - URBMIN
 
       write(*,*) ''
       write(*,*) 'USER SETTINGS'
@@ -224,6 +225,7 @@ c---Set the number of nucleons - for QED photon flux
       write(*,*) 'YWWMAX   = ',YWWMAX
       write(*,*) 'ZION     = ',ZION
       write(*,*) 'AION     = ',AION
+      write(*,*) 'BMIN     = ',RBMIN
       write(*,*) 'AAANOM = ', AAANOM
       write(*,*) 'DKAPPA = ', D_KAPPA
       write(*,*) 'DLAMBDA = ', LAMBDA

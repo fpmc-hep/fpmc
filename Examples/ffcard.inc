@@ -18,7 +18,7 @@ C-----------------------------------------------------------------------
      $   UCHIDeX, UCHIDeXP, UCHIDeS2, ! R.S.
      $   UXI1Min, UXI1Max, UXI2Min, UXI2Max,
      $   UCHIDeGapMin, UCHIDeGapMax,
-     $   UKMR2Q2CUT, UKMR2SURV, UKMR2SCALE
+     $   UKMR2Q2CUT, UKMR2SURV, UKMR2SCALE,UBMIN
      
       COMMON /MYFFREAD1/ URMASS,UWMASS,UHMASS,UTMASS,UMST1,UMSB1,UECMS,
      $     UYJMIN, UYJMAX,UPTMIN, UPTMAX, UEMMIN, UEMMAX, UDKAPPA,
@@ -35,7 +35,7 @@ C-----------------------------------------------------------------------
      $ UQ2WWMN, UQ2WWMX
 
       COMMON /MYFFREAD3/ UOUTPUT,UMAXEV,UIPROC,UNFLUX,UNRN1,UNRN2,UIFIT, 
-     $     UISOFTM, UZION, UAION, UAAANOM, UAAEXOTIC,
+     $     UISOFTM, UZION, UAION, UBMIN, UAAANOM, UAAEXOTIC,
      $     UCHIDeIGLU, UKMR2DELTA ! R.S.
 
       character*1 UHADR

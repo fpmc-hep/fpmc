@@ -13,6 +13,7 @@ C * TYPINT = type of the interaction
 C            'QED' or 'QCD'
 C----------------------------------------------------------------------- 
       DOUBLE PRECISION XPQNRM(-6:6),PI,FMCONV,AION,ZION,XMSCUT
+      DOUBLE PRECISION RBMIN 
       DOUBLE PRECISION AMASS,PMASS,GAPSPR,PROSPR,CDFFAC
       CHARACTER*3 TYPEPR, TYPINT
       INTEGER ISOFTM, NFLUX
@@ -21,7 +22,7 @@ c---Normalizations of partonic PDFs inside the pomeron:
       COMMON /PDFNRM/ XPQNRM
       
 c---Atomic and proton numbers of the ion
-      COMMON /ION/ AION,ZION
+      COMMON /ION/ AION,ZION,RBMIN
       
 c---Flags carrying info whether the process is inclusive or exclusive:
       COMMON /PRTYPE/ TYPEPR, TYPINT

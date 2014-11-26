@@ -45,6 +45,7 @@ c---FFC default initialiszation
       UISOFTM    =    1
       UZION      =    1
       UAION      =    1
+      UBMIN      =    1.
       UAAANOM  =    0       ! original HERWIG AAWW formula
       UDKAPPA    =    0.
       UDLAMBDA   =    0.
@@ -98,6 +99,7 @@ c---FFC default initialiszation
         call FFKEY('NRN2',UNRN2,1,'integer')
         call FFKEY('IFIT',UIFIT,1,'integer')
         call FFKEY('IZION',UZION,1,'integer')
+        call FFKEY('BMIN',UBMIN,1,'real')
         call FFKEY('IAION',UAION,1,'integer')
         call FFKEY('WMASS',UWMASS,1,'real')
         call FFKEY('TMASS',UTMASS,1,'real')
