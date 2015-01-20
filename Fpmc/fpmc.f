@@ -965,7 +965,7 @@ c...Cox-Forshaw reggeon flux:
      +        DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMAX)
          W = 1.D0/(Breg+2.D0*alphaRp*DLOG(1.D0/Z))
          X = 1.D0/(Z**(2.D0*alphaR-1.D0))
-         F = Cr*X*W*V         
+         F = X*W*V         
       ELSEIF (NFLUX.EQ.11) THEN
 C---Bialas-Landshoff pomeron flux:
 c ... T.K. : In order to match the functional dependence of Bialas-Landshoff 
@@ -1186,7 +1186,7 @@ c...Cox-Forshaw reggeon flux:
      +            DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMAX)
                 W = 1.D0/(Breg+2.D0*alphaRp*DLOG(1.D0/Z))
                 X = 1.D0/(Z**(2.D0*alphaR-1.D0))
-                F = Cr*X*W*V  
+                F = X*W*V  
 c                print *,'F IND 2 :',Z,F
 	 ENDIF       
       ELSEIF(NFLUX.EQ.21) THEN
@@ -1202,7 +1202,7 @@ c...Cox-Forshaw reggeon flux:
      +            DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMAX)
                 W = 1.D0/(Breg+2.D0*alphaRp*DLOG(1.D0/Z))
                 X = 1.D0/(Z**(2.D0*alphaR-1.D0))
-                F = Cr*X*W*V  
+                F = X*W*V  
 	 ENDIF       
       ELSE
          WRITE(*,*) 'In FLUX: NFLUX must be 9-16,18-26 in FPMC!'
@@ -4602,19 +4602,20 @@ C     Reggeon
 
             CALL PDFSET(PARMA,VALU)
             CALL STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BTM,TOP,GLU)
-            DIST(1)=(0.5D0*DNV)+DSEA
-            DIST(2)=(0.5D0*UPV)+USEA
-            DIST(3)=STR
-            DIST(4)=CHM
+c apply normalisation for reggeon on PDFs (not applied on flux)
+            DIST(1)=Cr*(0.5D0*DNV)+Cr*DSEA
+            DIST(2)=Cr*(0.5D0*UPV)+Cr*USEA
+            DIST(3)=Cr*STR
+            DIST(4)=Cr*CHM
             DIST(5)=0
             DIST(6)=0
-            DIST(7)=(0.5D0*DNV)+DSEA
-            DIST(8)=(0.5D0*UPV)+USEA
-            DIST(9)=STR
-            DIST(10)=CHM
+            DIST(7)=Cr*(0.5D0*DNV)+Cr*DSEA
+            DIST(8)=Cr*(0.5D0*UPV)+Cr*USEA
+            DIST(9)=Cr*STR
+            DIST(10)=Cr*CHM
             DIST(11)=0
             DIST(12)=0
-            DIST(13)=GLU
+            DIST(13)=Cr*GLU
             GOTO 999
 c Yura CHR Pom Reg	    
 	   ELSEIF (NFLUX.EQ.19) THEN
@@ -4665,19 +4666,19 @@ c            valu(3)=2            ! GRV-P LO
 
             CALL PDFSET(PARMA,VALU)
             CALL STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BTM,TOP,GLU)
-            DIST(1)=(0.5D0*DNV)+DSEA
-            DIST(2)=(0.5D0*UPV)+USEA
-            DIST(3)=STR
-            DIST(4)=CHM
+            DIST(1)=Cr*(0.5D0*DNV)+Cr*DSEA
+            DIST(2)=Cr*(0.5D0*UPV)+Cr*USEA
+            DIST(3)=Cr*STR
+            DIST(4)=Cr*CHM
             DIST(5)=0
             DIST(6)=0
-            DIST(7)=(0.5D0*DNV)+DSEA
-            DIST(8)=(0.5D0*UPV)+USEA
-            DIST(9)=STR
-            DIST(10)=CHM
+            DIST(7)=Cr*(0.5D0*DNV)+Cr*DSEA
+            DIST(8)=Cr*(0.5D0*UPV)+Cr*USEA
+            DIST(9)=Cr*STR
+            DIST(10)=Cr*CHM
             DIST(11)=0
             DIST(12)=0
-            DIST(13)=GLU
+            DIST(13)=Cr*GLU
 c            print *,'ind 2 glu :',x,qsca,dist(13)
 c	    print *,'enter glu pion :',glu
             GOTO 999
@@ -4731,19 +4732,19 @@ C     Reggeon
 
             CALL PDFSET(PARMA,VALU)
             CALL STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BTM,TOP,GLU)
-            DIST(1)=(0.5D0*DNV)+DSEA
-            DIST(2)=(0.5D0*UPV)+USEA
-            DIST(3)=STR
-            DIST(4)=CHM
+            DIST(1)=Cr*(0.5D0*DNV)+Cr*DSEA
+            DIST(2)=Cr*(0.5D0*UPV)+Cr*USEA
+            DIST(3)=Cr*STR
+            DIST(4)=Cr*CHM
             DIST(5)=0
             DIST(6)=0
-            DIST(7)=(0.5D0*DNV)+DSEA
-            DIST(8)=(0.5D0*UPV)+USEA
-            DIST(9)=STR
-            DIST(10)=CHM
+            DIST(7)=Cr*(0.5D0*DNV)+Cr*DSEA
+            DIST(8)=Cr*(0.5D0*UPV)+Cr*USEA
+            DIST(9)=Cr*STR
+            DIST(10)=Cr*CHM
             DIST(11)=0
             DIST(12)=0
-            DIST(13)=GLU
+            DIST(13)=Cr*GLU
 c	    print *,'enter glu pion :',glu
             GOTO 999
 	    ENDIF

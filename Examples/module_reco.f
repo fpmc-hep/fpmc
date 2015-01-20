@@ -36,6 +36,12 @@ c---Beam momenta
       PBEAM1=CMSENR/2d0
       PBEAM2=PBEAM1
 
+c--- temp christophe p ion
+c      PBEAM1=14.D0
+c      PBEAM2=5.5D0
+c      print *,'beam energies :',pbeam1,pbeam2
+
+
 c---Process type : EXClusive or INClusive, QCD or QED when relevant
 c   It is important to set those right
 c      TYPEPR='INC'
