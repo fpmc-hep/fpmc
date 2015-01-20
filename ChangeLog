@@ -1,3 +1,7 @@
+2015-01-20 Christophe Royon <christophe.royon@cern.ch>, Murilo Rangel
+<murilo.rangel@cern.ch>
+Coorect for normalisation for reggeon (applied in PDFs and not in flux)
+
 2014-11-26 Christophe Royon <christophe.royon@cern.ch>
 * new code for heavy ion flux (nflux=11) 
 * new cards to transmit BMIN
