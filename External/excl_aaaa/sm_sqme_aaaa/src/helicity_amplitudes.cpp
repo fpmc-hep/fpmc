@@ -25,11 +25,11 @@ int limits(double sred,double tred, double ured){
 
   if ( sred <= 0.001 ) return low; // EFT limit
   else if ( ( sred <= 10. && -tred < 0.0001*sred ) ||
-      ( sred >  10. && sred <= shigh && -tred < 0.001)  ||
-      ( sred > shigh && -tred < 1.) ) return forward; // forward limit
+	    ( sred >  10. && sred <= shigh && -tred < 0.001)  ||
+	    ( sred > shigh && -tred < 1.) ) return forward; // forward limit
   else if ( ( sred <= 10.  && -ured < 0.0001*sred ) ||
-      ( sred >  10.  && -ured < 0.001 ) ||
-      ( sred > shigh && -ured < 1.)) return backward;  // backward limit
+	    ( sred >  10.  && -ured < 0.001 ) ||
+	    ( sred > shigh && -ured < 1.)) return backward;  // backward limit
   else if ( sred > shigh ) return high; // high energy limit
   else return 0; // no limit
 
@@ -92,15 +92,15 @@ void Mpppp_fermion(double sred, double tred, double *re, double *im, int exclude
       *im=0;  }
     else if( region == forward || region == backward )
       {            // Forward and backward limit 
-  *re= 1./(2.* sred*sred)*( 2.* sred*sred+(-2.*sred+4.*sred*sred)*ReB(sred)
-          +(2.*sred-8.*sred*sred)*ReB(-sred) +(-1.+2.*sred)*ReT(sred)+(-1.-2.*sred+4.*sred*sred)*ReT(-sred) )  ;
-  *im= 1./(2.* sred*sred)*(               (-2.*sred+4.*sred*sred)*ImB(sred)
-            +(2.*sred-8.*sred*sred)*ImB(-sred) +(-1.+2.*sred)*ImT(sred)+(-1.-2.*sred+4.*sred*sred)*ImT(-sred) )  ;
+	*re= 1./(2.* sred*sred)*( 2.* sred*sred+(-2.*sred+4.*sred*sred)*ReB(sred)
+				  +(2.*sred-8.*sred*sred)*ReB(-sred) +(-1.+2.*sred)*ReT(sred)+(-1.-2.*sred+4.*sred*sred)*ReT(-sred) )  ;
+	*im= 1./(2.* sred*sred)*(               (-2.*sred+4.*sred*sred)*ImB(sred)
+						+(2.*sred-8.*sred*sred)*ImB(-sred) +(-1.+2.*sred)*ImT(sred)+(-1.-2.*sred+4.*sred*sred)*ImT(-sred) )  ;
       }
     else if( region== high ) 
       {            // high energy limit
-  *re = 1.+(tred-ured)/sred * log(tred/ured)+(tred*tred+ured*ured) / (2.*sred*sred)*(pow( log(tred/ured) , 2 )+PI*PI);
-  *im = 0;
+	*re = 1.+(tred-ured)/sred * log(tred/ured)+(tred*tred+ured*ured) / (2.*sred*sred)*(pow( log(tred/ured) , 2 )+PI*PI);
+	*im = 0;
       }
     else{   
       Mxxxx_fermion(sred,tred,re,im);
@@ -122,23 +122,23 @@ void Mpmmp_fermion(double sred, double tred, double *re, double *im, int exclude
     {
       int region = limits(sred,tred,ured); 
       if( region == low ){ // EFT limit
-  *re= -4.*(4.*(-1./36.)  +3.*(7./90.) )  *tred*tred ;
-  *im=0;  
+	*re= -4.*(4.*(-1./36.)  +3.*(7./90.) )  *tred*tred ;
+	*im=0;  
       }
       else if( region==forward )
-  {                // Forward limit 
-    *re=0.; *im=0.;
-  }
+	{                // Forward limit 
+	  *re=0.; *im=0.;
+	}
       else if( region == backward )
-  {                // Backward limit 
-    *re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) )  ;
-    *im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) )  ;
-  }
+	{                // Backward limit 
+	  *re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) )  ;
+	  *im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) )  ;
+	}
       else if( region == high ) 
-  {            // high energy limit
-    *re = 1. + (sred-ured)/tred * log(-sred/ured)+(sred*sred+ured*ured) / (2.*tred*tred)*pow( log(-sred/ured) , 2 );
-    *im = -PI*( (sred-ured)/tred + (sred*sred+ured*ured) / (tred*tred)*log(-sred/ured));
-  }
+	{            // high energy limit
+	  *re = 1. + (sred-ured)/tred * log(-sred/ured)+(sred*sred+ured*ured) / (2.*tred*tred)*pow( log(-sred/ured) , 2 );
+	  *im = -PI*( (sred-ured)/tred + (sred*sred+ured*ured) / (tred*tred)*log(-sred/ured));
+	}
       else{  Mxxxx_fermion(tred,sred,re,im); }     
     }
   return;
@@ -158,17 +158,17 @@ void Mpmpm_fermion(double sred, double tred, double *re, double *im, int exclude
       *im=0;  }
     else if( region == forward )
       {                // Forward limit 
-  *re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) )  ;
-  *im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) )  ;    
+	*re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) )  ;
+	*im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) )  ;    
       }
     else if( region == backward )
       {                // Backward limit 
-  *re=0.; *im=0.;
+	*re=0.; *im=0.;
       }
     else if( region == high ) 
       {            // high energy limit
-  *re = 1. + (tred-sred)/ured * log(-tred/sred)+(sred*sred+tred*tred) / (2.*ured*ured)*pow( log(-tred/sred) , 2 );
-  *im = PI*( (tred-sred)/ured + (sred*sred+tred*tred) / (ured*ured)*log(-tred/sred));
+	*re = 1. + (tred-sred)/ured * log(-tred/sred)+(sred*sred+tred*tred) / (2.*ured*ured)*pow( log(-tred/sred) , 2 );
+	*im = PI*( (tred-sred)/ured + (sred*sred+tred*tred) / (ured*ured)*log(-tred/sred));
       }   
     else{   
       Mxxxx_fermion(ured,tred,re,im);     
@@ -193,11 +193,11 @@ void Mpppm_fermion(double sred, double tred, double * re, double * im, int exclu
       *re= 0.; *im=0.;}
     else if( region == forward || region == backward )
       {                // Forward and backward limit 
-  *re= 0.; *im=0.;}
+	*re= 0.; *im=0.;}
       else if (region == high ) 
       {            // high energy limit
-  *re=-1;
-  *im=0;
+	*re=-1;
+	*im=0;
       }
     else{
       
@@ -241,13 +241,13 @@ void Mppmm_fermion(double sred, double tred, double * re, double * im, int exclu
       *re= -4.*(4.*(-1./36.)  +(7./90.) )*(sred*sred+tred*tred+ured*ured); *im=0.;}
     else if( region == forward || region == backward )
       {                // Forward and backward limit 
-  *re=1./(2.*sred*sred)*( -2.*sred*sred-2.*sred*ReB(sred)+2.*sred*ReB(-sred)-ReT(sred)-ReT(-sred)  ) ; 
-  *im=1./(2.*sred*sred)*(              -2.*sred*ImB(sred)+2.*sred*ImB(-sred)-ImT(sred)-ImT(-sred)  );
+	*re=1./(2.*sred*sred)*( -2.*sred*sred-2.*sred*ReB(sred)+2.*sred*ReB(-sred)-ReT(sred)-ReT(-sred)  ) ; 
+	*im=1./(2.*sred*sred)*(              -2.*sred*ImB(sred)+2.*sred*ImB(-sred)-ImT(sred)-ImT(-sred)  );
       }
     else if ( region == high ) 
       {            // high energy limit
-  *re=-1;
-  *im=0;
+	*re=-1;
+	*im=0;
       }
     else{ 
       
@@ -332,27 +332,27 @@ void Mpppp_vector(double sred, double tred, double *re, double *im, int exclude_
       *im=0;  }
     else if ( region == forward || region == backward )
       {           // Forward and backward limit 
-  *re=-3./2.+8.*(sred-0.25)*(sred-0.75)/sred*ReB(sred)+
-    (-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ReB(-sred)+
-    4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ReT(sred)+
-    (4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ReT(-sred);
-  *im=8.*(sred-0.25)*(sred-0.75)/sred*ImB(sred)+
-    (-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ImB(-sred)+
-    4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ImT(sred)+
-    (4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ImT(-sred);
+	*re=-3./2.+8.*(sred-0.25)*(sred-0.75)/sred*ReB(sred)+
+	  (-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ReB(-sred)+
+	  4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ReT(sred)+
+	  (4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ReT(-sred);
+	*im=8.*(sred-0.25)*(sred-0.75)/sred*ImB(sred)+
+	  (-8.*(sred-0.25)*(sred-0.75)/sred+3.)*ImB(-sred)+
+	  4.*(sred-0.25)*(sred-0.75)/(sred*sred)*ImT(sred)+
+	  (4.*(sred-0.25)*(sred-0.75)/(sred*sred)-(8.*sred-3.)/sred)*ImT(-sred);
       }
     else if (region == high)
       {          // high energy limit
-  *re = - 1.*( 1.5 +  
-      1.5* (ured-tred)/sred * log(ured/tred) +
-      2. * ( 1. - 0.75 * tred*ured / (sred*sred) ) * ( pow( log(ured/tred),2) + PI*PI ) +
-      2. * sred * sred * ( log(4.*sred)*log(-4.*tred)/(sred*tred)+
-               log(4.*sred)*log(-4.*ured)/(sred*ured)+
-               log(-4.*ured)*log(-4.*tred)/(ured*tred) )
-      );
-  *im =  ( 2. * PI * sred*sred *( log(-4.*ured)  / (sred * ured) +
-          log(-4.*tred)  / (sred * tred ) ) 
-      )  ;
+	*re = - 1.*( 1.5 +  
+		  1.5* (ured-tred)/sred * log(ured/tred) +
+		  2. * ( 1. - 0.75 * tred*ured / (sred*sred) ) * ( pow( log(ured/tred),2) + PI*PI ) +
+		  2. * sred * sred * ( log(4.*sred)*log(-4.*tred)/(sred*tred)+
+				       log(4.*sred)*log(-4.*ured)/(sred*ured)+
+				       log(-4.*ured)*log(-4.*tred)/(ured*tred) )
+		  );
+	*im =  ( 2. * PI * sred*sred *( log(-4.*ured)  / (sred * ured) +
+					log(-4.*tred)  / (sred * tred ) ) 
+		  )  ;
       }
     else{   Mxxxx_vector(sred,tred,re,im);  
     }
@@ -377,30 +377,30 @@ void Mpmmp_vector(double sred, double tred, double *re, double *im, int exclude_
       }
     else if( region == backward )
       {                // Backward limit 
-  *re=-3./2.-8.*(-sred-0.25)*(-sred-0.75)/sred*ReB(-sred)+
-    (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ReB(sred)+
-    4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ReT(-sred)+
-    (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ReT(sred);
-  *im=-8.*(-sred-0.25)*(-sred-0.75)/sred*ImB(-sred)+
-    (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ImB(sred)+
-    4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ImT(-sred)+
-    (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ImT(sred);       
+	*re=-3./2.-8.*(-sred-0.25)*(-sred-0.75)/sred*ReB(-sred)+
+	  (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ReB(sred)+
+	  4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ReT(-sred)+
+	  (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ReT(sred);
+	*im=-8.*(-sred-0.25)*(-sred-0.75)/sred*ImB(-sred)+
+	  (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ImB(sred)+
+	  4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ImT(-sred)+
+	  (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ImT(sred);       
       }
     else if (region == high)
       {  // high energy limit
-  *re = - ( 1.5 +  
-      1.5* (ured-sred)/tred * log(-ured/sred) +
-      2. * ( 1. - 0.75 * sred * ured / (tred*tred) ) *  pow( log( - ured/sred),2)   +
-      2. * tred * tred * ( log(4.*sred)*log(-4.*tred)/(sred*tred)+
-               log(4.*sred)*log(-4.*ured)/(sred*ured)+
-               log(-4.*ured)*log(-4.*tred)/(ured*tred) )  
-      );
-  
-  *im = - ( 1.5 * (sred-ured)/tred * (- PI)+ 
-      2. * ( 1. - 0.75 * sred*ured / (tred*tred) ) * PI * 2. * log(-ured/sred) + 
-      2. * (-PI) * tred*tred*  ( log(-4.*ured) / (ured*sred) +
-               log(-4.*tred) / (tred*sred)  )
-      )  ;
+	*re = - ( 1.5 +  
+		  1.5* (ured-sred)/tred * log(-ured/sred) +
+		  2. * ( 1. - 0.75 * sred * ured / (tred*tred) ) *  pow( log( - ured/sred),2)   +
+		  2. * tred * tred * ( log(4.*sred)*log(-4.*tred)/(sred*tred)+
+				       log(4.*sred)*log(-4.*ured)/(sred*ured)+
+				       log(-4.*ured)*log(-4.*tred)/(ured*tred) )  
+		  );
+	
+	*im = - ( 1.5 * (sred-ured)/tred * (- PI)+ 
+		  2. * ( 1. - 0.75 * sred*ured / (tred*tred) ) * PI * 2. * log(-ured/sred) + 
+		  2. * (-PI) * tred*tred*  ( log(-4.*ured) / (ured*sred) +
+					     log(-4.*tred) / (tred*sred)  )
+		  )  ;
       }
     else{    Mxxxx_vector(tred,sred,re,im); }
   }
@@ -417,38 +417,38 @@ void Mpmpm_vector(double sred, double tred, double *re, double *im, int exclude_
     int region = limits (sred,tred,ured);
     if( region == low )
       {     // EFT limit 
-  *re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *ured*ured ;
-  *im=0;  
+	*re= -4.*(4.*(-5./32.)  +3.*(27./40.) )  *ured*ured ;
+	*im=0;  
       }
     else if( region == forward)
       {                // Forward limit 
-  *re=-3./2.-8.*(-sred-0.25)*(-sred-0.75)/sred*ReB(-sred)+
-    (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ReB(sred)+
-    4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ReT(-sred)+
-    (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ReT(sred);
-  *im=-8.*(-sred-0.25)*(-sred-0.75)/sred*ImB(-sred)+
-    (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ImB(sred)+
-    4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ImT(-sred)+
-    (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ImT(sred);       
+ 	*re=-3./2.-8.*(-sred-0.25)*(-sred-0.75)/sred*ReB(-sred)+
+	  (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ReB(sred)+
+	  4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ReT(-sred)+
+	  (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ReT(sred);
+	*im=-8.*(-sred-0.25)*(-sred-0.75)/sred*ImB(-sred)+
+	  (8.*(-sred-0.25)*(-sred-0.75)/sred+3.)*ImB(sred)+
+	  4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)*ImT(-sred)+
+	  (4.*(-sred-0.25)*(-sred-0.75)/(sred*sred)+(-8.*sred-3.)/sred)*ImT(sred);       
       }
     else if( region == backward )
       {                // Backward limit 
-  *re=0.; *im=0.;
+	*re=0.; *im=0.;
       }
     else if ( region == high )
       {         // high energy limit
-  *re = - ( 1.5 +  
-      1.5* (tred-sred)/ured * log(-tred/sred) +
-      2. * ( 1. - 0.75 * sred * tred / (ured*ured) ) *  pow( log( - tred/sred),2)   +
-      2. * ured * ured * ( log(4.*sred)*log(-4.*tred)/(sred*tred)+
-                log(4.*sred)*log(-4.*ured)/(sred*ured)+
-                log(-4.*ured)*log(-4.*tred)/(ured*tred) )
-      );
-  *im = - ( 1.5 * (sred-tred)/ured * (- PI)+ 
-      2. * ( 1. - 0.75 * sred*tred / (ured*ured) ) * PI * 2. * log(-tred/sred) + 
-      2. * (-PI) * ured*ured*  ( log(-4.*ured) / (ured*sred) +
-               log(-4.*tred) / (tred*sred)  )
-      )  ;  
+	*re = - ( 1.5 +  
+		  1.5* (tred-sred)/ured * log(-tred/sred) +
+		  2. * ( 1. - 0.75 * sred * tred / (ured*ured) ) *  pow( log( - tred/sred),2)   +
+		  2. * ured * ured * ( log(4.*sred)*log(-4.*tred)/(sred*tred)+
+					      log(4.*sred)*log(-4.*ured)/(sred*ured)+
+					      log(-4.*ured)*log(-4.*tred)/(ured*tred) )
+		  );
+	*im = - ( 1.5 * (sred-tred)/ured * (- PI)+ 
+		  2. * ( 1. - 0.75 * sred*tred / (ured*ured) ) * PI * 2. * log(-tred/sred) + 
+		  2. * (-PI) * ured*ured*  ( log(-4.*ured) / (ured*sred) +
+					     log(-4.*tred) / (tred*sred)  )
+		  )  ;	
       }
     else{   Mxxxx_vector(ured,tred,re,im); }
     
@@ -466,7 +466,6 @@ if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
 else{ 
 
   //if(sred<0.001){ // EFT limit
-  //    *re= 0.; *im=0.;}
   //else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
   //{                // Forward and backward limit 
   //            *re= 0.; *im=0.;}
@@ -490,7 +489,7 @@ if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
 else{   
 
   //if(sred<0.001){ // EFT limit 
-  //    *re= -4.*(4.*(-5./32.)  +(27./40.) )*(sred*sred+tred*tred+ured*ured); *im=0.;}
+  //		*re= -4.*(4.*(-5./32.)  +(27./40.) )*(sred*sred+tred*tred+ured*ured); *im=0.;}
   //else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
   //{                // Forward and backward limit 
   //*re=1./(2.*sred*sred)*( -2.*sred*sred-2.*sred*ReB(sred)+2.*sred*ReB(-sred)-ReT(sred)-ReT(-sred)  ) ; 

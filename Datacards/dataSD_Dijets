@@ -5,7 +5,7 @@ PART2	    'P'
 TYPEPR      'INC'
 TYPINT      'QCD'
 ECMS        14000.
-IPROC       11500
+IPROC       11705
 NFLUX       9
 NRN1        33781
 NRN2        11776

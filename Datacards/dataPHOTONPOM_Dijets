@@ -3,7 +3,7 @@ MAXEV       1000
 TYPEPR      'INC'
 TYPINT      'QCD'
 ECMS        14000.
-IPROC       11500
+IPROC       15105
 NFLUX       20
 NRN1        33781
 NRN2        11776

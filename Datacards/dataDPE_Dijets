@@ -12,3 +12,6 @@ YJMIN       -6.
 PTMIN       25.
 IFIT        100
 ISOFTM	    1
+YWWMIN      0.
+YWWMAX      0.1
+TMASS       174.

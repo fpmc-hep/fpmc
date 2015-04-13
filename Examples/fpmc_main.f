@@ -40,7 +40,10 @@ c--- temp christophe p ion
 c      PBEAM1=14.D0
 c      PBEAM2=5.5D0
 c      print *,'beam energies :',pbeam1,pbeam2
-
+c      PBEAM1=7000
+c      PBEAM2=2760
+c      print*,'Murilo ',PBEAM1,PBEAM2
+>>>>>>> fbe1bb6... all
 
 c---Process type : EXClusive or INClusive, QCD or QED when relevant
 c   It is important to set those right
@@ -75,6 +78,8 @@ c... beam momentum transfer range ( Q2 = |t| )
       RMASS(198) = UWMASS ! W mass
       RMASS(406) = UMST1 ! stop1 mass
       RMASS(405) = UMSB1 ! stop2 mass
+      RMASS(4)   = 1.5 ! charm mass
+      RMASS(5)   = 4.5 ! bottom mass
 
 c stop mass
 c      RMASS(449)=10000.D0
@@ -353,15 +358,15 @@ c---Histograms
       CALL HBOOK1(107,'Central Mass    ',200,0.,2000.,0.)
       CALL HBOOK1(108,'Dijet mass      ', 10,50.,100.,0.)
       CALL HBOOK1(109,'Mass fraction   ',51,0.,1.02,0.)
-      CALL HBOOK1(110,'Rapidity y1     ',100,-5.,5.,0.)
-      CALL HBOOK1(111,'Rapidity y2     ',100,-5.,5.,0.)
+      CALL HBOOK1(110,'Rapidity y1     ',100,-10.,10.,0.)
+      CALL HBOOK1(111,'Rapidity y2     ',100,-10.,10.,0.)
       CALL HBOOK1(112,'Trans. mom pt1  ',50,0.,200.,0.)
       CALL HBOOK1(113,'Trans. mom pt2  ',50,0.,200.,0.)
       CALL HBOOK2(114,'Proton (1-xi1)(1-xi2)',50,0.9,1.,50,0.9,1.,0)
       CALL HBOOK2(115,'Gluons (xg1)(xg2)',100,0.,1.,100,0.,1.,0)
       CALL HBOOK2(116,'Partons (xg1)(y1)',100,0.,1.,100,-10.,10.,0)
       CALL HBOOK2(117,'Partons (xg2)(y2)',100,0.,1.,100,-10.,10.,0)
-      CALL HBOOK1(118,'Rapidity y0     ',100,-5.,5.,0.)
+      CALL HBOOK1(118,'Rapidity y0     ',100,-8.,8.,0.)
       CALL HBOOK1(119,'Trans. mom pt0  ',50,0.,5.,0.)
       CALL HBOOK1(301,'Proton phi1',100,-3.2,3.2,0.)
       CALL HBOOK1(302,'Proton phi2',100,-3.2,3.2,0.)

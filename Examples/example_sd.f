@@ -19,7 +19,7 @@ c---Events in the run
 c---Beam particles. The order is important (for some reason)!
       PART1='P'     ! proton beam
       PART2='E+'    ! e --> e+gam will mimic p --> p+Pom
-
+      
 c---Beam momenta
       PBEAM1=7d3
       PBEAM2=7d3
