@@ -178,6 +178,7 @@ c-----Exclusive ZG production, 750 GeV resonance spin0even
       AAF0ZG = UAAF0ZG !--------Coupling to ZG
 c-----Exclusive WW production, 750 GeV resonance spin0even
       AAF0W = UAAF0W !--------Coupling to WW
+=======
 
 C     CHIDe
       CHIDeIGLU = UCHIDeIGLU

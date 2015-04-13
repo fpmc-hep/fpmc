@@ -24,9 +24,11 @@ c______________________________________________________________________________
        real px(ngenmax),py(ngenmax),pz(ngenmax)
        real e(ngenmax),m(ngenmax)
        integer id(ngenmax)
+       integer ii(ngenmax)
+       integer ist(ngenmax)
        
        common /gener/ngen,
-     &     px,py,pz,e,m,id
+     &     px,py,pz,e,m,id,ii,ist
 
 ***** common block - bjorken-x of the parton from pomeron         
 c       common /remnant/xg1b,xg2b
@@ -62,7 +64,8 @@ c     & 'xg2')
        
      
        call hbname(777,'gener',ngen,'ngen[0,1000]:I,'//
-     &     'px(ngen),py(ngen),pz(ngen),e(ngen),rm(ngen),id(ngen)')
+     &     'px(ngen),py(ngen),pz(ngen),e(ngen),rm(ngen),id(ngen),'//
+     &     'ii(ngen), ist(ngen)')
 
        if(UOUTPUT.ge.2)
      &  call hbname(777,'jets',njets,'njets[0,30]:I,'//            

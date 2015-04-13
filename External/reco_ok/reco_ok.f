@@ -203,9 +203,11 @@ c ... particles on generator level
       real px(ngenmax),py(ngenmax),pz(ngenmax)
       real e(ngenmax),m(ngenmax)
       integer id(ngenmax)
+      integer ii(ngenmax)
+      integer ist(ngenmax)
        
       common /gener/ngen,
-     &     px,py,pz,e,m,id
+     &     px,py,pz,e,m,id,ii,ist
 
 c ... jets 
       integer njetmax
@@ -257,7 +259,8 @@ c particles on the generator level
       N=NHEP
       IPART=0
       do 1515 I=1,N
-          IF(ISTHEP(I).EQ.1) THEN
+          IF(I.GT.5.AND.(ISTHEP(I).EQ.1.OR.
+     c         IDHEP(I).EQ.5.OR.IDHEP(I).EQ.-5)) THEN
              IPART=IPART+1
              px(IPART)=sngl(PHEP(1,I))
              py(IPART)=sngl(PHEP(2,I))
@@ -265,6 +268,8 @@ c particles on the generator level
              e(IPART) =sngl(PHEP(4,I))
              m(IPART)=sngl(PHEP(5,I))
              id(IPART)=IDHEP(I)
+             ii(IPART) = I
+             ist(IPART) = ISTHEP(I)
 c         rm(i)=sngl(PTRAK(5,i))
 c          print '(A,4F8.2)','gen:',px(i),py(i),pz(i),e(i)
 c         print '(A,F8.2,I6)','rm id :',p(i,5),k(i,2)

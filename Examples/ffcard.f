@@ -138,9 +138,9 @@ c---FFC default initialiszation
         call FFKEY('AAQ', UAAQ,1,'real')
         call FFKEY('AAN', UAAN,1,'real')
         call FFKEY('AAF0', UAAF0,1,'real')
-	call FFKEY('AAF0Z', UAAF0Z,1,'real')
-	call FFKEY('AAF0W', UAAF0W,1,'real')
-	call FFKEY('AAF0ZG', UAAF0ZG,1,'real')
+        call FFKEY('AAF0Z', UAAF0Z,1,'real')
+        call FFKEY('AAF0W', UAAF0W,1,'real')
+        call FFKEY('AAF0ZG', UAAF0ZG,1,'real')
         call FFKEY('AAW', UAAW,1,'real')
         call FFKEY('AAA2', UAAA2,1,'real')
         UNTNAME = ''
