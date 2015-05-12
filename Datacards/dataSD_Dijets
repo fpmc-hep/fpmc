@@ -1,11 +1,12 @@
 NTNAME      'tmpntuple.ntp'
+LHEFILE     'FPMC_SDDijets_13TeV_PTMIN_20.lhe'
 MAXEV       1000
 PART1       'E+'
 PART2	    'P'
 TYPEPR      'INC'
 TYPINT      'QCD'
-ECMS        14000.
-IPROC       11705
+ECMS        13000.
+IPROC       11500
 NFLUX       9
 NRN1        33781
 NRN2        11776
@@ -16,3 +17,5 @@ YWWMAX      0.2
 PTMIN       20.
 IFIT        100
 ISOFTM	    1
+MODPDF1     -1
+MODPDF2     10800
