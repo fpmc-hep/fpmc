@@ -83,7 +83,9 @@ c---FFC default initialiszation
       UKMR2SCALE=0.618!1.0
       UKMR2DELTA=1!2
       UCHIDePATH='External/CHIDe/Data/'
-
+      UMODPDF1   = -1
+      UMODPDF2   = -1
+      ULHEFILE   = 'FPMC.lhe'
 
       IF(READCARD) THEN
         !---Key reading      
@@ -159,6 +161,10 @@ c---FFC default initialiszation
         call FFKEY('Q2CUT', UKMR2Q2CUT, 1, 'real')
         call FFKEY('SCALE', UKMR2SCALE, 1, 'real')
         call FFKEY('DELTA', UKMR2DELTA, 1, 'integer')
+        call FFKEY('MODPDF1', UMODPDF1, 1, 'integer')
+        call FFKEY('MODPDF2', UMODPDF2, 1, 'integer')
+        ULHEFILE = ''
+        call FFKEY('LHEFILE',ULHEFILE,32,'mixed')
 
         call FFGO
        
