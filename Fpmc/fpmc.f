@@ -568,33 +568,53 @@ C--M.S exclusive diphoton production
             STOP
          ENDIF
 
+         IF( (IPROC.EQ.16065).AND.AAEXOTIC.NE.1) THEN
+            PRINT*, ' '
+            PRINT*, ' FPMC - Exotic AAAA coupling available '
+            PRINT*, '        only with AAEXOTIC = 1'
+            PRINT*, ' - STOP'
+            PRINT*, ' '
+            PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
+            PRINT*, ' '
+            STOP
+         ENDIF
+
          IF(AAEXOTIC.EQ.0)THEN
          ELSEIF(AAEXOTIC.EQ.1)THEN
             PRINT *, 'EXOTICS FOR EXCL AAAA'
-           IF( IPROC.NE.16063.AND.IPROC.NE.16064) THEN
+           IF( IPROC.LT.16063.AND.IPROC.GT.16065) THEN
             PRINT*, ' '
             PRINT*, ' FPMC - Exotic AAAA coupling available '
             PRINT*, '        only for IPROC = 16063 -- Bosons'
             PRINT*, '                 IPROC = 16064 -- Fermions'
+            PRINT*, '                 IPROC = 16065 -- Spin0EvenRes'
             PRINT*, ' - STOP'
             PRINT*, ' '
             PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
             PRINT*, ' '
             STOP
            ELSEIF(IPROC.EQ.16063) THEN
-            PRINT *, 'G.von Gersdorff ME used for AA->AA '
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AA '
             PRINT *, 'With extra bosons         '
             PRINT *, 'Exotic bosons parameters set to:'
             PRINT *, '   AAM  = ', AAM 
             PRINT *, '   AAQ = ', AAQ
             PRINT *, '   AAN = ', AAN
            ELSEIF(IPROC.EQ.16064) THEN
-            PRINT *, 'G.von Gersdorff ME used for AA->AA '
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AA '
             PRINT *, 'With extra fermions         '
             PRINT *, 'Exotic fermions parameters set to:'
             PRINT *, '   AAM  = ', AAM 
             PRINT *, '   AAQ = ', AAQ
             PRINT *, '   AAN = ', AAN
+           ELSEIF(IPROC.EQ.16065) THEN
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AA '
+            PRINT *, 'With extra spin 0 even neutral resonances '
+            PRINT *, 'Exotic resonance parameters set to:'
+            PRINT *, '   AAM  = ', AAM 
+            PRINT *, '   AAF0 = ', AAF0
+            PRINT *, '   AAW = ', AAW
+            PRINT *, '   AAA2 = ', AAA2
            ENDIF
          ELSE
                PRINT *, 'Unknown AAEXOTIC = ', AAEXOTIC
@@ -3488,11 +3508,11 @@ C Checks on HQ
 c ... M.B. : if HQ=13, do not change it
 c ... O.K. : HQ=15 ZZ
 c ... M.S./O.K. : HQ=16 AA
-c ... M.S.      : HQ=60,61,62,63,64 SM AA + AAANOM=3 def
+c ... M.S.      : HQ=60,61,62,63,64,65 SM AA + AAANOM=3 def
           IF (HQ.GT.6.AND.HQ.LE.10) HQ=2*HQ+107
           IF (HQ.EQ.15) HQ=200 ! ZZ
           IF (HQ.EQ.16) HQ=59 ! AA
-          IF (HQ.GE.60.AND.HQ.LE.64) THEN
+          IF (HQ.GE.60.AND.HQ.LE.65) THEN
             HQ=59 ! AA
             AAANOM=3
           ENDIF
@@ -3730,6 +3750,10 @@ C ... M.S. Calling SM and EXOTIC exclusive photon pair production
               IF(HQ.EQ.59.AND.IPROC.EQ.16064) THEN
               call bsmf_sqme_aaaa_c(AMP2, S, T, 1, 0,
      $        AAM, AAQ, AAN)
+              ENDIF
+              IF(HQ.EQ.59.AND.IPROC.EQ.16065) THEN
+              call resonances0even_sqme_aaaa_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAW, AAA2)
               ENDIF
              FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
@@ -5341,6 +5365,9 @@ C-----------------------------------------------------------------------
       write(*,*) '          AAM      = ',AAM
       write(*,*) '          AAQ      = ',AAQ
       write(*,*) '          AAN      = ',AAN
+      write(*,*) '          AAF0     = ',AAF0
+      write(*,*) '          AAW      = ',AAW
+      write(*,*) '          AAA2      = ',AAA2
       write(*,*) '----------others-----------------'
       write(*,*) '          PTMAX    = ',PTMAX
       write(*,*)

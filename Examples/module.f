@@ -168,6 +168,9 @@ c ---Exotic excl AA settings
       AAM = UAAM
       AAQ = UAAQ
       AAN = UAAN
+      AAF0 = UAAF0
+      AAW = UAAW
+      AAA2 = UAAA2
 
 C     CHIDe
       CHIDeIGLU = UCHIDeIGLU
@@ -248,6 +251,9 @@ c---Set the number of nucleons - for QED photon flux
       write(*,*) 'AAM = ', AAM
       write(*,*) 'AAQ = ', AAQ
       write(*,*) 'AAN = ', AAN
+      write(*,*) 'AAF0 = ', AAF0
+      write(*,*) 'AAW = ', AAW
+      write(*,*) 'AAA2 = ', AAA2
       write(*,*)
 
 c---Initialize model/pdf dependant parameters

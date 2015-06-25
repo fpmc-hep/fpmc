@@ -509,6 +509,75 @@ else{
 };
 
 
+/// Neutral resonances
+
+// Define the s-dependent width
+double width_gen(double s, double m, double f0, double w_const, double a2){
+ return 1./m*( a2*s*s/ (4*PI*f0*f0)) +w_const;
+};
+
+void Mxxxx_spin0even(double x, double y, double m, double f0, double w_const, double a2, double * re, double * im){
+  // some auxiliary function used in Mpppp, Mpmpm, Mpmmp.
+
+  *re=0;
+  *im=0;
+
+  double z = - x - y;
+
+  *re += -4./(f0*f0) * x*x/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
+  *im += -4./(f0*f0) * x*x/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
+
+  return;
+};
+
+void Mpppp_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
+
+double u=-s-t;
+   Mxxxx_spin0even(s,t,m,f0,w_const,a2,re,im);
+//std::cout <<"re pppp normal" <<"\t" << *re  << std::endl;
+  return;
+};
+
+void Mpmmp_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
+double u=-s-t;
+   Mxxxx_spin0even(t,s,m,f0,w_const,a2,re,im);
+
+  return;
+};
+
+void Mpmpm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
+double u=-s-t;
+   Mxxxx_spin0even(u,t,m,f0,w_const,a2,re,im);
+  return;
+};
+
+void Mppmm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
+  double u=-s-t;
+
+  *re=0;
+  *im=0;
+
+  *re += -4./(f0*f0) * s*s/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (s-m*m);
+  *re += -4./(f0*f0) * t*t/((t-m*m)*(t-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (t-m*m);
+  *re += -4./(f0*f0) * u*u/((u-m*m)*(u-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (u-m*m);
+
+  *im += -4./(f0*f0) * s*s/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) *(- m*width_gen(s,m,f0,w_const,a2));
+  *im += -4./(f0*f0) * t*t/((t-m*m)*(t-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) *(- m*width_gen(s,m,f0,w_const,a2));
+  *im += -4./(f0*f0) * u*u/((u-m*m)*(u-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) *(- m*width_gen(s,m,f0,w_const,a2));
+
+//std::cout <<"Mppmm " <<"\t" << *re  << std::endl;
+  return ;
+};
+
+void Mpppm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
+  double u=-s-t;
+   *re=0;
+   *im=0;
+
+  return ;
+
+};
+
 void Mpppp_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
 double u=-s-t;
 *re= -1./4.*(4.*zeta1+3*zeta2)*s*s   ;

@@ -37,6 +37,15 @@
                         int *_exclude_loops_SM, int *_exclude_loops_EX,
                         double *_m, double *_q, double *_n);
 
+ //Spin0even neutral resonances
+ void resonances0even_sqme_aaaa_c__(double *_amp2, double *_s, double *_t,
+                                    int *_exclude_loops_SM, int *_exclude_loops_EX,
+                                    double *_m, double *_c, double *_w_c, double *_aa);
+
+ void resonances0even_sqme_aaaa_c_(double *_amp2, double *_s, double *_t,
+                                    int *_exclude_loops_SM, int *_exclude_loops_EX,
+                                    double *_m, double *_c, double *_w_c, double *_aa);
+
  //EFT limit
  void eft_sqme_aaaa_c__(double *_amp2, double *_s, double *_t,
                         int *_exclude_loops_SM, double *_z1, double *_z2, double *_cutoff);
@@ -63,6 +72,10 @@
    namespace bsmv_aaaa {
       extern double sqme(double, double, int, int, double, double, double);
    }; // namespace bsmv_aaaa
+
+   namespace resonances0even_aaaa {
+      extern double sqme(double, double, int, int, double, double, double, double);
+   }; // namespace resonances0even_aaaa
 
    namespace eft_aaaa {
       extern double sqme(double, double, int, double, double);
@@ -128,6 +141,28 @@ void bsmv_sqme_aaaa_c_(double *_amp2, double *_s, double *_t,
 //////////////////////////////////////////////////////////////////// 
 
    double amp2 = bsmv_aaaa::sqme(*_s, *_t, *_exclude_loops_SM, *_exclude_loops_EX, *_m, *_q, *_n);
+   *_amp2 = amp2;
+}
+ 
+
+
+//wrapper for g77
+void resonances0even_sqme_aaaa_c__(double *_amp2, double *_s, double *_t,
+                   int *_exclude_loops_SM, int *_exclude_loops_EX,
+                   double *_m, double *_c, double *_w_c, double *_aa) {
+
+    resonances0even_sqme_aaaa_c_(_amp2, _s, _t, _exclude_loops_SM, _exclude_loops_EX, _m, _c, _w_c, _aa);
+ }
+
+void resonances0even_sqme_aaaa_c_(double *_amp2, double *_s, double *_t,
+                  int *_exclude_loops_SM, int *_exclude_loops_EX,
+                  double *_m, double *_c, double *_w_c, double *_aa) {
+//////////////////////////////////////////////////////////////////// 
+// BSM aaaa with neutral resonance of mass m coupling c width w
+// including interferences with SM
+//////////////////////////////////////////////////////////////////// 
+
+   double amp2 = resonances0even_aaaa::sqme(*_s, *_t, *_exclude_loops_SM, *_exclude_loops_EX, *_m, *_c, *_w_c, *_aa);
    *_amp2 = amp2;
 }
  

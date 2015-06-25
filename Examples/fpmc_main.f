@@ -168,6 +168,9 @@ c ---Exotic excl AA settings
       AAM = UAAM
       AAQ = UAAQ
       AAN = UAAN
+      AAF0 = UAAF0
+      AAW = UAAW
+      AAA2 = UAAA2
 
 C     CHIDe Model
       CHIDeIGLU = UCHIDeIGLU
