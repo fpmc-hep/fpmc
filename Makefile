@@ -242,7 +242,7 @@ clean_sqme:
 
 
 # interface to excl aa->aa routines
-ext_excl_aaaa_dest=$(OBJDIR)/excl_aaaa_wraper.o $(OBJDIR)/sm_sqme_aaaa.a $(OBJDIR)/bsmf_sqme_aaaa.a $(OBJDIR)/bsmv_sqme_aaaa.a $(OBJDIR)/eft_sqme_aaaa.a
+ext_excl_aaaa_dest=$(OBJDIR)/excl_aaaa_wraper.o $(OBJDIR)/sm_sqme_aaaa.a $(OBJDIR)/bsmf_sqme_aaaa.a $(OBJDIR)/bsmv_sqme_aaaa.a $(OBJDIR)/resonances0even_sqme_aaaa.a $(OBJDIR)/eft_sqme_aaaa.a
 
 $(OBJDIR)/sm_sqme_aaaa.a:
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/sm_sqme_aaaa	
@@ -256,6 +256,10 @@ $(OBJDIR)/bsmv_sqme_aaaa.a:
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmv_sqme_aaaa	
 	cp -f $(EXTDIR)/excl_aaaa/bsmv_sqme_aaaa/bsmv_sqme_aaaa.a $(OBJDIR)
 
+$(OBJDIR)/resonances0even_sqme_aaaa.a:
+	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_aaaa	
+	cp -f $(EXTDIR)/excl_aaaa/resonances0even_sqme_aaaa/resonances0even_sqme_aaaa.a $(OBJDIR)
+
 $(OBJDIR)/eft_sqme_aaaa.a:
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/eft_sqme_aaaa	
 	cp -f $(EXTDIR)/excl_aaaa/eft_sqme_aaaa/eft_sqme_aaaa.a $(OBJDIR)
@@ -267,6 +271,7 @@ clean_excl_aaaa:
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/sm_sqme_aaaa clean
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmf_sqme_aaaa clean
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmv_sqme_aaaa clean
+	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_aaaa clean
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/eft_sqme_aaaa clean
 
 

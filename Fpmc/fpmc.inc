@@ -51,8 +51,8 @@ c--- Anomalous coupling variables for anomalous AA->WW, AA-> ZZ, AA-> AA
  
 c--- Variables for exotic  AA->AA
       INTEGER AAEXOTIC
-      DOUBLE PRECISION AAM, AAQ, AAN
-      COMMON /AAEXOTICAL/ AAM, AAQ, AAN, AAEXOTIC
+      DOUBLE PRECISION AAM, AAQ, AAN, AAF0, AAW, AAA2
+      COMMON /AAEXOTICAL/ AAM, AAQ, AAN, AAF0, AAW, AAA2, AAEXOTIC
       
 C     CHIDe
       integer CHIDeIGLU
