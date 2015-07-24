@@ -3705,6 +3705,10 @@ c     $        SQRT(EMSQ), SWEIN, D_KAPPA, LAMBDA, A1A, A2A, ANOMCUTOFF)
               ENDIF
               FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
+c ... M.S. symmetry factor in the gamgam->gamgam case
+              IF(HQ.EQ.59) THEN
+              FACTR=FACTR/2d0
+              ENDIF
 
 c              FACTR1=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
 c     $             *6*pifac*cfac*alphem**2/s**2
@@ -3757,6 +3761,9 @@ C ... M.S. Calling SM and EXOTIC exclusive photon pair production
               ENDIF
              FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
+
+c ... M.S. symmetry factor for gamgam->gamgam
+             FACTR = FACTR/2d0
 
           ELSE
              print *, 'Nonstandard choice of AAANOM=', AAANOM
