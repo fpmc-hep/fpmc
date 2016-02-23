@@ -1,7 +1,7 @@
 NTNAME      'tmpntuple.ntp'
-MAXEV       1000
 PART1       'E+'
 PART2	    'P'
+MAXEV       100
 TYPEPR      'INC'
 TYPINT      'QCD'
 ECMS        8000.
