@@ -84,8 +84,8 @@ c... beam momentum transfer range ( Q2 = |t| )
       RMASS(198) = UWMASS ! W mass
       RMASS(406) = UMST1 ! stop1 mass
       RMASS(405) = UMSB1 ! stop2 mass
-      RMASS(4)   = 1.5 ! charm mass
-      RMASS(5)   = 4.5 ! bottom mass
+c      RMASS(4)   = 1.5 ! charm mass
+c      RMASS(5)   = 4.5 ! bottom mass
 
 c stop mass
 c      RMASS(449)=10000.D0

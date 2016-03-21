@@ -56,7 +56,6 @@ c--- Variables for exotic  AA->AA and AA->ZZ and in the future AA->WW and AA->AZ
       COMMON /AAEXOTICAL/ AAM, AAQ, AAN, AAF0, AAF0Z, AAF0W, 
      & AAF0ZG, AAW, AAA2, AAEXOTIC
 
-      
 C     CHIDe
       integer CHIDeIGLU
       double precision CHIDeX, CHIDeXP, CHIDeS2, CHIDeS
