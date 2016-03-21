@@ -1,4 +1,5 @@
-NTNAME      'out.hbook'
+OUTPUT      0
+OUTPUTLHE   1
 LHEFILE     'FPMC_KMR_Dijets_13TeV_PTMIN_20.lhe'
 MAXEV       1000
 TYPEPR      'EXC'
