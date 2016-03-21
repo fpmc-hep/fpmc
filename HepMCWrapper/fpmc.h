@@ -87,7 +87,7 @@ extern "C" {
 //      COMMON /AAEXOTICAL/ AAM, AAQ, AAN, AAEXOTIC
 extern "C" {
   extern struct {
-     double AAM, AAQ, AAN;
+     double AAM, AAQ, AAN, AAF0, AAW, AAA2;
      int    AAEXOTIC;
   } aaexotical_;
 }
@@ -137,7 +137,7 @@ extern "C" {
      float  URMASS,UWMASS,UHMASS,UTMASS,UMST1,UMSB1,UECMS,
             UYJMIN, UYJMAX,UPTMIN, UPTMAX, UEMMIN, UEMMAX, UDKAPPA,
             UACW, UA0W, UA0Z, UACZ, UA1A, UA2A,
-            UAAM, UAAQ, UAAN,
+            UAAM, UAAQ, UAAN, UAAF0, UAAW, UAAA2,
             UCHIDeX, UCHIDeXP, UCHIDeS2,
             UXI1Min, UXI1Max, UXI2Min, UXI2Max,
             UCHIDeGapMin, UCHIDeGapMax,
@@ -156,8 +156,8 @@ extern "C" {
 
 extern "C" {
   extern struct {
-     int UOUTPUT,UMAXEV,UIPROC,UNFLUX,UNRN1,UNRN2,UIFIT, 
-         UISOFTM, UZION, UAION, UBMIN, UAAANOM, UAAEXOTIC,
+     int UOUTPUT, UOUTPUTLHE, UMAXEV, UIPROC, UNFLUX, UNRN1,
+         UNRN2, UIFIT, UISOFTM, UZION, UAION, UBMIN, UAAANOM, UAAEXOTIC,
          UCHIDeIGLU, UKMR2DELTA;
   } myffread3_;
 }
