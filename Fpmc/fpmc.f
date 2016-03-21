@@ -574,33 +574,53 @@ C--M.S exclusive diphoton production
             STOP
          ENDIF
 
+         IF( (IPROC.EQ.16065).AND.AAEXOTIC.NE.1) THEN
+            PRINT*, ' '
+            PRINT*, ' FPMC - Exotic AAAA coupling available '
+            PRINT*, '        only with AAEXOTIC = 1'
+            PRINT*, ' - STOP'
+            PRINT*, ' '
+            PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
+            PRINT*, ' '
+            STOP
+         ENDIF
+
          IF(AAEXOTIC.EQ.0)THEN
          ELSEIF(AAEXOTIC.EQ.1)THEN
             PRINT *, 'EXOTICS FOR EXCL AAAA'
-           IF( IPROC.NE.16063.AND.IPROC.NE.16064) THEN
+           IF( IPROC.LT.16063.AND.IPROC.GT.16065) THEN
             PRINT*, ' '
             PRINT*, ' FPMC - Exotic AAAA coupling available '
             PRINT*, '        only for IPROC = 16063 -- Bosons'
             PRINT*, '                 IPROC = 16064 -- Fermions'
+            PRINT*, '                 IPROC = 16065 -- Spin0EvenRes'
             PRINT*, ' - STOP'
             PRINT*, ' '
             PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
             PRINT*, ' '
             STOP
            ELSEIF(IPROC.EQ.16063) THEN
-            PRINT *, 'G.von Gersdorff ME used for AA->AA '
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AA '
             PRINT *, 'With extra bosons         '
             PRINT *, 'Exotic bosons parameters set to:'
             PRINT *, '   AAM  = ', AAM 
             PRINT *, '   AAQ = ', AAQ
             PRINT *, '   AAN = ', AAN
            ELSEIF(IPROC.EQ.16064) THEN
-            PRINT *, 'G.von Gersdorff ME used for AA->AA '
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AA '
             PRINT *, 'With extra fermions         '
             PRINT *, 'Exotic fermions parameters set to:'
             PRINT *, '   AAM  = ', AAM 
             PRINT *, '   AAQ = ', AAQ
             PRINT *, '   AAN = ', AAN
+           ELSEIF(IPROC.EQ.16065) THEN
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AA '
+            PRINT *, 'With extra spin 0 even neutral resonances '
+            PRINT *, 'Exotic resonance parameters set to:'
+            PRINT *, '   AAM  = ', AAM 
+            PRINT *, '   AAF0 = ', AAF0
+            PRINT *, '   AAW = ', AAW
+            PRINT *, '   AAA2 = ', AAA2
            ENDIF
          ELSE
                PRINT *, 'Unknown AAEXOTIC = ', AAEXOTIC
@@ -926,8 +946,6 @@ c...Returns flux for user defined structure function if NFLUX>10
 c...B.Cox and J. Forshaw 11/05/00
       DOUBLE PRECISION F,Z,TMIN,TMAX,TTMIN,TTMAX
       INTEGER IPRO,IND
-c      DOUBLE PRECISION alpha,B,alphap
-c      DOUBLE PRECISION alphar,alpharp,Br,Cr
       DOUBLE PRECISION V,W,X,FAC
       DOUBLE PRECISION QZERO,EXPARG,ALPHAE,EI,QMIN2
       DOUBLE PRECISION RZERO,R,BMIN,XM,ZZERO,ARG,F1,F2
@@ -971,7 +989,7 @@ c...Cox-Forshaw reggeon flux:
      +        DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMAX)
          W = 1.D0/(Breg+2.D0*alphaRp*DLOG(1.D0/Z))
          X = 1.D0/(Z**(2.D0*alphaR-1.D0))
-         F = Cr*X*W*V         
+         F = X*W*V         
       ELSEIF (NFLUX.EQ.11) THEN
 C---Bialas-Landshoff pomeron flux:
 c ... T.K. : In order to match the functional dependence of Bialas-Landshoff 
@@ -1212,7 +1230,7 @@ c...Cox-Forshaw reggeon flux:
      +            DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMAX)
                 W = 1.D0/(Breg+2.D0*alphaRp*DLOG(1.D0/Z))
                 X = 1.D0/(Z**(2.D0*alphaR-1.D0))
-                F = Cr*X*W*V  
+                F = X*W*V  
 c                print *,'F IND 2 :',Z,F
 	 ENDIF       
       ELSEIF(NFLUX.EQ.21) THEN
@@ -1228,7 +1246,7 @@ c...Cox-Forshaw reggeon flux:
      +            DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMAX)
                 W = 1.D0/(Breg+2.D0*alphaRp*DLOG(1.D0/Z))
                 X = 1.D0/(Z**(2.D0*alphaR-1.D0))
-                F = Cr*X*W*V  
+                F = X*W*V  
 	 ENDIF       
       ELSE
          WRITE(*,*) 'In FLUX: NFLUX must be 9-16,18-26 in FPMC!'
@@ -3514,11 +3532,11 @@ C Checks on HQ
 c ... M.B. : if HQ=13, do not change it
 c ... O.K. : HQ=15 ZZ
 c ... M.S./O.K. : HQ=16 AA
-c ... M.S.      : HQ=60,61,62,63,64 SM AA + AAANOM=3 def
+c ... M.S.      : HQ=60,61,62,63,64,65 SM AA + AAANOM=3 def
           IF (HQ.GT.6.AND.HQ.LE.10) HQ=2*HQ+107
           IF (HQ.EQ.15) HQ=200 ! ZZ
           IF (HQ.EQ.16) HQ=59 ! AA
-          IF (HQ.GE.60.AND.HQ.LE.64) THEN
+          IF (HQ.GE.60.AND.HQ.LE.65) THEN
             HQ=59 ! AA
             AAANOM=3
           ENDIF
@@ -3711,6 +3729,10 @@ c     $        SQRT(EMSQ), SWEIN, D_KAPPA, LAMBDA, A1A, A2A, ANOMCUTOFF)
               ENDIF
               FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
+c ... M.S. symmetry factor in the gamgam->gamgam case
+              IF(HQ.EQ.59) THEN
+              FACTR=FACTR/2d0
+              ENDIF
 
 c              FACTR1=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
 c     $             *6*pifac*cfac*alphem**2/s**2
@@ -3757,8 +3779,15 @@ C ... M.S. Calling SM and EXOTIC exclusive photon pair production
               call bsmf_sqme_aaaa_c(AMP2, S, T, 1, 0,
      $        AAM, AAQ, AAN)
               ENDIF
+              IF(HQ.EQ.59.AND.IPROC.EQ.16065) THEN
+              call resonances0even_sqme_aaaa_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAW, AAA2)
+              ENDIF
              FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
+
+c ... M.S. symmetry factor for gamgam->gamgam
+             FACTR = FACTR/2d0
 
           ELSE
              print *, 'Nonstandard choice of AAANOM=', AAANOM
@@ -4175,7 +4204,7 @@ CDECK  ID>, HWSFUN.
 *CMZ :-        -02/05/91  11.30.51  by  Federico Carminati
 *-- Author :    Miscellaneous, combined by Bryan Webber
 C-----------------------------------------------------------------------
-      SUBROUTINE HWSFUN(X,MUSCALE,IDHAD,NSET,DIST,IBEAM)
+      SUBROUTINE HWSFUN(X,SCALE,IDHAD,NSET,DIST,IBEAM)
 C-----------------------------------------------------------------------
 C     NUCLEON AND PION STRUCTURE FUNCTIONS DIST=X*QRK(X,Q=SCALE)
 C
@@ -4229,7 +4258,7 @@ C   CERN_ROOT:[DOC]PDFLIB.TXT ON VXCERN
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
       INCLUDE 'fpmc.inc'
-      DOUBLE PRECISION HWSGAM,X,MUSCALE,XOLD,QOLD,XMWN,QSCA,SS,SMIN,S,T,
+      DOUBLE PRECISION HWSGAM,X,SCALE,XOLD,QOLD,XMWN,QSCA,SS,SMIN,S,T,
      & TMIN,TMAX,VX,AA,VT,WT,UPV,DNV,SEA,STR,CHM,BTM,TOP,GLU,WX,XQSUM,
      & DMIN,TPMIN,TPMAX,DIST(13),G(2),Q0(5),QL(5),F(5),A(6,5),
      & B(3,6,5,4),XQ(6),TX(6),TT(6),TB(6),NEHLQ(8,2),CEHLQ(6,6,2,8,2),
@@ -4570,7 +4599,7 @@ C...EXPANSION COEFFICIENTS FOR TOP SEA QUARK DISTRIBUTION
         RETURN
       ENDIF
 C---FREEZE THE SCALE IF REQUIRED
-      SCALEF=MUSCALE
+      SCALEF=SCALE
       IF (ISPAC.GT.0) SCALEF=MAX(SCALEF,QSPAC)
 C---CHECK IF PDFLIB REQUESTED
       IF (IBEAM.EQ.1.OR.IBEAM.EQ.2) THEN
@@ -4629,6 +4658,7 @@ C     Reggeon
 
             CALL PDFSET(PARMA,VALU)
             CALL STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BTM,TOP,GLU)
+c apply normalisation for reggeon on PDFs (not applied on flux)
             DIST(1)=Cr*(0.5D0*DNV)+Cr*DSEA
             DIST(2)=Cr*(0.5D0*UPV)+Cr*USEA
             DIST(3)=Cr*STR
@@ -5025,7 +5055,7 @@ C---USE PDFLIB NUCLEON STRUCTURE FUNCTIONS
         CALL STRUCTM(X,QSCA,UPV,DNV,USEA,DSEA,STR,CHM,BTM,TOP,GLU)
 C--new MRST98 LO PDF's
       ELSEIF(NSET.GE.6.AND.NSET.LE.8) THEN
-        CALL HWSMRS(X,MUSCALE,NSET-5,UPV,DNV,USEA,DSEA,STR,CHM,BTM,GLU)
+        CALL HWSMRS(X,SCALE,NSET-5,UPV,DNV,USEA,DSEA,STR,CHM,BTM,GLU)
         TOP=ZERO
       ELSE
         IF (NSET.LT.1.OR.NSET.GT.5) CALL HWWARN('HWSFUN',400,*999)
@@ -5306,7 +5336,6 @@ C-----------------------------------------------------------------------
         IF (JDAHEP(1,I).NE.0) J=JDAHEP(1,I)
         X=XX(I)
         QL=(1.-X)*EMSCA
-        if(EMSCA*EMSCA.gt.30000) print*, 'EMSCA ', EMSCA
         CALL HWSFUN(X,EMSCA,IDHW(J),NSTRU,DISF(1,I),I)
 * Only modification wrt HWSGEN is below: we do not cut off at the gluon
 * consitutent mass, but ensure there remains enough phase space to create
@@ -5368,6 +5397,9 @@ C-----------------------------------------------------------------------
       write(*,*) '          AAM      = ',AAM
       write(*,*) '          AAQ      = ',AAQ
       write(*,*) '          AAN      = ',AAN
+      write(*,*) '          AAF0     = ',AAF0
+      write(*,*) '          AAW      = ',AAW
+      write(*,*) '          AAA2      = ',AAA2
       write(*,*) '----------others-----------------'
       write(*,*) '          PTMAX    = ',PTMAX
       write(*,*)

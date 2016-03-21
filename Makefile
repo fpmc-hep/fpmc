@@ -71,7 +71,7 @@ allApp: Fpmc Herwig Externals examples allModules
 clean:clean_sqme clean_excl_aaaa
 	@find ./ -name "*~" -exec rm -v {} \;
 	@find ./ -name ".*.swp" -exec rm -v {} \;
-	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod lib/*.so lib/*.a
+	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod
 	
 # FLAGS
 # -------
