@@ -1,3 +1,6 @@
+2016-05-10 Christophe Royon <christophe.royon@ku.edu>
+Adapted to produce events in CMS
+Bug fix in the case of gamma-Pom...
 2015-07-24 Matthias Saimpert <matthias.saimpert@cern.ch>
   * IMPORTANT BUG CORRECTIONS: symmetry factor was omitted for
   gamgam->gamgam, now added. As a result, gamgam->gamgam xsec twice smaller
