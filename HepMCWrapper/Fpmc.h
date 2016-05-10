@@ -9,8 +9,8 @@
 
 #include "HepMC/GenEvent.h"
 #include <HepMC/IO_HERWIG.h>
-//#include "CLHEP/Random/JamesRandom.h"
-//#include "CLHEP/Random/RandFlat.h"
+#include "CLHEP/Random/JamesRandom.h"
+#include "CLHEP/Random/RandFlat.h"
 
 #include <vector>
 #include <string>
@@ -53,8 +53,8 @@ namespace fpmc
   
     bool debug_;
 
-    //CLHEP::HepRandomEngine* fRandomEngine;
-    //CLHEP::RandFlat*        fRandomGenerator; 
+    CLHEP::HepRandomEngine* fRandomEngine_;
+    CLHEP::RandFlat*        fRandomGenerator_; 
   };
 } 
 
