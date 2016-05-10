@@ -38,12 +38,12 @@ int main(int argc, char **argv)
 {
    vector<string> required_parameters_;
    required_parameters_.push_back("cfg");
-   //required_parameters_.push_back("seed");
    required_parameters_.push_back("nevents");
    required_parameters_.push_back("comenergy");
    
    vector<string> optional_parameters_;
    optional_parameters_.push_back("fileout");
+   optional_parameters_.push_back("seed");
 
    // Read command line parameters 
    vector<string> command_line_parameters_;
@@ -118,13 +118,15 @@ int main(int argc, char **argv)
    // Optional parameters 
    string outputFileName_ = "fpmc.hepmc";
    if( optional_parameters_map_.find("fileout") != optional_parameters_map_.end() ) outputFileName_ = optional_parameters_map_["fileout"];
- 
+   int seed_ = -1;
+   if( optional_parameters_map_.find("seed") != optional_parameters_map_.end() ) seed_ = boost::lexical_cast<int>( optional_parameters_map_["seed"] );
+
    stringstream oss;
    oss  << "=========================================================" << endl
         << "FPMC (Wrapper) will initialize with parameters: " << endl
         << "  Datacard:    " << datacard_ << endl
         << "  N events:    " << maxEvents_ << endl
-        //<< "  Seed:       " << seed_ << endl
+        << "  Seed:        " << seed_ << endl
         << "  COM energy:  " << comEnergy_ << endl
         << "  Output file: " << outputFileName_ << endl
         << "=========================================================" << endl;
@@ -143,8 +145,8 @@ int main(int argc, char **argv)
    }
    input.close();
 
-   //fpmc::Fpmc* generator = new fpmc::Fpmc(comEnergy_,seed_,fpmc_params_);
-   fpmc::Fpmc* generator = new fpmc::Fpmc(comEnergy_,-1,fpmc_params_);
+   fpmc::Fpmc* generator = new fpmc::Fpmc(comEnergy_,seed_,fpmc_params_);
+   //fpmc::Fpmc* generator = new fpmc::Fpmc(comEnergy_,-1,fpmc_params_);
    generator->begin();
 
    //HepMC::IO_GenEvent* output = new HepMC::IO_GenEvent("fpmc.hepmc",ios::out);

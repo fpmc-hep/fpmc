@@ -20,6 +20,9 @@
 #include <HepMC/HEPEVT_Wrapper.h>
 #include <HepMC/IO_HERWIG.h>
 
+#include <CLHEP/Random/JamesRandom.h>
+#include <CLHEP/Random/RandFlat.h>
+
 #include "herwig.h"
 #include "fpmc.h"
 
@@ -85,14 +88,19 @@ void Fpmc::begin() {
   }
 
   // Use random seeds from datacard
-  /* ===============================    
-  Using CLHEP engines: 
-  fRandomEngine = new CLHEP::HepJamesRandom(seed_);
-  fRandomGenerator = new CLHEP::RandFlat(fRandomEngine);
- 
-  long seed0 = fRandomGenerator->fireInt(1L,179L);
-  long seed1 = fRandomGenerator->fireInt(1L,179L);
-  =============================== */  
+  // ===============================    
+  // Using CLHEP engines
+  long seed0_ = -1, seed1_ = -1;   
+  if( seed_ != -1 ){  
+     fRandomEngine_ = new CLHEP::HepJamesRandom(seed_);
+     fRandomGenerator_ = new CLHEP::RandFlat(fRandomEngine_);
+
+     seed0_ = fRandomGenerator_->fireInt(1L,10000L);
+     seed1_ = fRandomGenerator_->fireInt(1L,10000L);
+     cout << "[FPMC Wrapper] SEED: " << seed0_ << endl;
+     cout << "[FPMC Wrapper] SEED: " << seed1_ << endl;
+  }
+  // ===============================
 
   config.rewind();
 
@@ -157,8 +165,13 @@ void Fpmc::begin() {
   //NRN(1) = UNRN1 ! set again later in the code
   //NRN(2) = UNRN2 ! set again later in the code
   //
-  hwevnt.NRN[0] = myffread3.UNRN1;
-  hwevnt.NRN[1] = myffread3.UNRN2;
+  if( seed_ != -1 ){
+     hwevnt.NRN[0] = seed0_;
+     hwevnt.NRN[1] = seed1_;
+  } else{  
+     hwevnt.NRN[0] = myffread3.UNRN1;
+     hwevnt.NRN[1] = myffread3.UNRN2;
+  }
 
   //EFFMIN = 1d-6
   //
@@ -256,6 +269,9 @@ void Fpmc::begin() {
   //AAM = UAAM
   //AAQ = UAAQ
   //AAN = UAAN
+  //AAF0 = UAAF0
+  //AAW = UAAW
+  //AAA2 = UAAA2
   //
   aaanomal.AAANOM = myffread3.UAAANOM;
   aaanomal.D_KAPPA = myffread1.UDKAPPA;
@@ -272,6 +288,9 @@ void Fpmc::begin() {
   aaexotical.AAM = myffread1.UAAM;
   aaexotical.AAQ = myffread1.UAAQ;
   aaexotical.AAN = myffread1.UAAN;
+  aaexotical.AAF0 = myffread1.UAAF0;
+  aaexotical.AAW  = myffread1.UAAW;
+  aaexotical.AAA2 = myffread1.UAAA2;
 
   //CHIDeIGLU = UCHIDeIGLU
   //CHIDeX   =  UCHIDeX

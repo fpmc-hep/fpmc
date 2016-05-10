@@ -68,10 +68,10 @@ allModules: fpmc
 examples:oldExamples
 allApp: Fpmc Herwig Externals examples allModules 
 	
-clean:clean_sqme clean_excl_aaaa
+clean: clean_sqme clean_excl_aaaa
 	@find ./ -name "*~" -exec rm -v {} \;
 	@find ./ -name ".*.swp" -exec rm -v {} \;
-	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod
+	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod fpmc fpmc-hepmc
 	
 # FLAGS
 # -------
@@ -85,7 +85,7 @@ clean:clean_sqme clean_excl_aaaa
 #F_COMP = g77 $(F_FLAGS) $(SPEC_FL)
 
 # gforan - setup
-F_FLAGS = -g -O1 -fno-automatic -Iinc
+F_FLAGS = -g -O1 -fno-automatic -fPIC -Iinc
 F_COMP = gfortran $(F_FLAGS) $(SPEC_FL)
 
 # other 
@@ -357,6 +357,10 @@ HEPMC_BASE    = /afs/cern.ch/sw/lcg/external/HepMC/2.06.08/x86_64-slc6-gcc46-opt
 HEPMCLIB      = -L$(HEPMC_BASE)/lib -lHepMCfio -lHepMC -Wl,-rpath -Wl,$(HEPMC_BASE)/lib
 HEPMC_INCLUDE = -I$(HEPMC_BASE)/include
 
+CLHEP_BASE    = /afs/cern.ch/sw/lcg/external/clhep/2.1.4.1/x86_64-slc6-gcc46-opt
+CLHEPLIB      = $(shell $(CLHEP_BASE)/bin/clhep-config --libs) -Wl,-rpath -Wl,$(CLHEP_BASE)/lib
+CLHEP_INCLUDE = $(shell $(CLHEP_BASE)/bin/clhep-config --include) 
+
 #BOOST_BASE=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0-cms2
 BOOST_BASE    = /afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc6-gcc46-opt
 BOOST_INCLUDE = -I$(BOOST_BASE)/include
@@ -377,18 +381,18 @@ wrapper_obj=$(wrapper:HepMCWrapper/%.cc=%.o)
 wrapper_obj_dest=$(wrapper_obj:%=$(OBJDIR)/%)
 
 $(wrapper_obj_dest): $(OBJDIR)/%.o: HepMCWrapper/%.cc
-	$(CC) $(CFLAGS) $(HEPMC_INCLUDE) $(LHAPDF_INCLUDE) -c $< -o $@
+	$(CC) $(CFLAGS) $(HEPMC_INCLUDE) $(CLHEP_INCLUDE) $(LHAPDF_INCLUDE) -c $< -o $@
 
 $(LIBDIR)/FPMCHepMCWrapper.so:$(wrapper_f_obj_dest) $(wrapper_obj_dest)
 	mkdir -p $(LIBDIR); \
-	$(CC) $(LDFLAGS) -shared $(wrapper_f_obj_dest) $(wrapper_obj_dest) $(HEPMCLIB) -o $@
+	$(CC) $(LDFLAGS) -shared $(wrapper_f_obj_dest) $(wrapper_obj_dest) $(HEPMCLIB) $(CLHEPLIB) -o $@
 
 $(LIBDIR)/FPMCHepMCWrapper.a:$(wrapper_f_obj_dest) $(wrapper_obj_dest)
 	mkdir -p $(LIBDIR); \
 	ar -r $@ $(wrapper_f_obj_dest) $(wrapper_obj_dest)
 
 $(OBJDIR)/fpmc-hepmc.o: HepMCWrapper/main.cc
-	$(CC) $(CFLAGS) $(BOOST_INCLUDE) $(HEPMC_INCLUDE) $(LHAPDF_INCLUDE) -c $< -o $@
+	$(CC) $(CFLAGS) $(BOOST_INCLUDE) $(HEPMC_INCLUDE) $(CLHEP_INCLUDE) $(LHAPDF_INCLUDE) -c $< -o $@
 
 fpmc-hepmc: \
 $(OBJDIR)/herwig6500.o \
@@ -399,5 +403,5 @@ $(wrapper_f_obj_dest) $(wrapper_obj_dest) \
 $(OBJDIR)/fpmc-hepmc.o
 	$(CC) $(LDFLAGS) $(OBJDIR)/herwig6500.o $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o $(OBJEXT) \
 	$(wrapper_f_obj_dest) $(wrapper_obj_dest) $(OBJDIR)/fpmc-hepmc.o \
-	$(CERNLIB) $(LHAPDFLIB) $(GSLLIB) $(LIB_OMEGA) $(HEPMCLIB) -o $@
+	$(CERNLIB) $(LHAPDFLIB) $(GSLLIB) $(LIB_OMEGA) $(HEPMCLIB) $(CLHEPLIB) -o $@
 #----
