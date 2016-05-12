@@ -3648,6 +3648,10 @@ c ... M.S. symmetry factor in the gamgam->gamgam case
               IF(HQ.EQ.59) THEN
               FACTR=FACTR/2d0
               ENDIF
+c... CR symmetry factor in the gamma gamma ---> ZZ case
+              IF(HQ.EQ.200) THEN
+              FACTR=FACTR/2d0
+              ENDIF
 
 c              FACTR1=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
 c     $             *6*pifac*cfac*alphem**2/s**2
