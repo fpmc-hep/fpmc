@@ -1,3 +1,5 @@
+2016-05-12 Christophe Royon <christophe.royon@ku.edu>
+Bug crrection, factor 1/2 for gamma gamma ---> ZZ
 2016-05-10 Christophe Royon <christophe.royon@ku.edu>
 Adapted to produce events in CMS
 Bug fix in the case of gamma-Pom...
