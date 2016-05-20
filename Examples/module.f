@@ -172,6 +172,13 @@ c ---Exotic excl AA settings
       AAW = UAAW
       AAA2 = UAAA2
 
+c-----Exclusive ZZ production, 750 GeV resonance spin0even
+      AAF0Z = UAAF0Z ! Coupling to ZZ
+c-----Exclusive ZG production, 750 GeV resonance spin0even
+      AAF0ZG = UAAF0ZG !--------Coupling to ZG
+c-----Exclusive WW production, 750 GeV resonance spin0even
+      AAF0W = UAAF0W !--------Coupling to WW
+
 C     CHIDe
       CHIDeIGLU = UCHIDeIGLU
       CHIDeX   =  UCHIDeX
@@ -252,6 +259,9 @@ c---Set the number of nucleons - for QED photon flux
       write(*,*) 'AAQ = ', AAQ
       write(*,*) 'AAN = ', AAN
       write(*,*) 'AAF0 = ', AAF0
+      write(*,*) 'AAF0Z = ', AAF0Z
+      write(*,*) 'AAF0W = ', AAF0W
+      write(*,*) 'AAF0ZG = ', AAF0ZG
       write(*,*) 'AAW = ', AAW
       write(*,*) 'AAA2 = ', AAA2
       write(*,*)

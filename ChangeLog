@@ -1,8 +1,16 @@
-2016-05-12 Christophe Royon <christophe.royon@ku.edu>
-Bug crrection, factor 1/2 for gamma gamma ---> ZZ
-2016-05-10 Christophe Royon <christophe.royon@ku.edu>
-Adapted to produce events in CMS
-Bug fix in the case of gamma-Pom...
+2016-05-20 Cristian Baldenegro <c.baldenegro@cern.ch / crisx.baldenegro@gmail.com>
+
+ * Exclusive AA->ZZ (IPROC=16066) and AA->AZ (IPROC=16068)
+ * Exclusive AA->WW (IPROC=16067) and AA->AA (IPROC=16069) processes included
+ * Helicity amplitudes from Gero von Gersdorff and Sylvain Fichet
+ * Corresponding datacards: dataQED_ZZexoticSpin0EvenResonances and dataQED_AZexoticSpin0EvenResonances
+dataQED_WWexoticSpin0EvenResonances and dataQED_AAexoticSpin2Resonances
+ * New parameter F0Z (1/coupling for Phi->ZZ) AF0ZG (1/coupling for Phi->AZ)
+ * New parameter F0W (1/coupling for phi->WW)
+ * Such exclusive productions are included in the same subroutine calling section as Matthias' (AAANOM=3, AAEXOTIC=1)
+ * First time that AZ is included in FPMC, suspicions are well received.
+
+
 2015-07-24 Matthias Saimpert <matthias.saimpert@cern.ch>
   * IMPORTANT BUG CORRECTIONS: symmetry factor was omitted for
   gamgam->gamgam, now added. As a result, gamgam->gamgam xsec twice smaller

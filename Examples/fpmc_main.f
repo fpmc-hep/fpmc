@@ -169,6 +169,12 @@ c ---Exotic excl AA settings
       AAQ = UAAQ
       AAN = UAAN
       AAF0 = UAAF0
+c ----aa->phi->zz exclusive production coupling
+      AAF0Z = UAAF0Z
+c ----aa->phi->zz exclusive production coupling
+      AAF0W = UAAF0W
+c ----aa->phi->az exclusive production coupling
+      AAF0ZG = UAAF0ZG
       AAW = UAAW
       AAA2 = UAAA2
 

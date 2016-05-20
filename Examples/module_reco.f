@@ -169,6 +169,9 @@ c ---Exotic excl AA settings
       AAQ = UAAQ
       AAN = UAAN
       AAF0 = UAAF0
+      AAF0Z = UAAF0Z
+      AAF0ZG = UAAF0ZG
+      AAF0W = UAAF0W
       AAW = UAAW
       AAA2 = UAAA2
 
