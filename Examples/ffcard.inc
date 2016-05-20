@@ -14,7 +14,7 @@ C-----------------------------------------------------------------------
      $   UDLAMBDA,
      $   UANOMCUTOFF, UQ2WWMN, UQ2WWMX,UYWWMIN, UYWWMAX, UA0W, UACW,
      $   UA0Z, UACZ, UA1A, UA2A,
-     $   UAAM, UAAQ, UAAN, UAAF0, UAAW, UAAA2,
+     $   UAAM, UAAQ, UAAN, UAAF0, UAAF0Z, UAAF0W, UAAF0ZG, UAAW, UAAA2,
      $   UCHIDeX, UCHIDeXP, UCHIDeS2, ! R.S.
      $   UXI1Min, UXI1Max, UXI2Min, UXI2Max,
      $   UCHIDeGapMin, UCHIDeGapMax,
@@ -23,7 +23,7 @@ C-----------------------------------------------------------------------
       COMMON /MYFFREAD1/ URMASS,UWMASS,UHMASS,UTMASS,UMST1,UMSB1,UECMS,
      $   UYJMIN, UYJMAX,UPTMIN, UPTMAX, UEMMIN, UEMMAX, UDKAPPA,
      $   UACW, UA0W, UA0Z, UACZ, UA1A, UA2A,
-     $   UAAM, UAAQ, UAAN, UAAF0, UAAW, UAAA2,
+     $   UAAM, UAAQ, UAAN, UAAF0, UAAF0Z,UAAF0W, UAAF0ZG, UAAW, UAAA2,
      $   UCHIDeX, UCHIDeXP, UCHIDeS2, ! R.S.
      $   UXI1Min, UXI1Max, UXI2Min, UXI2Max,
      $   UCHIDeGapMin, UCHIDeGapMax,

@@ -61,6 +61,9 @@ c---FFC default initialiszation
       UAAQ       =    0.
       UAAN       =    0.
       UAAF0      =    0.
+      UAAF0Z     =    0.    !C Baldenegro 05-2016 spin-0 resonance, phi->zz coupling
+      UAAF0W     =    0.    !C Baldenegro 05-2016 spin-0 resonance, phi->zz coupling
+      UAAF0ZG    =    0.    !C Baldenegro 05-2016 Spin-0 to ZGamma coupling
       UAAW       =    0.
       UAAA2      =    0.
       UQ2WWMN    =    0.
@@ -135,6 +138,9 @@ c---FFC default initialiszation
         call FFKEY('AAQ', UAAQ,1,'real')
         call FFKEY('AAN', UAAN,1,'real')
         call FFKEY('AAF0', UAAF0,1,'real')
+	call FFKEY('AAF0Z', UAAF0Z,1,'real')
+	call FFKEY('AAF0W', UAAF0W,1,'real')
+	call FFKEY('AAF0ZG', UAAF0ZG,1,'real')
         call FFKEY('AAW', UAAW,1,'real')
         call FFKEY('AAA2', UAAA2,1,'real')
         UNTNAME = ''
