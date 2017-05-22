@@ -56,6 +56,11 @@ LHAPDF_BASE=/afs/cern.ch/sw/lcg/external/MCGenerators/lhapdf/5.8.9/x86_64-slc6-g
 LHAPDFLIB=-L$(LHAPDF_BASE)/lib -lLHAPDF -Wl,-rpath -Wl,$(LHAPDF_BASE)/lib
 LHAPDF_INCLUDE=-I$(LHAPDF_BASE)/include
 
+HEPMC_BASE    = /afs/cern.ch/sw/lcg/external/HepMC/2.06.08/x86_64-slc6-gcc46-opt
+CLHEP_BASE    = /afs/cern.ch/sw/lcg/external/clhep/2.1.4.1/x86_64-slc6-gcc46-opt
+BOOST_BASE    = /afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc6-gcc46-opt
+#BOOST_BASE=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0-cms2
+
 #########################################################################
 
 #-------------------------------------------------------------------------------------
@@ -352,17 +357,12 @@ module: Examples/module.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) \
 
 #---- Wrapper/HepMC
 #----
-#HEPMC_BASE=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/hepmc/2.06.07-cms4
-HEPMC_BASE    = /afs/cern.ch/sw/lcg/external/HepMC/2.06.08/x86_64-slc6-gcc46-opt
 HEPMCLIB      = -L$(HEPMC_BASE)/lib -lHepMCfio -lHepMC -Wl,-rpath -Wl,$(HEPMC_BASE)/lib
 HEPMC_INCLUDE = -I$(HEPMC_BASE)/include
 
-CLHEP_BASE    = /afs/cern.ch/sw/lcg/external/clhep/2.1.4.1/x86_64-slc6-gcc46-opt
 CLHEPLIB      = $(shell $(CLHEP_BASE)/bin/clhep-config --libs) -Wl,-rpath -Wl,$(CLHEP_BASE)/lib
 CLHEP_INCLUDE = $(shell $(CLHEP_BASE)/bin/clhep-config --include) 
 
-#BOOST_BASE=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0-cms2
-BOOST_BASE    = /afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc6-gcc46-opt
 BOOST_INCLUDE = -I$(BOOST_BASE)/include
 
 LIBDIR  = lib
