@@ -534,22 +534,18 @@ void Mxxxx_spin0even(double x, double y, double m, double f0, double w_const, do
 };
 
 void Mpppp_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-
-double u=-s-t;
    Mxxxx_spin0even(s,t,m,f0,w_const,a2,re,im);
 //std::cout <<"re pppp normal" <<"\t" << *re  << std::endl;
   return;
 };
 
 void Mpmmp_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-double u=-s-t;
    Mxxxx_spin0even(t,s,m,f0,w_const,a2,re,im);
 
   return;
 };
 
 void Mpmpm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-double u=-s-t;
    Mxxxx_spin0even(u,t,m,f0,w_const,a2,re,im);
   return;
 };
@@ -573,58 +569,46 @@ void Mppmm_spin0even(double s, double t, double m, double f0, double w_const, do
 };
 
 void Mpppm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-   *re=0;
-   *im=0;
-
-  return ;
-
+   *re = 0;
+   *im = 0;
 };
 
 void Mpppp_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
-double u=-s-t;
-*re= -1./4.*(4.*zeta1+3*zeta2)*s*s   ;
-*im=0;
-  return;
+  *re = -1./4.*(4.*zeta1+3*zeta2)*s*s;
+  *im = 0;
 };
 
 void Mpmmp_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
 double u=-s-t;
-*re= -1./4.*(4.*zeta1+3*zeta2)*t*t   ;
-*im=0;
-  return;
+  *re = -1./4.*(4.*zeta1+3*zeta2)*t*t;
+  *im = 0;
 };
 
 void Mpmpm_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
-double u=-s-t;
-*re= -1./4.*(4.*zeta1+3*zeta2)*u*u   ;
-*im=0;
-  return;
+  double u=-s-t;
+  *re = -1./4.*(4.*zeta1+3*zeta2)*u*u;
+  *im = 0;
 };
 
 void Mpppm_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
-double u=-s-t;
-*re= 0 ;
-*im=0;
-  return;
+  *re= 0 ;
+  *im=0;
 };
 
 void Mppmm_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
-double u=-s-t;
-*re= -1./4.*(4.*zeta1+zeta2)*(s*s+t*t+u*u)   ;
-*im=0;
-  return;
+  double u=-s-t;
+  *re = -1./4.*(4.*zeta1+zeta2)*(s*s+t*t+u*u);
+  *im = 0;
 };
 
 /// Z Z final state from OZ operator
 
 void MZZxxxx_spin0even(double x, double y, double m, double f0, double f0Z, double w_const, double a2, double * re, double * im){
   // some auxiliary function used in Mpppp, Mpmpm, Mpmmp.
+  *re = 0;
+  *im = 0;
 
-  *re=0;
-  *im=0;
-
-  double z = - x - y;
+  double z = -x-y;
 
   *re += -4./(f0*f0Z) * x*(x-2*mZ*mZ)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
   *im += -4./(f0*f0Z) * x*(x-2*mZ*mZ)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
@@ -633,25 +617,16 @@ void MZZxxxx_spin0even(double x, double y, double m, double f0, double f0Z, doub
 };
 
 void MZZpppp_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
-
-double u=-s-t;
-   MZZxxxx_spin0even(s,t,m,f0,f0Z,w_const,a2,re,im);
-//std::cout <<"Mpppp " <<"\t" << *re  << std::endl;
-  return;
+  MZZxxxx_spin0even(s,t,m,f0,f0Z,w_const,a2,re,im);
 };
 
 void MZZpmmp_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
-double u=-s-t;
-   MZZxxxx_spin0even(t,s,m,f0,f0Z,w_const,a2,re,im);
-//std::cout <<"Mpmmp " <<"\t" << *re  << std::endl;
-  return;
+  MZZxxxx_spin0even(t,s,m,f0,f0Z,w_const,a2,re,im);
 };
 
 void MZZpmpm_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
-double u=-s-t;
-   MZZxxxx_spin0even(u,t,m,f0,f0Z,w_const,a2,re,im);
-//std::cout <<"Mpmpm " <<"\t" << *re  << std::endl;
-  return;
+  double u=-s-t;
+  MZZxxxx_spin0even(u,t,m,f0,f0Z,w_const,a2,re,im);
 };
 
 void MZZppmm_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
@@ -669,22 +644,18 @@ void MZZppmm_spin0even(double s, double t, double m, double f0, double f0Z, doub
   *im += -4./(f0*f0Z) * u*(u-2*mZ*mZ)/((u-m*m)*(u-m*m) +m*m*width_gen(u,m,f0,w_const,a2)*width_gen(u,m,f0,w_const,a2) ) *(- m*width_gen(u,m,f0,w_const,a2));
 
 //std::cout <<"Mppmm " <<"\t" << *re  << std::endl;
-  return ;
 };
 
 void MZZpppm_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-   *re=0;
-   *im=0;
-
-  return ;
+  *re = 0;
+  *im = 0;
 };
 
 void MZZpp00_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
   double u=-s-t;
 
-  *re=0;
-  *im=0;
+  *re = 0;
+  *im = 0;
 
   *re += -4./(f0*f0Z) * s*(2*mZ*mZ)/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (s-m*m);
   *re += -4./(f0*f0Z) * t*(2*mZ*mZ)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) * (t-m*m);
@@ -693,8 +664,6 @@ void MZZpp00_spin0even(double s, double t, double m, double f0, double f0Z, doub
   *im += -4./(f0*f0Z) * s*(2*mZ*mZ)/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) *(- m*width_gen(s,m,f0,w_const,a2));
   *im += -4./(f0*f0Z) * t*(2*mZ*mZ)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) *(- m*width_gen(t,m,f0,w_const,a2));
   *im += -4./(f0*f0Z) * u*(2*mZ*mZ)/((u-m*m)*(u-m*m) +m*m*width_gen(u,m,f0,w_const,a2)*width_gen(u,m,f0,w_const,a2) ) *(- m*width_gen(u,m,f0,w_const,a2));
-
-  return ;
 };
 
 /// Z gam final state from OZgam operator
@@ -709,30 +678,19 @@ void MZgxxxx_spin0even(double x, double y, double m, double f0, double f0Zg, dou
 
   *re += -4./(f0*f0Zg) * x*(x-mZ*mZ)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
   *im += -4./(f0*f0Zg) * x*(x-mZ*mZ)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
-
-  return;
 };
 
 void MZgpppp_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-
-double u=-s-t;
-   MZgxxxx_spin0even(s,t,m,f0,f0Zg,w_const,a2,re,im);
-//std::cout <<"Mpppp " <<"\t" << *re  << std::endl;
-  return;
+  MZgxxxx_spin0even(s,t,m,f0,f0Zg,w_const,a2,re,im);
 };
 
 void MZgpmmp_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-double u=-s-t;
-   MZgxxxx_spin0even(t,s,m,f0,f0Zg,w_const,a2,re,im);
-//std::cout <<"Mpmmp " <<"\t" << *re  << std::endl;
-  return;
+  MZgxxxx_spin0even(t,s,m,f0,f0Zg,w_const,a2,re,im);
 };
 
 void MZgpmpm_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-double u=-s-t;
-   MZgxxxx_spin0even(u,t,m,f0,f0Zg,w_const,a2,re,im);
-//std::cout <<"Mpmpm " <<"\t" << *re  << std::endl;
-  return;
+  double u=-s-t;
+  MZgxxxx_spin0even(u,t,m,f0,f0Zg,w_const,a2,re,im);
 };
 
 void MZgppmm_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
@@ -754,22 +712,13 @@ void MZgppmm_spin0even(double s, double t, double m, double f0, double f0Zg, dou
 };
 
 void MZgpppm_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-   *re=0;
-   *im=0;
-
-  return ;
+  *re = 0;
+  *im = 0;
 };
 
 void MZgpp00_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-
-  *re=0;
-  *im=0;
-
-
-//std::cout <<"Mpp00 " <<"\t" << *re  << std::endl;
-  return ;
+  *re = 0;
+  *im = 0;
 };
 
 /// W+W- final state from OW operator
@@ -777,37 +726,26 @@ void MZgpp00_spin0even(double s, double t, double m, double f0, double f0Zg, dou
 void MWWxxxx_spin0even(double x, double y, double m, double f0, double f0W, double w_const, double a2, double * re, double * im){
   // some auxiliary function used in Mpppp, Mpmpm, Mpmmp.
 
-  *re=0;
-  *im=0;
+  *re = 0;
+  *im = 0;
 
-  double z = - x - y;
+  double z = -x-y;
 
   *re += -4./(f0*f0W) * x*(x-2*mW*mW)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
   *im += -4./(f0*f0W) * x*(x-2*mW*mW)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
-
-  return;
 };
 
 void MWWpppp_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
-
-double u=-s-t;
-   MWWxxxx_spin0even(s,t,m,f0,f0W,w_const,a2,re,im);
-//std::cout <<"Mpppp " <<"\t" << *re  << std::endl;
-  return;
+  MWWxxxx_spin0even(s,t,m,f0,f0W,w_const,a2,re,im);
 };
 
 void MWWpmmp_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
-double u=-s-t;
-   MWWxxxx_spin0even(t,s,m,f0,f0W,w_const,a2,re,im);
-//std::cout <<"Mpmmp " <<"\t" << *re  << std::endl;
-  return;
+  MWWxxxx_spin0even(t,s,m,f0,f0W,w_const,a2,re,im);
 };
 
 void MWWpmpm_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
-double u=-s-t;
-   MWWxxxx_spin0even(u,t,m,f0,f0W,w_const,a2,re,im);
-//std::cout <<"Mpmpm " <<"\t" << *re  << std::endl;
-  return;
+  double u=-s-t;
+  MWWxxxx_spin0even(u,t,m,f0,f0W,w_const,a2,re,im);
 };
 
 void MWWppmm_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
@@ -829,11 +767,8 @@ void MWWppmm_spin0even(double s, double t, double m, double f0, double f0W, doub
 };
 
 void MWWpppm_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-   *re=0;
-   *im=0;
-
-  return ;
+  *re = 0;
+  *im = 0;
 };
 
 void MWWpp00_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
@@ -874,41 +809,25 @@ void Mxxxx_spin2(double x, double y, double m, double f0, double w_const, double
 };
 
 void Mpppp_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-
-double u=-s-t;
-   Mxxxx_spin2(s,t,m,f0,w_const,a2,re,im);
-//std::cout <<"re pppp normal" <<"\t" << *re  << std::endl;
-  return;
+  Mxxxx_spin2(s,t,m,f0,w_const,a2,re,im);
 };
 
 void Mpmmp_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-double u=-s-t;
-   Mxxxx_spin2(t,s,m,f0,w_const,a2,re,im);
-
-  return;
+  Mxxxx_spin2(t,s,m,f0,w_const,a2,re,im);
 };
 
 void Mpmpm_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-double u=-s-t;
-   Mxxxx_spin2(u,t,m,f0,w_const,a2,re,im);
-  return;
+  double u=-s-t;
+  Mxxxx_spin2(u,t,m,f0,w_const,a2,re,im);
 };
 
 void Mppmm_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-
-  *re=0;
-  *im=0;
-
-  
-  return ;
+  *re = 0;
+  *im = 0;
 };
 
 void Mpppm_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
   double u=-s-t;
-   *re=0;
-   *im=0;
-
-  return ;
-
+   *re = 0;
+   *im = 0;
 };
