@@ -43,7 +43,6 @@ c      print *,'beam energies :',pbeam1,pbeam2
 c      PBEAM1=7000
 c      PBEAM2=2760
 c      print*,'Murilo ',PBEAM1,PBEAM2
->>>>>>> fbe1bb6... all
 
 c---Process type : EXClusive or INClusive, QCD or QED when relevant
 c   It is important to set those right

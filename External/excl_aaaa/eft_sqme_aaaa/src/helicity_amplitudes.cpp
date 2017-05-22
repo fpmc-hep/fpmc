@@ -353,7 +353,6 @@ void Mpppp_vector(double sred, double tred, double *re, double *im, int exclude_
 	*im =  ( 2. * PI * sred*sred *( log(-4.*ured)  / (sred * ured) +
 					log(-4.*tred)  / (sred * tred ) ) 
 		  )  ;
->>>>>>> fbe1bb6... all
       }
     else{   Mxxxx_vector(sred,tred,re,im);  
     }
