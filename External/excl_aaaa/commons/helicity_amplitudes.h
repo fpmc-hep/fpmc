@@ -111,5 +111,3 @@ void Mpmpm_spin2(double s, double t, double m, double f0, double w_const, double
 void Mppmm_spin2(double s, double t, double m, double f0, double w_const, double a2, double * re, double * im);
 
 void Mpppm_spin2(double s, double t, double m, double f0, double w_const, double a2, double * re, double * im);
-
-
