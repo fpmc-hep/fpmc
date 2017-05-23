@@ -34,7 +34,7 @@ void me_SM(void (*me)(double,double ,double *, double *, int),
     me(s/(4*SM_masses[i]*SM_masses[i]),t/(4*SM_masses[i]*SM_masses[i]), &d_re, &d_im, exclude_loops);
     *re += d_re * SM_weight[i];
     *im += d_im * SM_weight[i];
-  };
+  }
 
   //  cout<<*re<<"  "<<*im<<endl;
 
@@ -68,11 +68,7 @@ void me_SM(void (*me)(double,double ,double *, double *, int),
    
   // the factor of 8 is needed because of the conventions in
   // Costantini, DeTollis, Pistoni
-
-  
-  return;
-    
-};
+}
 
 
 // Computes the  squared matrix element and the SM interference from free zeta_1, zeta_2
@@ -167,7 +163,7 @@ double sqme (double s,double t, int exclude_loops_SM, double z1, double z2){
  
   return 0.5*value;
 
-};
+}
 
 
 }  //namespace eft_aaaa

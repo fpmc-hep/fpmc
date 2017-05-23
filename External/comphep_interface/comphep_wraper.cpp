@@ -39,19 +39,19 @@
       extern int asgn_(int,double);
       extern double sqme_deg(double, double, double);
       extern double sqme(double, double, double);
-   }; // namespace anom_aaww
+   } // namespace anom_aaww
    
    namespace anom_aazz {
       extern int asgn_(int,double);
       extern double sqme_deg(double, double, double);
       extern double sqme(double, double, double);
-   }; // namespace anom_aazz
+   } // namespace anom_aazz
 
    namespace anom_aaaa {
       extern int asgn_(int,double);
       extern double sqme_deg(double, double, double);
       extern double sqme(double, double, double);
-   }; // namespace anom_aaaa
+   } // namespace anom_aaaa
 
 
 
@@ -162,8 +162,8 @@ void sqme_aaaa_c_(double *_amp2, double *_s, double *_t, double *_alpha,
    //R.S. Gupta arXiv:1111.3354 [hep-ph] 
    double fact = (*_cutoff > 0 ) ? 1/(1+pow(*_s/ *_cutoff / *_cutoff, 2)) : 1;
 
-   double dkappa = *_dkappa*fact;
-   double lambda = *_lambda*fact;
+   /*double dkappa = *_dkappa*fact;
+     double lambda = *_lambda*fact;*/
    double a1a = *_a1a*fact;
    double a2a = *_a2a*fact;
 
@@ -171,9 +171,9 @@ void sqme_aaaa_c_(double *_amp2, double *_s, double *_t, double *_alpha,
 // details 
 
 //   double sw = anom_aaaa::va[2];
-   double sw = *_sw;
-   double cw = sqrt(1-sw*sw);
-   double mz = *_mw/cw;
+   //double sw = *_sw;
+   //double cw = sqrt(1-sw*sw);
+   //double mz = *_mw/cw;
 
    anom_aaaa::asgn_(1, a1a);
    anom_aaaa::asgn_(2, a2a);

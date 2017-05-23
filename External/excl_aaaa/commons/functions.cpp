@@ -1,7 +1,6 @@
 #include<gsl/gsl_sf.h>
 #include<math.h>
 
-
 const double PI = 4*atan(1);
 
 
@@ -31,7 +30,7 @@ double ReB(double z){
       return  b * atan(1/b)-1 ;
     }
 
-};
+}
 
 double ImB(double z){
   
@@ -43,7 +42,7 @@ double ImB(double z){
     {
       return 0;
     }
-};
+}
 
 double ReT(double z){
 
@@ -77,7 +76,7 @@ double ReT(double z){
       return - temp*temp ;
     }
 
-};
+}
 
 double ImT(double z){
   
@@ -89,7 +88,7 @@ double ImT(double z){
     {
       return 0;
     }
-};
+}
 
 double ReF(double q, double a){   // some auxiliary function used in ReI(z,w)
                                   // (sum of the 4 dilogs)  
@@ -135,7 +134,7 @@ double ReF(double q, double a){   // some auxiliary function used in ReI(z,w)
     }
 
   return result;
-};
+}
 
 double ReI(double z, double w){ // allowed regions z,w<=0 || z>=0,-z<=w<=0
 
@@ -162,7 +161,7 @@ double ReI(double z, double w){ // allowed regions z,w<=0 || z>=0,-z<=w<=0
   return ( ReF(z,a) + ReF(w,a) ) / (2*a);
 
 
-};
+}
 
 double ImI(double z,double w){ // allowed regions z,w<=0 || z>=0,-z<=w<=0  
   
@@ -191,4 +190,4 @@ double ImI(double z,double w){ // allowed regions z,w<=0 || z>=0,-z<=w<=0
 
   return PI / (2*a) * log( (a-b)/(a+b) );
 
-};
+}
