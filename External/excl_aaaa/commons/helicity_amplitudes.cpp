@@ -1,26 +1,23 @@
 // Computes different helicity amplitudes as defined in 
 // Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
-#include<math.h>
-#include"./functions.h"
-#include<iostream>
-#include<fstream>
+#include <math.h>
+#include <iostream>
+#include <fstream>
+
+#include "functions.h"
 
 const double PI = 4*atan(1);
-const double mW = 80.4 ;
-const double mZ = 91.2 ;
-const double mh = 125. ;
-const int low=1;
-const int high=2;
-const int forward=3;
-const int backward=4;
-
-
-
+const double mW = 80.4;
+const double mZ = 91.2;
+const double mh = 125.;
+const int low = 1;
+const int high = 2;
+const int forward = 3;
+const int backward = 4;
 
 int limits(double sred,double tred, double ured){
-
-  double const shigh=pow(10.,9.);
+  const double shigh=pow(10.,9.);
 
   if ( sred <= 0.001 ) return low; // EFT limit
   else if ( ( sred <= 10. && -tred < 0.0001*sred ) ||
@@ -38,19 +35,14 @@ int limits(double sred,double tred, double ured){
   // for sred<shigh, only switch from exact result to forward limit at |t| < 0.001 for better accuracy  
 }
 
-
-void Mxxxx_fermion(double x, double y, double * re, double * im){
+void
+Mxxxx_fermion( double x, double y, double* re, double* im )
+{
   // some auxilliary function used in Mpppp, Mpmpm, Mpmmp.
+  *re=1; *im=0;
 
-
-  *re=1;
-  *im=0;
-
-  double z = - x - y;
-  
+  double z = -x-y;
   double temp;
-
-
  
   temp = 2 * ( y*y + z*z ) / ( x * x ) - 2/x;
   *re += temp * ( ReT(y) + ReT(z) );
@@ -71,106 +63,89 @@ void Mxxxx_fermion(double x, double y, double * re, double * im){
   temp = 2* (y-z)/x;
   *re += temp * ( ReB(y) - ReB(z) );
   *im += temp * ( ImB(y) - ImB(z) );
-     
-
-
-  return;
-
 }
 
-void Mpppp_fermion(double sred, double tred, double *re, double *im, int exclude_loops){
+void
+Mpppp_fermion( double sred, double tred, double *re, double *im, int exclude_loops )
+{
   // M++++ from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
 
   double ured=-sred-tred;
 
-  if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
-  else{ 
-    int region=limits(sred,tred,ured);
-    if( region==low ){ // EFT limit
-      *re= -4.*(4.*(-1./36.)  +3.*(7./90.) )  *sred*sred ;  
-      *im=0;  }
-    else if( region == forward || region == backward )
-      {            // Forward and backward limit 
-	*re= 1./(2.* sred*sred)*( 2.* sred*sred+(-2.*sred+4.*sred*sred)*ReB(sred)
-				  +(2.*sred-8.*sred*sred)*ReB(-sred) +(-1.+2.*sred)*ReT(sred)+(-1.-2.*sred+4.*sred*sred)*ReT(-sred) )  ;
-	*im= 1./(2.* sred*sred)*(               (-2.*sred+4.*sred*sred)*ImB(sred)
-						+(2.*sred-8.*sred*sred)*ImB(-sred) +(-1.+2.*sred)*ImT(sred)+(-1.-2.*sred+4.*sred*sred)*ImT(-sred) )  ;
-      }
-    else if( region== high ) 
-      {            // high energy limit
-	*re = 1.+(tred-ured)/sred * log(tred/ured)+(tred*tred+ured*ured) / (2.*sred*sred)*(pow( log(tred/ured) , 2 )+PI*PI);
-	*im = 0;
-      }
-    else{   
-      Mxxxx_fermion(sred,tred,re,im);
+  if ( exclude_loops==1 || exclude_loops==3 ) { *re=0; *im=0; }
+  else {
+    const int region = limits(sred,tred,ured);
+    if ( region==low ){ // EFT limit
+      *re= -4.*(4.*(-1./36.)  +3.*(7./90.) )*sred*sred;
+      *im=0;
     }
-    
-  } 
-  
-  return;
-
+    else if ( region == forward || region == backward ) { // Forward and backward limit 
+      *re= 1./(2.* sred*sred)*( 2.* sred*sred+(-2.*sred+4.*sred*sred)*ReB(sred)
+                                              +(2.*sred-8.*sred*sred)*ReB(-sred) +(-1.+2.*sred)*ReT(sred)+(-1.-2.*sred+4.*sred*sred)*ReT(-sred) );
+      *im= 1./(2.* sred*sred)*(               (-2.*sred+4.*sred*sred)*ImB(sred)
+                                              +(2.*sred-8.*sred*sred)*ImB(-sred) +(-1.+2.*sred)*ImT(sred)+(-1.-2.*sred+4.*sred*sred)*ImT(-sred) );
+    }
+    else if ( region== high ) { // high energy limit
+      *re = 1.+(tred-ured)/sred * log(tred/ured)+(tred*tred+ured*ured) / (2.*sred*sred)*(pow( log(tred/ured) , 2 )+PI*PI);
+      *im = 0;
+    }
+    else { Mxxxx_fermion( sred, tred, re, im ); }
+  }
 }
 
-void Mpmmp_fermion(double sred, double tred, double *re, double *im, int exclude_loops){
+void
+Mpmmp_fermion( double sred, double tred, double* re, double* im, int exclude_loops )
+{
   // M+--+ from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
-
-  double ured=-sred-tred;
+  double ured = -sred-tred;
   
-  if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
-  else
-    {
-      int region = limits(sred,tred,ured); 
-      if( region == low ){ // EFT limit
-	*re= -4.*(4.*(-1./36.)  +3.*(7./90.) )  *tred*tred ;
-	*im=0;  
-      }
-      else if( region==forward )
-	{                // Forward limit 
-	  *re=0.; *im=0.;
-	}
-      else if( region == backward )
-	{                // Backward limit 
-	  *re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) )  ;
-	  *im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) )  ;
-	}
-      else if( region == high ) 
-	{            // high energy limit
-	  *re = 1. + (sred-ured)/tred * log(-sred/ured)+(sred*sred+ured*ured) / (2.*tred*tred)*pow( log(-sred/ured) , 2 );
-	  *im = -PI*( (sred-ured)/tred + (sred*sred+ured*ured) / (tred*tred)*log(-sred/ured));
-	}
-      else{  Mxxxx_fermion(tred,sred,re,im); }     
+  if ( exclude_loops==1 || exclude_loops==3 ) { *re = *im = 0; }
+  else {
+    const int region = limits( sred, tred, ured );
+    if ( region == low ) { // EFT limit
+      *re= -4.*(4.*(-1./36.)  +3.*(7./90.) )  *tred*tred ;
+      *im=0;  
     }
+    else if ( region==forward ) { // Forward limit 
+      *re = *im=0.;
+    }
+    else if ( region==backward ) { // Backward limit 
+      *re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) );
+      *im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) );
+    }
+    else if( region == high ) { // high energy limit
+      *re = 1. + (sred-ured)/tred * log(-sred/ured)+(sred*sred+ured*ured) / (2.*tred*tred)*pow( log(-sred/ured) , 2 );
+      *im = -PI*( (sred-ured)/tred + (sred*sred+ured*ured) / (tred*tred)*log(-sred/ured));
+    }
+    else { Mxxxx_fermion( tred, sred, re, im ); }     
+  }
 }
 
-void Mpmpm_fermion(double sred, double tred, double *re, double *im, int exclude_loops){
-// M+-+- from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
-
+void
+Mpmpm_fermion( double sred, double tred, double* re, double* im, int exclude_loops )
+{
+  // M+-+- from Costantini, DeTollis, Pistoni; Nuovo Cim. A2 (1971) 733-787 
   double ured=-sred-tred;
 
-  if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
-  else{
-    int region = limits(sred,tred,ured);     
-    if( region == low ){ // EFT limit
-      *re= -4.*(4.*(-1./36.)  +3.*(7./90.) )  *ured*ured ;
-      *im=0;  }
-    else if( region == forward )
-      {                // Forward limit 
-	*re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) )  ;
-	*im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) )  ;    
-      }
-    else if( region == backward )
-      {                // Backward limit 
-	*re=0.; *im=0.;
-      }
-    else if( region == high ) 
-      {            // high energy limit
-	*re = 1. + (tred-sred)/ured * log(-tred/sred)+(sred*sred+tred*tred) / (2.*ured*ured)*pow( log(-tred/sred) , 2 );
-	*im = PI*( (tred-sred)/ured + (sred*sred+tred*tred) / (ured*ured)*log(-tred/sred));
-      }   
-    else{   
-      Mxxxx_fermion(ured,tred,re,im);     
+  if ( exclude_loops==1 || exclude_loops==3 ) { *re = *im = 0.; }
+  else {
+    const int region = limits( sred, tred, ured );
+    if ( region==low ){ // EFT limit
+      *re= -4.*(4.*(-1./36.)  +3.*(7./90.) )*ured*ured;
+      *im=0;
     }
-    
+    else if ( region==forward ) { // Forward limit
+      *re= 1./(2.* sred*sred)*( 2.* sred*sred+(2.*sred+4.*sred*sred)*ReB(-sred)+(-2.*sred-8.*sred*sred)*ReB(sred) +(-1.-2.*sred)*ReT(-sred)+(-1.+2.*sred+4.*sred*sred)*ReT(sred) );
+      *im= 1./(2.* sred*sred)*(               (2.*sred+4.*sred*sred)*ImB(-sred)+(-2.*sred-8.*sred*sred)*ImB(sred) +(-1.-2.*sred)*ImT(-sred)+(-1.+2.*sred+4.*sred*sred)*ImT(sred) );
+    }
+    else if ( region==backward ) { // Backward limit
+      *re = *im = 0.;
+    }
+    else if ( region==high ) { // high energy limit
+      *re = 1. + (tred-sred)/ured * log(-tred/sred)+(sred*sred+tred*tred) / (2.*ured*ured)*pow( log(-tred/sred) , 2 );
+      *im = PI*( (tred-sred)/ured + (sred*sred+tred*tred) / (ured*ured)*log(-tred/sred));
+    }
+    else { Mxxxx_fermion( ured, tred, re, im ); }
   }
 }
 
@@ -180,26 +155,24 @@ void Mpppm_fermion(double sred, double tred, double * re, double * im, int exclu
   double temp;
   double ured=-sred-tred;
 
-
-  if(exclude_loops==1||exclude_loops==3) {*re=0; *im=0;}
+  if ( exclude_loops==1 || exclude_loops==3 ) { *re = *im = 0.; }
   else{
     int region = limits (sred, tred, ured);    
-    if( region == low ){ // EFT limit
-      *re= 0.; *im=0.;}
-    else if( region == forward || region == backward )
-      {                // Forward and backward limit 
-	*re= 0.; *im=0.;}
-      else if (region == high ) 
-      {            // high energy limit
-	*re=-1;
-	*im=0;
-      }
-    else{
-      
+    if ( region == low ) { // EFT limit
+      *re = *im=0.;
+    }
+    else if ( region==forward || region==backward ) { // Forward and backward limit 
+      *re = *im=0.;
+    }
+    else if (region == high ) { // high energy limit
       *re=-1;
       *im=0;
+    }
+    else {
+      *re = -1;
+      *im = 0;
       
-      temp=-1/sred-1/tred-1/ured;
+      temp = -1/sred-1/tred-1/ured;
       *re += temp*( ReT(sred) + ReT(tred) + ReT(ured) );
       *im += temp*( ImT(sred) + ImT(tred) + ImT(ured) );
       
@@ -214,8 +187,7 @@ void Mpppm_fermion(double sred, double tred, double * re, double * im, int exclu
       temp = 1/sred + 1/( 2 * tred * ured );
       *re += temp*ReI(tred,ured);
       *im += temp*ImI(tred,ured);
-    }
-    
+    }    
   }
 }
 
@@ -258,32 +230,20 @@ void Mppmm_fermion(double sred, double tred, double * re, double * im, int exclu
       *im += temp*ImI(tred,ured);
       
     }
-    
   }
-
-
 }
 
-
-
 void Mxxxx_vector(double x, double y, double * re, double * im){
-
   // some auxilliary function used in Mpppp, Mpmpm, Mpmmp.
-
-
   *re=-1.5;
   *im=0;
 
   double z = - x - y;
-  
   double temp;
-
-
 
   temp = -3* (y-z)/x;
   *re += temp * ( ReB(y) - ReB(z) );
   *im += temp * ( ImB(y) - ImB(z) );
-
  
   temp = -1/x*(8*x-3-6*y*z/x);
   *re += temp * ( ReT(y) + ReT(z) );
@@ -293,7 +253,6 @@ void Mxxxx_vector(double x, double y, double * re, double * im){
   *re += temp * ReI(y,z); 
   *im += temp * ImI(y,z);
 
-
   temp = -4*(x-0.25)*(x-0.75)/(x*y); ; 
   *re += temp * ReI(x,y); 
   *im += temp * ImI(x,y);
@@ -301,8 +260,6 @@ void Mxxxx_vector(double x, double y, double * re, double * im){
   temp = -4*(x-0.25)*(x-0.75)/(x*z); ; 
   *re += temp * ReI(x,z); 
   *im += temp * ImI(x,z);
-    
-
 }
 
 void Mpppp_vector(double sred, double tred, double *re, double *im, int exclude_loops){
@@ -436,93 +393,94 @@ void Mpmpm_vector(double sred, double tred, double *re, double *im, int exclude_
   }
 }
 
-void Mpppm_vector(double sred, double tred, double * re, double * im, int exclude_loops){
+void
+Mpppm_vector( double sred, double tred, double* re, double* im, int exclude_loops )
+{
+  //double ured=-tred-sred;
 
-//double ured=-tred-sred;
-
-
-if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
-else{ 
-
-  //if(sred<0.001){ // EFT limit
-  //    *re= 0.; *im=0.;}
-  //else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
-  //{                // Forward and backward limit 
-  //            *re= 0.; *im=0.;}
-  //else{
-
-   Mpppm_fermion(sred,tred,re,im,exclude_loops);
-  *re *= -1.5;
-  *im *= -1.5;
-  //}
-
-    }
+  if ( exclude_loops==2 || exclude_loops==3 ) { *re = *im =0; }
+  else {
+    //if(sred<0.001){ // EFT limit
+    //    *re= 0.; *im=0.;}
+    //else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
+    //{                // Forward and backward limit 
+    //            *re= 0.; *im=0.;}
+    //else{
+    Mpppm_fermion( sred, tred, re, im, exclude_loops );
+    *re *= -1.5;
+    *im *= -1.5;
+    //}
+  }
 }
 
-void Mppmm_vector(double sred, double tred, double * re, double * im, int exclude_loops){
-
+void
+Mppmm_vector( double sred, double tred, double* re, double* im, int exclude_loops )
+{
   //double ured = -sred-tred;
 
-if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
-else{   
+  if ( exclude_loops==2 || exclude_loops==3 ) { *re = *im=0; }
+  else {
+    //if(sred<0.001){ // EFT limit 
+    //    *re= -4.*(4.*(-5./32.)  +(27./40.) )*(sred*sred+tred*tred+ured*ured); *im=0.;}
+    //else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
+    //{                // Forward and backward limit 
+    //*re=1./(2.*sred*sred)*( -2.*sred*sred-2.*sred*ReB(sred)+2.*sred*ReB(-sred)-ReT(sred)-ReT(-sred)  ) ; 
+    //*im=1./(2.*sred*sred)*(              -2.*sred*ImB(sred)+2.*sred*ImB(-sred)-ImT(sred)-ImT(-sred)  );
+    //*re *= -1.5;
+    //*im *= -1.5;
+    //}
+    //else{ 
 
-  //if(sred<0.001){ // EFT limit 
-  //    *re= -4.*(4.*(-5./32.)  +(27./40.) )*(sred*sred+tred*tred+ured*ured); *im=0.;}
-  //else if(sred<10000. && sred>0.001 && (-tred<0.0001*sred||-ured<0.0001*sred ))
-  //{                // Forward and backward limit 
-  //*re=1./(2.*sred*sred)*( -2.*sred*sred-2.*sred*ReB(sred)+2.*sred*ReB(-sred)-ReT(sred)-ReT(-sred)  ) ; 
-  //*im=1./(2.*sred*sred)*(              -2.*sred*ImB(sred)+2.*sred*ImB(-sred)-ImT(sred)-ImT(-sred)  );
-  //*re *= -1.5;
-  //*im *= -1.5;
-  //}
-  //else{ 
-
-  Mppmm_fermion(sred,tred,re,im,exclude_loops);
-  *re *= -1.5;
-  *im *= -1.5;
+    Mppmm_fermion( sred, tred, re, im, exclude_loops );
+    *re *= -1.5;
+    *im *= -1.5;
   // }
-
-   }
-
+  }
 }
 
 
 /// Neutral resonances
 
 // Define the s-dependent width
-double width_gen(double s, double m, double f0, double w_const, double a2){
-  return 1./m*( a2*s*s/ (4*PI*f0*f0)) +w_const;
+double
+width_gen( double s, double m, double f0, double w_const, double a2 )
+{
+  return 1./m*( a2*s*s / ( 4*PI*f0*f0 ) ) +w_const;
 }
 
-void Mxxxx_spin0even(double x, double y, double m, double f0, double w_const, double a2, double * re, double * im){
+void
+Mxxxx_spin0even( double x, double y, double m, double f0, double w_const, double a2, double* re, double* im )
+{
   // some auxiliary function used in Mpppp, Mpmpm, Mpmmp.
-
-  *re=0;
-  *im=0;
-
-  *re += -4./(f0*f0) * x*x/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
-  *im += -4./(f0*f0) * x*x/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
+  *re = -4./(f0*f0) * x*x/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
+  *im = -4./(f0*f0) * x*x/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
 }
 
-void Mpppp_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-   Mxxxx_spin0even(s,t,m,f0,w_const,a2,re,im);
+void
+Mpppp_spin0even( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
+  Mxxxx_spin0even( s, t, m, f0, w_const, a2, re, im );
 //std::cout <<"re pppp normal" <<"\t" << *re  << std::endl;
 }
 
-void Mpmmp_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-  Mxxxx_spin0even(t,s,m,f0,w_const,a2,re,im);
+void
+Mpmmp_spin0even( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
+  Mxxxx_spin0even( t, s, m, f0, w_const, a2, re, im );
 }
 
-void Mpmpm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-  Mxxxx_spin0even(u,t,m,f0,w_const,a2,re,im);
+void
+Mpmpm_spin0even( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
+  double u = -s-t;
+  Mxxxx_spin0even( u, t, m, f0, w_const, a2, re, im );
 }
 
-void Mppmm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-
-  *re=0;
-  *im=0;
+void
+Mppmm_spin0even( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
+  double u = -s-t;
+  *re = *im = 0.;
 
   *re += -4./(f0*f0) * s*s/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (s-m*m);
   *re += -4./(f0*f0) * t*t/((t-m*m)*(t-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (t-m*m);
@@ -531,68 +489,85 @@ void Mppmm_spin0even(double s, double t, double m, double f0, double w_const, do
   *im += -4./(f0*f0) * s*s/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) *(- m*width_gen(s,m,f0,w_const,a2));
   *im += -4./(f0*f0) * t*t/((t-m*m)*(t-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) *(- m*width_gen(s,m,f0,w_const,a2));
   *im += -4./(f0*f0) * u*u/((u-m*m)*(u-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) *(- m*width_gen(s,m,f0,w_const,a2));
-
-//std::cout <<"Mppmm " <<"\t" << *re  << std::endl;
+  //std::cout <<"Mppmm " <<"\t" << *re  << std::endl;
 }
 
-void Mpppm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-   *re = 0;
-   *im = 0;
+void
+Mpppm_spin0even( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
+   *re = *im = 0.;
 }
 
-void Mpppp_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
+void
+Mpppp_eft( double zeta1, double zeta2, double s, double t, double* re, double* im )
+{
   *re = -1./4.*(4.*zeta1+3*zeta2)*s*s;
   *im = 0;
 }
 
-void Mpmmp_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
+void
+Mpmmp_eft( double zeta1, double zeta2, double s, double t, double* re, double* im )
+{
   *re = -1./4.*(4.*zeta1+3*zeta2)*t*t;
   *im = 0;
 }
 
-void Mpmpm_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
-  double u=-s-t;
+void
+Mpmpm_eft( double zeta1, double zeta2, double s, double t, double* re, double* im )
+{
+  double u = -s-t;
   *re = -1./4.*(4.*zeta1+3*zeta2)*u*u;
   *im = 0;
 }
 
-void Mpppm_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
-  *re= 0 ;
-  *im=0;
+void
+Mpppm_eft( double zeta1, double zeta2, double s, double t, double* re, double* im )
+{
+  *re = *im = 0.;
 }
 
-void Mppmm_eft(double zeta1, double zeta2, double s, double t, double *re, double *im){
-  double u=-s-t;
-  *re = -1./4.*(4.*zeta1+zeta2)*(s*s+t*t+u*u);
+void
+Mppmm_eft( double zeta1, double zeta2, double s, double t, double* re, double* im )
+{
+  double u = -s-t;
+  *re = -1./4.*( 4.*zeta1+zeta2 )*( s*s+t*t+u*u );
   *im = 0;
 }
 
 /// Z Z final state from OZ operator
 
-void MZZxxxx_spin0even(double x, double y, double m, double f0, double f0Z, double w_const, double a2, double * re, double * im){
+void
+MZZxxxx_spin0even( double x, double y, double m, double f0, double f0Z, double w_const, double a2, double* re, double* im )
+{
   // some auxiliary function used in Mpppp, Mpmpm, Mpmmp.
   *re = -4./(f0*f0Z) * x*(x-2*mZ*mZ)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
   *im = -4./(f0*f0Z) * x*(x-2*mZ*mZ)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
 }
 
-void MZZpppp_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
+void
+MZZpppp_spin0even( double s, double t, double m, double f0, double f0Z, double w_const, double a2, double* re, double* im )
+{
   MZZxxxx_spin0even(s,t,m,f0,f0Z,w_const,a2,re,im);
 }
 
-void MZZpmmp_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
-  MZZxxxx_spin0even(t,s,m,f0,f0Z,w_const,a2,re,im);
+void
+MZZpmmp_spin0even( double s, double t, double m, double f0, double f0Z, double w_const, double a2, double* re, double* im )
+{
+  MZZxxxx_spin0even( t, s, m, f0, f0Z, w_const, a2, re, im );
 }
 
-void MZZpmpm_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-  MZZxxxx_spin0even(u,t,m,f0,f0Z,w_const,a2,re,im);
+void
+MZZpmpm_spin0even( double s, double t, double m, double f0, double f0Z, double w_const, double a2, double* re, double* im )
+{
+  double u = -s-t;
+  MZZxxxx_spin0even( u, t, m, f0, f0Z, w_const, a2, re, im );
 }
 
-void MZZppmm_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-
-  *re=0;
-  *im=0;
+void
+MZZppmm_spin0even( double s, double t, double m, double f0, double f0Z, double w_const, double a2, double* re, double* im )
+{
+  double u = -s-t;
+  *re = *im = 0.;
 
   *re += -4./(f0*f0Z) * s*(s-2*mZ*mZ)/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (s-m*m);
   *re += -4./(f0*f0Z) * t*(t-2*mZ*mZ)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) * (t-m*m);
@@ -605,16 +580,17 @@ void MZZppmm_spin0even(double s, double t, double m, double f0, double f0Z, doub
 //std::cout <<"Mppmm " <<"\t" << *re  << std::endl;
 }
 
-void MZZpppm_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
-  *re = 0;
-  *im = 0;
+void
+MZZpppm_spin0even( double s, double t, double m, double f0, double f0Z, double w_const, double a2, double* re, double* im )
+{
+  *re = *im = 0.;
 }
 
-void MZZpp00_spin0even(double s, double t, double m, double f0, double f0Z, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-
-  *re = 0;
-  *im = 0;
+void
+MZZpp00_spin0even( double s, double t, double m, double f0, double f0Z, double w_const, double a2, double* re, double* im )
+{
+  double u = -s-t;
+  *re = *im = 0;
 
   *re += -4./(f0*f0Z) * s*(2*mZ*mZ)/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (s-m*m);
   *re += -4./(f0*f0Z) * t*(2*mZ*mZ)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) * (t-m*m);
@@ -627,30 +603,38 @@ void MZZpp00_spin0even(double s, double t, double m, double f0, double f0Z, doub
 
 /// Z gam final state from OZgam operator
 
-void MZgxxxx_spin0even(double x, double y, double m, double f0, double f0Zg, double w_const, double a2, double * re, double * im){
+void
+MZgxxxx_spin0even( double x, double y, double m, double f0, double f0Zg, double w_const, double a2, double* re, double* im )
+{
   // some auxiliary function used in Mpppp, Mpmpm, Mpmmp.
   *re = -4./(f0*f0Zg) * x*(x-mZ*mZ)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
   *im = -4./(f0*f0Zg) * x*(x-mZ*mZ)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
 }
 
-void MZgpppp_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-  MZgxxxx_spin0even(s,t,m,f0,f0Zg,w_const,a2,re,im);
+void
+MZgpppp_spin0even( double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double* re, double* im )
+{
+  MZgxxxx_spin0even( s, t, m, f0, f0Zg, w_const, a2, re, im );
 }
 
-void MZgpmmp_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-  MZgxxxx_spin0even(t,s,m,f0,f0Zg,w_const,a2,re,im);
+void
+MZgpmmp_spin0even( double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double* re, double* im )
+{
+  MZgxxxx_spin0even( t, s, m, f0, f0Zg, w_const, a2, re, im );
 }
 
-void MZgpmpm_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-  MZgxxxx_spin0even(u,t,m,f0,f0Zg,w_const,a2,re,im);
+void
+MZgpmpm_spin0even( double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double* re, double* im )
+{
+  double u = -s-t;
+  MZgxxxx_spin0even( u, t, m, f0, f0Zg, w_const, a2, re, im );
 }
 
-void MZgppmm_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-  double u=-s-t;
-
-  *re=0;
-  *im=0;
+void
+MZgppmm_spin0even( double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double* re, double* im )
+{
+  double u = -s-t;
+  *re = *im = 0.;
 
   *re += -4./(f0*f0Zg) * s*(s-mZ*mZ)/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (s-m*m);
   *re += -4./(f0*f0Zg) * t*(t-mZ*mZ)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) * (t-m*m);
@@ -659,46 +643,55 @@ void MZgppmm_spin0even(double s, double t, double m, double f0, double f0Zg, dou
   *im += -4./(f0*f0Zg) * s*(s-mZ*mZ)/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) *(- m*width_gen(s,m,f0,w_const,a2));
   *im += -4./(f0*f0Zg) * t*(t-mZ*mZ)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) *(- m*width_gen(t,m,f0,w_const,a2));
   *im += -4./(f0*f0Zg) * u*(u-mZ*mZ)/((u-m*m)*(u-m*m) +m*m*width_gen(u,m,f0,w_const,a2)*width_gen(u,m,f0,w_const,a2) ) *(- m*width_gen(u,m,f0,w_const,a2));
-
-//std::cout <<"Mppmm " <<"\t" << *re  << std::endl;
+  //std::cout <<"Mppmm " <<"\t" << *re  << std::endl;
 }
 
-void MZgpppm_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-  *re = 0;
-  *im = 0;
+void
+MZgpppm_spin0even( double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double* re, double* im )
+{
+  *re = *im = 0.;
 }
 
-void MZgpp00_spin0even(double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double *re, double *im){
-  *re = 0;
-  *im = 0;
+void
+MZgpp00_spin0even( double s, double t, double m, double f0, double f0Zg, double w_const, double a2, double* re, double* im )
+{
+  *re = *im = 0.;
 }
 
 /// W+W- final state from OW operator
 
-void MWWxxxx_spin0even(double x, double y, double m, double f0, double f0W, double w_const, double a2, double * re, double * im){
+void
+MWWxxxx_spin0even( double x, double y, double m, double f0, double f0W, double w_const, double a2, double* re, double* im )
+{
   // some auxiliary function used in Mpppp, Mpmpm, Mpmmp.
   *re = -4./(f0*f0W) * x*(x-2*mW*mW)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
   *im = -4./(f0*f0W) * x*(x-2*mW*mW)/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
 }
 
-void MWWpppp_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
-  MWWxxxx_spin0even(s,t,m,f0,f0W,w_const,a2,re,im);
+void
+MWWpppp_spin0even( double s, double t, double m, double f0, double f0W, double w_const, double a2, double* re, double* im )
+{
+  MWWxxxx_spin0even( s, t, m, f0, f0W, w_const, a2, re, im );
 }
 
-void MWWpmmp_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
-  MWWxxxx_spin0even(t,s,m,f0,f0W,w_const,a2,re,im);
+void
+MWWpmmp_spin0even( double s, double t, double m, double f0, double f0W, double w_const, double a2, double* re, double* im )
+{
+  MWWxxxx_spin0even( t, s, m, f0, f0W, w_const, a2, re, im );
 }
 
-void MWWpmpm_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
+void
+MWWpmpm_spin0even( double s, double t, double m, double f0, double f0W, double w_const, double a2, double* re, double* im )
+{
   double u=-s-t;
-  MWWxxxx_spin0even(u,t,m,f0,f0W,w_const,a2,re,im);
+  MWWxxxx_spin0even( u, t, m, f0, f0W, w_const, a2, re, im );
 }
 
-void MWWppmm_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
+void
+MWWppmm_spin0even( double s, double t, double m, double f0, double f0W, double w_const, double a2, double* re, double* im )
+{
   double u=-s-t;
-
-  *re=0;
-  *im=0;
+  *re = *im = 0.;
 
   *re += -4./(f0*f0W) * s*(s-2*mW*mW)/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (s-m*m);
   *re += -4./(f0*f0W) * t*(t-2*mW*mW)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) * (t-m*m);
@@ -708,19 +701,20 @@ void MWWppmm_spin0even(double s, double t, double m, double f0, double f0W, doub
   *im += -4./(f0*f0W) * t*(t-2*mW*mW)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) *(- m*width_gen(t,m,f0,w_const,a2));
   *im += -4./(f0*f0W) * u*(u-2*mW*mW)/((u-m*m)*(u-m*m) +m*m*width_gen(u,m,f0,w_const,a2)*width_gen(u,m,f0,w_const,a2) ) *(- m*width_gen(u,m,f0,w_const,a2));
 
-//std::cout <<"Mppmm " <<"\t" << *re  << std::endl;
+  //std::cout <<"Mppmm " <<"\t" << *re  << std::endl;
 }
 
-void MWWpppm_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
-  *re = 0;
-  *im = 0;
+void
+MWWpppm_spin0even( double s, double t, double m, double f0, double f0W, double w_const, double a2, double* re, double* im )
+{
+  *re = *im = 0;
 }
 
-void MWWpp00_spin0even(double s, double t, double m, double f0, double f0W, double w_const, double a2, double *re, double *im){
+void
+MWWpp00_spin0even( double s, double t, double m, double f0, double f0W, double w_const, double a2, double* re, double* im )
+{
   double u=-s-t;
-
-  *re=0;
-  *im=0;
+  *re = *im = 0.;
 
   *re += -4./(f0*f0W) * s*(2*mW*mW)/((s-m*m)*(s-m*m) +m*m*width_gen(s,m,f0,w_const,a2)*width_gen(s,m,f0,w_const,a2) ) * (s-m*m);
   *re += -4./(f0*f0W) * t*(2*mW*mW)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) * (t-m*m);
@@ -730,19 +724,19 @@ void MWWpp00_spin0even(double s, double t, double m, double f0, double f0W, doub
   *im += -4./(f0*f0W) * t*(2*mW*mW)/((t-m*m)*(t-m*m) +m*m*width_gen(t,m,f0,w_const,a2)*width_gen(t,m,f0,w_const,a2) ) *(- m*width_gen(t,m,f0,w_const,a2));
   *im += -4./(f0*f0W) * u*(2*mW*mW)/((u-m*m)*(u-m*m) +m*m*width_gen(u,m,f0,w_const,a2)*width_gen(u,m,f0,w_const,a2) ) *(- m*width_gen(u,m,f0,w_const,a2));
 
-//std::cout <<"Mpp00 " <<"\t" << *re  << std::endl;
+  //std::cout <<"Mpp00 " <<"\t" << *re  << std::endl;
 }
 
 
 // Spin 2
 
-void Mxxxx_spin2(double x, double y, double m, double f0, double w_const, double a2, double * re, double * im){
+void
+Mxxxx_spin2( double x, double y, double m, double f0, double w_const, double a2, double* re, double* im )
+{
   // some auxiliary function used in Mpppp, Mpmpm, Mpmmp.
-
   *re=0;
   *im=0;
-
-  double z = - x - y;
+  double z = -x-y;
 
   *re += -1./(f0*f0) * x*x/((y-m*m)*(y-m*m) +m*m*width_gen(y,m,f0,w_const,a2)*width_gen(y,m,f0,w_const,a2) ) * (y-m*m);
   *im += -1./(f0*f0) * x*x/((y-m*m)*(y-m*m) +m*m*width_gen(y,m,f0,w_const,a2)*width_gen(y,m,f0,w_const,a2) ) * (- m*width_gen(y,m,f0,w_const,a2));
@@ -750,25 +744,33 @@ void Mxxxx_spin2(double x, double y, double m, double f0, double w_const, double
   *im += -1./(f0*f0) * x*x/((z-m*m)*(z-m*m) +m*m*width_gen(z,m,f0,w_const,a2)*width_gen(z,m,f0,w_const,a2) ) * (- m*width_gen(z,m,f0,w_const,a2));
 }
 
-void Mpppp_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
+void
+Mpppp_spin2( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
   Mxxxx_spin2(s,t,m,f0,w_const,a2,re,im);
 }
 
-void Mpmmp_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
+void
+Mpmmp_spin2( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
   Mxxxx_spin2(t,s,m,f0,w_const,a2,re,im);
 }
 
-void Mpmpm_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
+void
+Mpmpm_spin2( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
   double u=-s-t;
   Mxxxx_spin2(u,t,m,f0,w_const,a2,re,im);
 }
 
-void Mppmm_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-  *re = 0;
-  *im = 0;
+void
+Mppmm_spin2( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
+  *re = *im = 0.;
 }
 
-void Mpppm_spin2(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-   *re = 0;
-   *im = 0;
+void
+Mpppm_spin2( double s, double t, double m, double f0, double w_const, double a2, double* re, double* im )
+{
+  *re = *im = 0.;
 }

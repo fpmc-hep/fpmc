@@ -4,7 +4,7 @@ set(PROJECT_VERSION 1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic -g -fPIC")
 
-set(MODULES Fpmc Herwig External)
+set(MODULES Fpmc Herwig External HepMCWrapper)
 
 #----- enable Fortran
 
@@ -32,16 +32,17 @@ endforeach()
 #----- link everything in a single shared FPMC library
 
 add_library(FPMC SHARED $<TARGET_OBJECTS:FPMCCore>
-                        $<TARGET_OBJECTS:HerwigCore>)
+                        $<TARGET_OBJECTS:HerwigCore>
+                        $<TARGET_OBJECTS:Export>)
 set_target_properties(FPMC PROPERTIES LINKER_LANGUAGE CXX)
 
 #----- test executable
 
 add_executable(fpmc fpmc.cpp)
-target_link_libraries(fpmc FPMC Externals ${GSL_LIBRARIES} ${LHAPDF_LIB})
+target_link_libraries(fpmc FPMC Externals comphep ${GSL_LIBRARIES} ${LHAPDF_LIB})
 
 if (HEPMC_LIBRARIES)
   message(STATUS "HepMC found in " ${HEPMC_INCLUDE_DIR})
   add_executable(fpmc-hepmc fpmc-hepmc.cpp)
-  target_link_libraries(fpmc-hepmc FPMC Externals ${HEPMC_LIBRARIES} ${GSL_LIBRARIES} ${LHAPDF_LIB})
+  target_link_libraries(fpmc-hepmc FPMC Externals comphep ${HEPMC_LIBRARIES} ${GSL_LIBRARIES} ${LHAPDF_LIB})
 endif()
