@@ -697,8 +697,9 @@ c CHR/YURA
         ELSEIF(IFITPDF.EQ.8) THEN  
             CDFFAC = 0.111d0/8d0
         ELSE 
-            print *, 'Non-standard choice of IFITPDF(2/5/8/10/20/30)' 
-            STOP
+           print *, 'Non-standard choice of IFITPDF(2/5/8/10/20/30).'
+           print *, 'IFITPDF=' ,IFITPDF
+           STOP
         ENDIF  
       ENDIF
 

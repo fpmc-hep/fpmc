@@ -10,7 +10,11 @@
 #include <fstream>
 #include <iomanip>
 
+#ifndef HEPMC_VERSION3
 #include "HepMC/IO_GenEvent.h"
+#else
+#include "HepMC/WriterAscii.h"
+#endif
 
 using namespace std;
 
@@ -130,26 +134,14 @@ int main(int argc, char **argv)
         << "=========================================================" << endl;
    cout << oss.str();
 
-   // Read parameters
-   ifstream input;
-   input.open( datacard_.c_str() );
-
-   vector<string> fpmc_params_;
-   while( !input.eof() ){
-      char line[256];
-      input.getline(line,256);
-  
-      fpmc_params_.push_back( line );
-   }
-   input.close();
-
-   fpmc::Fpmc* generator = new fpmc::Fpmc(comEnergy_,seed_,fpmc_params_);
-   //fpmc::Fpmc* generator = new fpmc::Fpmc(comEnergy_,-1,fpmc_params_);
+   fpmc::Fpmc* generator = new fpmc::Fpmc( comEnergy_, seed_, datacard_.c_str() );
    generator->begin();
 
-   //HepMC::IO_GenEvent* output = new HepMC::IO_GenEvent("fpmc.hepmc",ios::out);
+#ifndef HEPMC_VERSION3
    HepMC::IO_GenEvent output(outputFileName_.c_str(),ios::out);
-   cout << endl;
+#else
+   HepMC::WriterAscii output( outputFileName_ );
+#endif
    for(unsigned int evt = 0; evt < maxEvents_; ++evt){
       cout << "[FPMC Wrapper] Processing event " << (evt + 1) << endl;
       bool success = generator->run();
@@ -157,7 +149,11 @@ int main(int argc, char **argv)
          cout << "[FPMC Wrapper] WARNING: Event " << (evt + 1) << " failed." << endl;
          continue;
       }
+#ifndef HEPMC_VERSION3
       output.write_event( generator->event() );
+#else
+      output.write_event( *generator->event() );
+#endif
    }    
    generator->end();
 

@@ -25,7 +25,6 @@
 #include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RandFlat.h"
 
-#include "fostream.h"
 #include "herwig.h"
 #include "fpmc.h"
 
@@ -37,48 +36,92 @@
 #include <stdexcept>
 #include <iostream>
 #include <cstring>
+#include <map>
+#include <regex>
 
 namespace fpmc
 {
-  class Fpmc{
-  public:
-    Fpmc(double, long int, std::vector<std::string> const&);
-    ~Fpmc();
+  class Fpmc
+  {
+    public:
+      class Parameters : private std::map<std::string,std::string>
+      {
+        public:
+          Parameters() : std::map<std::string,std::string>() {}
+          Parameters( const std::map<std::string,std::string>& map ) : std::map<std::string,std::string>( map ) {}
+          ~Parameters() {}
 
-    void begin();
-    bool run();
-    void end();
-    void write( const char* );
+	  std::map<std::string,std::string> map() const { return *this; }
 
-    const HepMC::GenEvent* event() const { return hepMCEvt_.get(); } 
+          void add( const std::string& key, const std::string& value ) {
+	    auto pair = find( key );
+	    if ( pair==end() ) insert( std::make_pair( key, value ) );
+	    else pair->second = value;
+	  }
+	  void add( const std::string& key, float value ) { std::ostringstream os; os << value; add( key, os.str() ); }
+	  //void add( const std::string& key, int value ) { std::ostringstream os; os << value; add( key, os.str() ); }
+          bool has( const std::string& key ) const { return find( key )!=end(); }
 
-  private:
+	  void dump( std::ostream& os=std::cout ) const {
+	    os << size() << " key(s) in the parameters list" << std::endl;
+	    for ( const auto& pair : map() ) { os << "[" << pair.first << "] \"" << pair.second << "\"" << std::endl; }
+	  }
+
+          const std::string getString( const std::string& key ) const {
+            const auto it = find( key );
+            if ( it==end() ) return "";
+            return it->second;
+          }
+          int getInt( const std::string& key ) const {
+            if ( !has( key ) ) return 0;
+            return atoi( getString( key ).c_str() );
+          }
+          long getLong( const std::string& key ) const {
+            if ( !has( key ) ) return 0;
+            return atol( getString( key ).c_str() );
+          }
+          unsigned int getFloat( const std::string& key ) const {
+            if ( !has( key ) ) return 0.;
+            return atof( getString( key ).c_str() );
+          }
+      };
+
+      Fpmc( double, long int, const char* );
+      ~Fpmc();
+
+      static void parseInputCard( const char*, Parameters& );
+      static void writeInputCard( const char*, const Parameters& );
+
+      void begin();
+      bool run();
+      void end();
+      void write( const char* );
+
+      const HepMC::GenEvent* event() const { return hepMCEvt_.get(); } 
+
+    private:
+      void initialiseParams();
 #ifndef HEPMC_VERSION3
-    HepMC::IO_HERWIG conv_;
+      HepMC::IO_HERWIG conv_;
 #else
-    HepMC::HEPEVT_Wrapper conv_;
+      HepMC::HEPEVT_Wrapper conv_;
 #endif
-    std::shared_ptr<HepMC::GenEvent> hepMCEvt_;
+      std::shared_ptr<HepMC::GenEvent> hepMCEvt_;
  
-    /// HERWIG verbosity
-    unsigned int herwigVerbosity_;
-    /// HepMC verbosity
-    bool hepMCVerbosity_;
-    /// Events to print if verbosity
-    unsigned int maxEventsToPrint_;    
+      /// HERWIG verbosity
+      unsigned int herwigVerbosity_;
+      /// HepMC verbosity
+      bool hepMCVerbosity_;
+      /// Events to print if verbosity
+      unsigned int maxEventsToPrint_;
 
-    unsigned int event_;
-    double comEnergy_;
-    // Not used temporarily (take from datacard)
-    long int seed_;
+      unsigned int event_;
+      double comEnergy_;
 
-    std::vector<std::string> params_;
+      Parameters params_;
 
-    bool hadronize_;
-    bool debug_;
-
-    CLHEP::HepRandomEngine* randomEngine_;
-    CLHEP::RandFlat*        randomGenerator_; 
+      bool hadronize_;
+      bool debug_;
   };
 } 
 
