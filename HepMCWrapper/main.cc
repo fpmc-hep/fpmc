@@ -10,8 +10,6 @@
 #include <fstream>
 #include <iomanip>
 
-#include <boost/lexical_cast.hpp>
-
 #include "HepMC/IO_GenEvent.h"
 
 using namespace std;
@@ -111,15 +109,15 @@ int main(int argc, char **argv)
    //----------------------------
    // Required parameters 
    string datacard_ = required_parameters_map_["cfg"];
-   unsigned int maxEvents_ = boost::lexical_cast<unsigned int>( required_parameters_map_["nevents"] );
-   //long int seed_ = boost::lexical_cast<long int>( required_parameters_map_["seed"] );
-   double comEnergy_ = boost::lexical_cast<double>( required_parameters_map_["comenergy"] );
+   unsigned int maxEvents_ = atoi( required_parameters_map_["nevents"].c_str() );
+   //long int seed_ = atol( required_parameters_map_["seed"].c_str() );
+   double comEnergy_ = atof( required_parameters_map_["comenergy"].c_str() );
    
    // Optional parameters 
    string outputFileName_ = "fpmc.hepmc";
    if( optional_parameters_map_.find("fileout") != optional_parameters_map_.end() ) outputFileName_ = optional_parameters_map_["fileout"];
    int seed_ = -1;
-   if( optional_parameters_map_.find("seed") != optional_parameters_map_.end() ) seed_ = boost::lexical_cast<int>( optional_parameters_map_["seed"] );
+   if( optional_parameters_map_.find("seed") != optional_parameters_map_.end() ) seed_ = atoi( optional_parameters_map_["seed"].c_str() );
 
    stringstream oss;
    oss  << "=========================================================" << endl
