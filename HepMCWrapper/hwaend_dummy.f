@@ -1,4 +1,0 @@
-
-      SUBROUTINE HWAEND
-      RETURN
-      END
