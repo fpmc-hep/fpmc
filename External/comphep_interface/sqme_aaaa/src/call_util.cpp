@@ -6,7 +6,7 @@ namespace anom_aaaa {
   ////////////////////////////////////////////////////////////////////
   // sqme wrapper for comphep
   ////////////////////////////////////////////////////////////////////
-  double sqme(double s, double t, double mw) {
+  inline double sqme(double s, double t, double mw) {
     mw = 0;  // gg->gg !!!!
 
     double sqrts = sqrt(s);

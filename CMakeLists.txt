@@ -2,9 +2,8 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(FPMC)
 set(PROJECT_VERSION 1)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic -g -fPIC")
-
-set(MODULES Fpmc Herwig External HepMCWrapper)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic -g")
+set(MODULES Fpmc Herwig External HepMCWrapper Examples)
 
 #----- enable Fortran
 
@@ -12,12 +11,13 @@ enable_language(Fortran)
 
 #----- external dependencies
 
-find_package(HepMC)
+find_package(ROOT)
 find_package(GSL)
-#find_package(LHAPDF)
+find_library(HEPMC_LIB HepMC)
 find_library(LHAPDF_LIB LHAPDF)
+find_library(CLHEP_LIB CLHEP)
 if(LHAPDF_LIB)
-  message(STATUS "LHAPDF found in " ${LHAPDF_LIB})
+  message(STATUS "LHAPDF found at " ${LHAPDF_LIB})
 else()
   message(FATAL_ERROR "Did not find LHAPDF in the common paths!")
 endif()
@@ -32,17 +32,31 @@ endforeach()
 #----- link everything in a single shared FPMC library
 
 add_library(FPMC SHARED $<TARGET_OBJECTS:FPMCCore>
-                        $<TARGET_OBJECTS:HerwigCore>
-                        $<TARGET_OBJECTS:Export>)
+                        $<TARGET_OBJECTS:HerwigCore>)
 set_target_properties(FPMC PROPERTIES LINKER_LANGUAGE CXX)
+
+#----- link the HepMC wrapper into an export library
+
+add_library(FPMCHepMC SHARED $<TARGET_OBJECTS:FPMCCore>
+                             $<TARGET_OBJECTS:HerwigCore>
+                             #$<TARGET_OBJECTS:ff>
+                             $<TARGET_OBJECTS:Export>)
+target_link_libraries(FPMCHepMC ${CLHEP_LIB})
 
 #----- test executable
 
-add_executable(fpmc fpmc.cpp)
-target_link_libraries(fpmc FPMC Externals comphep ${GSL_LIBRARIES} ${LHAPDF_LIB})
+set(LIBRARIES FPMC Externals comphep ${GSL_LIBRARIES} ${LHAPDF_LIB})
+include_directories(Examples)
+add_executable(fpmc Examples/fpmc_main.f)
+target_link_libraries(fpmc ${LIBRARIES})
 
-if (HEPMC_LIBRARIES)
-  message(STATUS "HepMC found in " ${HEPMC_INCLUDE_DIR})
-  add_executable(fpmc-hepmc fpmc-hepmc.cpp)
-  target_link_libraries(fpmc-hepmc FPMC Externals comphep ${HEPMC_LIBRARIES} ${GSL_LIBRARIES} ${LHAPDF_LIB})
+if (HEPMC_LIB)
+  message(STATUS "HepMC found at " ${HEPMC_LIB})
+  if (ROOT_LIBRARIES)
+    message(STATUS "ROOT found in " ${ROOT_INCLUDE_DIRS})
+    include_directories(HepMCWrapper Examples)
+    add_executable(fpmc-hepmc HepMCWrapper/main.cc)
+    target_link_libraries(fpmc-hepmc ${LIBRARIES} FPMCHepMC ${HEPMC_LIB} ${ROOT_LIBRARIES})
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -DHEPMC_NO_DEPRECATED")
+  endif()
 endif()

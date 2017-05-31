@@ -8,13 +8,35 @@
  ***************************************/
 
 #include "HepMC/GenEvent.h"
-#include <HepMC/IO_HERWIG.h>
+#include "HepMC/GenParticle.h"
+#include "HepMC/GenVertex.h"
+#include "HepMC/GenPdfInfo.h"
+#include "HepMC/HerwigWrapper.h"
+#include "HepMC/HEPEVT_Wrapper.h"
+#include "HepMC/Version.h"
+
+#ifdef HEPMC_VERSION_CODE // HepMC v>=3
+#define HEPMC_VERSION3
+#include "HepMC/WriterAscii.h"
+#else // HepMC v2
+#include "HepMC/IO_HERWIG.h"
+#endif
+
 #include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RandFlat.h"
+
+#include "fostream.h"
+#include "herwig.h"
+#include "fpmc.h"
 
 #include <vector>
 #include <string>
 #include <ostream>
+#include <algorithm>
+#include <sstream>
+#include <stdexcept>
+#include <iostream>
+#include <cstring>
 
 namespace fpmc
 {
@@ -26,14 +48,17 @@ namespace fpmc
     void begin();
     bool run();
     void end();
-    void write(std::ostream&);
+    void write( const char* );
 
-    const HepMC::GenEvent* event() const { return hepMCEvt_; } 
+    const HepMC::GenEvent* event() const { return hepMCEvt_.get(); } 
 
   private:
-
-    HepMC::IO_HERWIG  conv_;
-    HepMC::GenEvent  *hepMCEvt_;
+#ifndef HEPMC_VERSION3
+    HepMC::IO_HERWIG conv_;
+#else
+    HepMC::HEPEVT_Wrapper conv_;
+#endif
+    std::shared_ptr<HepMC::GenEvent> hepMCEvt_;
  
     /// HERWIG verbosity
     unsigned int herwigVerbosity_;
@@ -50,11 +75,10 @@ namespace fpmc
     std::vector<std::string> params_;
 
     bool hadronize_;
-  
     bool debug_;
 
-    CLHEP::HepRandomEngine* fRandomEngine_;
-    CLHEP::RandFlat*        fRandomGenerator_; 
+    CLHEP::HepRandomEngine* randomEngine_;
+    CLHEP::RandFlat*        randomGenerator_; 
   };
 } 
 
