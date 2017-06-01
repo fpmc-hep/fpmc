@@ -10,7 +10,7 @@
 #include <fstream>
 #include <iomanip>
 
-#ifndef HEPMC_VERSION3
+#ifdef HEPMC_VERSION2
 #include "HepMC/IO_GenEvent.h"
 #else
 #include "HepMC/WriterAscii.h"
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
    fpmc::Fpmc* generator = new fpmc::Fpmc( comEnergy_, seed_, datacard_.c_str() );
    generator->begin();
 
-#ifndef HEPMC_VERSION3
+#ifdef HEPMC_VERSION2
    HepMC::IO_GenEvent output(outputFileName_.c_str(),ios::out);
 #else
    HepMC::WriterAscii output( outputFileName_ );
@@ -149,7 +149,7 @@ int main(int argc, char **argv)
          cout << "[FPMC Wrapper] WARNING: Event " << (evt + 1) << " failed." << endl;
          continue;
       }
-#ifndef HEPMC_VERSION3
+#ifdef HEPMC_VERSION2
       output.write_event( generator->event() );
 #else
       output.write_event( *generator->event() );
