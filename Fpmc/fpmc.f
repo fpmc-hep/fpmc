@@ -5459,5 +5459,5 @@ c         print '(A,F8.2,I6)','rm id :',p(i,5),k(i,2)
 1615  continue
       END
 
-      SUBROUTINE HWAEND
-      END
+c      SUBROUTINE HWAEND
+c      END
