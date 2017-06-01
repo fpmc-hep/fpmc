@@ -18,7 +18,9 @@ namespace fpmc
   Fpmc::write( const char* out )
   {
 #ifdef HEPMC_VERSION2
-    hepMCEvt_->write( out );
+    std::ofstream output( out );
+    hepMCEvt_->write( output );
+    output.close();
 #else // HepMC v>=3
     HepMC::WriterAscii output( out );
     output.write_event( *hepMCEvt_ );
@@ -220,8 +222,8 @@ namespace fpmc
     if ( event_<=maxEventsToPrint_ && hepMCVerbosity_ ) {
       // Prints HepMC event
       std::ostringstream oss;
-      oss << "\n----------------------" << endl	
-          << "Event process id = " << hepMCEvt_->signal_process_id() << endl; 
+      oss << "\n----------------------" << std::endl	
+          << "Event process id = " << hepMCEvt_->signal_process_id() << std::endl; 
       std::cout << oss.str();
       hepMCEvt_->print();
     }

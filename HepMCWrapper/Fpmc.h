@@ -10,16 +10,17 @@
 #include "HepMC/GenEvent.h"
 #include "HepMC/GenParticle.h"
 #include "HepMC/GenVertex.h"
-#include "HepMC/GenPdfInfo.h"
 //#include "HepMC/HerwigWrapper.h"
 #include "HepMC/HEPEVT_Wrapper.h"
 #include "HepMC/Version.h"
 
 #ifdef HEPMC_VERSION_CODE // HepMC v>=3
 #include "HepMC/WriterAscii.h"
+#include "HepMC/GenPdfInfo.h"
 #else // HepMC v2
 #define HEPMC_VERSION2
 #include "HepMC/IO_HERWIG.h"
+#include "HepMC/PdfInfo.h"
 #endif
 
 #include "CLHEP/Random/JamesRandom.h"
