@@ -138,7 +138,7 @@ int main(int argc, char **argv)
    generator->begin();
 
 #ifdef HEPMC_VERSION2
-   HepMC::IO_GenEvent output(outputFileName_.c_str(),ios::out);
+   HepMC::IO_GenEvent output( outputFileName_, ios::out );
 #else
    HepMC::WriterAscii output( outputFileName_ );
 #endif
