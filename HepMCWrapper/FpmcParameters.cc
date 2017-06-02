@@ -60,14 +60,14 @@ namespace fpmc
   }
 
   void
-  FpmcParameters::getHWPRAM( hwpram_t& hwpram ) const
+  FpmcParameters::fetchHWPRAM( hwpram_t& hwpram ) const
   {
     if ( has( "modpdf1" ) ) hwpram.MODPDF[0] = getInt( "modpdf1" );
     if ( has( "modpdf2" ) ) hwpram.MODPDF[1] = getInt( "modpdf2" );
   }
 
   void
-  FpmcParameters::getHWPROP( hwprop_t& hwprop ) const
+  FpmcParameters::fetchHWPROP( hwprop_t& hwprop ) const
   {
     if ( has( "hmass" ) ) hwprop.RMASS[201] = getFloat( "hmass" ); // higgs mass
     if ( has( "tmass" ) ) hwprop.RMASS[6] = getFloat( "tmass" ); // top mass
@@ -77,7 +77,7 @@ namespace fpmc
   }
 
   void
-  FpmcParameters::getHWHARD( hwhard_t& hwhard ) const
+  FpmcParameters::fetchHWHARD( hwhard_t& hwhard ) const
   {
     if ( has( "q2wwmn" ) ) hwhard.Q2WWMN = getFloat( "q2wwmn" );
     if ( has( "q2wwmx" ) ) hwhard.Q2WWMX = getFloat( "q2wwmx" );
@@ -91,20 +91,20 @@ namespace fpmc
   }
 
   void
-  FpmcParameters::getXSECT( xsect_t& xsect ) const
+  FpmcParameters::fetchXSECT( xsect_t& xsect ) const
   {
     if ( has( "nflux" ) ) xsect.NFLUX = getInt( "nflux" );
     if ( has( "isoftm" ) ) xsect_.ISOFTM = getInt( "isoftm" );
   }
 
   void
-  FpmcParameters::getPDFS( pdfs_t& pdfs ) const
+  FpmcParameters::fetchPDFS( pdfs_t& pdfs ) const
   {
     if ( has( "ifit" ) ) pdfs.IFITPDF = getInt( "ifit" );
   }
 
   void
-  FpmcParameters::getAAANOMAL( aaanomal_t& aaanomal ) const
+  FpmcParameters::fetchAAANOMAL( aaanomal_t& aaanomal ) const
   {
     if ( has( "aaanom" ) ) aaanomal.AAANOM = getInt( "aaanom" );
     if ( has( "dkappa" ) ) aaanomal.D_KAPPA = getFloat( "dkappa" );
@@ -119,7 +119,7 @@ namespace fpmc
   }
 
   void
-  FpmcParameters::getAAEXOTICAL( aaexotical_t& aaexotical ) const
+  FpmcParameters::fetchAAEXOTICAL( aaexotical_t& aaexotical ) const
   {
     if ( has( "aaexotic" ) ) aaexotical.AAEXOTIC = getInt( "aaexotic" );
     if ( has( "aam" ) ) aaexotical.AAM = getFloat( "aam" );
@@ -131,7 +131,7 @@ namespace fpmc
   }
 
   void
-  FpmcParameters::getCHIDEFPMC( chidefpmc_t& chidefpmc ) const
+  FpmcParameters::fetchCHIDEFPMC( chidefpmc_t& chidefpmc ) const
   {
     if ( has( "chideiglu" ) ) chidefpmc.CHIDeIGLU = getInt( "chideiglu" );
     if ( has( "chidex" ) ) chidefpmc.CHIDeX = getFloat( "chidex" );
@@ -140,7 +140,7 @@ namespace fpmc
   }
 
   void
-  FpmcParameters::getKMR2FPMC( kmr2fpmc_t& kmr2fpmc ) const
+  FpmcParameters::fetchKMR2FPMC( kmr2fpmc_t& kmr2fpmc ) const
   {
     if ( has( "kmr2delta" ) ) kmr2fpmc.KMR2DELTA = getFloat( "kmr2delta" );
     if ( has( "kmr2q2cut" ) ) kmr2fpmc.KMR2Q2CUT = getFloat( "kmr2q2cut" );
@@ -149,7 +149,7 @@ namespace fpmc
   }
 
   void
-  FpmcParameters::getION( ion_t& ion ) const
+  FpmcParameters::fetchION( ion_t& ion ) const
   {
     if ( has( "zion" ) ) ion.ZION = getInt( "zion" );
     if ( has( "aion" ) ) ion.AION = getInt( "aion" );
