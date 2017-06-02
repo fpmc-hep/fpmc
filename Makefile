@@ -290,9 +290,9 @@ $(OBJDIR)/fpmc_lhe.o:Examples/fpmc_lhe.f
 # Objects variables
 # ----------------
 OBJSTAND = $(OBJDIR)/herwig6500.o  $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o $(OBJDIR)/fpmc_welcome.o $(OBJDIR)/fpmc_lhe.o
-OBJEXT   = $(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_excl_aaaa_dest) $(ext_kmr_obj_dest)  $(ext_softc_obj_dest) \
-	$(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_KMR2_obj_dest) \
-	$(ext_CHIDeGG_obj_dest) $(ext_CHIDeDiphoton_obj_dest) 
+OBJEXT   = $(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_excl_aaaa_dest) $(ext_kmr_obj_dest) $(ext_softc_obj_dest) \
+	$(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_CHIDeGG_obj_dest) $(ext_CHIDeDiphoton_obj_dest) \
+	$(ext_KMR2_obj_dest)
 OBJUSR   = $(OBJDIR)/ntuple.o
 LIBS     = $(CERNLIB) $(LHAPDFLIB) $(GSLLIB)
 OBJRECO  = $(reco_obj_dest)
@@ -310,10 +310,10 @@ $(pgm): % : Examples/%.f $(OBJSTAND) $(OBJEXT)
 oldExamples:$(pgm)
 
 ### modules to be used by the end user###
-fpmc: Examples/fpmc_main.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
-	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(OBJRECO) $(LIBS) -lstdc++  	
-module_reco: Examples/module_reco.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
-	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(OBJRECO) $(LIBS) -lstdc++  	
+fpmc: Examples/fpmc_main.f $(OBJEXT) $(OBJSTAND) $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
+	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR) $(OBJRECO) $(LIBS) -lstdc++  	
+module_reco: Examples/module_reco.f $(OBJEXT) $(OBJSTAND) $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
+	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR) $(OBJRECO) $(LIBS) -lstdc++  	
 module: Examples/module.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) \
   	Examples/ffcard.inc
 	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(LIBS) -lstdc++ 
