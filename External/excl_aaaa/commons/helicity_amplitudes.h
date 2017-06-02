@@ -62,3 +62,33 @@ void Mpmmp_spin2(double s, double t, double m, double f0, double w_const, double
 void Mpmpm_spin2(double s, double t, double m, double f0, double w_const, double a2, double * re, double * im);
 void Mppmm_spin2(double s, double t, double m, double f0, double w_const, double a2, double * re, double * im);
 void Mpppm_spin2(double s, double t, double m, double f0, double w_const, double a2, double * re, double * im);
+
+void Mggxxxx_spin0even(double x, double y, double m, double f0, double f0g, double w_const, double a2, double * re, double * im);
+void Mggpppp_spin0even(double s, double t, double m, double f0, double f0g, double w_const, double a2, double *re, double *im);
+void Mggpmmp_spin0even(double s, double t, double m, double f0, double f0g, double w_const, double a2, double *re, double *im);
+void Mggpmpm_spin0even(double s, double t, double m, double f0, double f0g, double w_const, double a2, double *re, double *im);
+void Mggppmm_spin0even(double s, double t, double m, double f0, double f0g, double w_const, double a2, double *re, double *im);
+void Mggpppm_spin0even(double s, double t, double m, double f0, double f0g, double w_const, double a2, double *re, double *im);
+
+void MhhOHxxxx_spin0even(double x, double y, double m, double f0, double f0H, double w_const, double a2, double * re, double * im);
+void MhhOHpppp_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MhhOHpmmp_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MhhOHpmpm_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MhhOHppmm_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MhhOHpppm_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MhhOHpp00_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+
+void Mpppp_eft_AZ(double zeta1, double s, double t, double *re, double *im);
+void Mpmmp_eft_AZ(double zeta1, double s, double t, double *re, double *im);
+void Mpmpm_eft_AZ(double zeta1, double s, double t, double *re, double *im);
+void Mppmm_eft_AZ(double zeta1, double s, double t, double *re, double *im);
+void Mpppm_eft_AZ(double zeta1, double s, double t, double *re, double *im);
+void Mppmp_eft_AZ(double zeta1, double s, double t, double *re, double *im);
+
+void MZZOHxxxx_spin0even(double x, double y, double m, double f0, double f0H, double w_const, double a2, double * re, double * im);
+void MZZOHpppp_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MZZOHpmmp_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MZZOHpmpm_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MZZOHppmm_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MZZOHpppm_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);
+void MZZOHpp00_spin0even(double s, double t, double m, double f0, double f0H, double w_const, double a2, double *re, double *im);

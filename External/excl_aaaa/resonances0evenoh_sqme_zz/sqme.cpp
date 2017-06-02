@@ -34,7 +34,7 @@ void me_SM(void (*me)(double,double ,double *, double *, int),
     me(s/(4*SM_masses[i]*SM_masses[i]),t/(4*SM_masses[i]*SM_masses[i]), &d_re, &d_im, exclude_loops);
     *re += d_re * SM_weight[i];
     *im += d_im * SM_weight[i];
-  };
+  }
 
   //  cout<<*re<<"  "<<*im<<endl;
 
@@ -67,11 +67,7 @@ void me_SM(void (*me)(double,double ,double *, double *, int),
   *im *= - 8 * alpha_em*alpha_em;
   // the factor of - 8 is needed because of the conventions in
   // Costantini, DeTollis, Pistoni
-
-  
-  return;
-    
-};
+}
 
 /////////////////////////////// Z Z final state from OZ operator
 
@@ -88,16 +84,8 @@ double sqme (double s,double t, int exclude_loops_SM, int exclude_loops_EX, doub
     cout<<"Invalid domain. Valid range is s>=0 and -s<=t<=0"<<endl;
     return 0;
   }
-
-  // reduced Mandelstam variables
-  double sred = s/(4 * mass * mass);
-  double tred = t/(4 * mass * mass); 
-
-  
   double re_ex;
   double im_ex;
-  double re_SM;
-  double im_SM;
 
   double value=0;
    
@@ -144,5 +132,5 @@ double sqme (double s,double t, int exclude_loops_SM, int exclude_loops_EX, doub
 
   return 0.5*value;
 
-};
+}
 }
