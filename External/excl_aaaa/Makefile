@@ -19,10 +19,14 @@ objects=sm_sqme_aaaa/sqme.o \
 	bsmf_sqme_aaaa/sqme.o \
 	bsmv_sqme_aaaa/sqme.o \
 	eft_sqme_aaaa/sqme.o \
+	eft_sqme_aaaz/sqme.o \
 	resonances0even_sqme_aaaa/sqme.o \
 	resonances0even_sqme_az/sqme.o \
 	resonances0even_sqme_ww/sqme.o \
 	resonances0even_sqme_zz/sqme.o \
+	resonances0evenoh_sqme_zz/sqme.o \
+	resonances0even_sqme_gluglu/sqme.o \
+	resonances0even_sqme_hh/sqme.o \
 	resonances2_sqme_aaaa/sqme.o
 f_0_objects=$(objects:%=%)
 

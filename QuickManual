@@ -1,0 +1,11 @@
+Look at the Datacards directory  for the process of interest. If the process you are looking for is not included there, look at the FPMC documentation or contact the developers.
+
+To run FPMC, first:
+	make clean
+	make
+For example, for the process Gamma Gamma -> Spin 0 neutral resonance -> Gamma Gamma (With intact protons), use the command:
+	./fpmc <Datacards/dataQED_AASpin0EvenResonances
+You can check some basic parameters of the collision and the coupling by editing the datacard (The acceptance for the protons, the coupling, the C.O.M. energy, etc). You will find tmpntuple.ntp file as an output. You can convert this file to a ROOT file with the h2root command:
+	h2root tmpntuple.ntp yourfilename.root
+This ROOT file has all the basic kinematical quantities of the individual photons and protons. You can then run an analysis code for this ROOT file. In case you want to do a quick check instead (Look at the hard subprocess, parton showering, hadronization, etc. event by event) you can write the output to a .dat file with the command
+	./fpmc <Datacards/dataQED_AASpin0EvenResonances>yourfilename.dat

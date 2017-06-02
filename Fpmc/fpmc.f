@@ -20,12 +20,6 @@ C-----------------------------------------------------------------------
       EXTERNAL HWRGEN,HWDPWT,HWDWWT,HWDHWT,HWULDO
 c O.K. INEG counts number of cycles. Kills event if > 50       
       INTEGER INEG
-
-C      AUTPDF(2) = "HWLHAPDF"
-C      MODPDF(2) = 10800
-C      AUTPDF(1) = "HWLHAPDF"
-C      MODPDF(1) = 10800
-
       IF (IERROR.NE.0) RETURN
       DO 100 IHEP=1,NMXHEP
       IF (IHEP.GT.NHEP) THEN
@@ -621,6 +615,81 @@ C--M.S exclusive diphoton production
             PRINT *, '   AAF0 = ', AAF0
             PRINT *, '   AAW = ', AAW
             PRINT *, '   AAA2 = ', AAA2
+           ELSEIF(IPROC.EQ.16066) THEN
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AA '
+            PRINT *, 'With extra spin 2 neutral resonances '
+            PRINT *, 'Exotic resonance parameters set to:'
+            PRINT *, '   AAM  = ', AAM
+            PRINT *, '   AAF0 = ', AAF0
+            PRINT *, '   AAW  = ', AAW
+            PRINT *, '   AAA2 = ', AAA2
+           ELSEIF(IPROC.EQ.16067) THEN
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->ZZ '
+            PRINT *, 'With extra spin 0 even neutral resonances '
+            PRINT *, 'Exotic resonance parameters set to:'
+            PRINT *, '   AAM  = ', AAM
+            PRINT *, '   AAF0 = ', AAF0
+            PRINT *, '   AAF0Z= ', AAF0Z
+            PRINT *, '   AAW  = ', AAW
+            PRINT *, '   AAA2 = ', AAA2
+           ELSEIF(IPROC.EQ.16068) THEN
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->WW '
+            PRINT *, 'With extra spin 0 even neutral resonances '
+            PRINT *, 'Exotic resonance parameters set to:'
+            PRINT *, '   AAM  = ', AAM
+            PRINT *, '   AAF0 = ', AAF0
+            PRINT *, '   AAF0W= ', AAF0W
+            PRINT *, '   AAW  = ', AAW
+            PRINT *, '   AAA2 = ', AAA2
+c ... C.B. Exclusive AZ production through Spin-0 resonance 05-2016
+           ELSEIF(IPROC.EQ.16069) THEN
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AZ '
+            PRINT *, 'With extra spin 0 even neutral resonances '
+            PRINT *, 'Exotic resonance parameters set to:'
+            PRINT *, '   AAM  = ', AAM
+            PRINT *, '   AAF0 = ', AAF0
+            PRINT *, '   AAF0ZG=', AAF0ZG
+            PRINT *, '   AAW  = ', AAW
+            PRINT *, '   AAA2 = ', AAA2
+c ... C.B. Exclusive AA->gluon-gluon production through Spin-0 resonance 05-2016
+           ELSEIF(IPROC.EQ.16070) THEN
+c            PRINT *, 'C. Baldenegro, G.von Gersdorff and S.Fichet'
+c            PRINT *, ' ME used for AA->GG '
+C            PRINT *, 'With extra spin 0 even neutral resonances '
+C            PRINT *, 'Exotic resonance parameters set to:'
+            PRINT *, '   AAM  = ', AAM
+            PRINT *, '   AAF0 = ', AAF0
+            PRINT *, '   AAF0G= ', AAF0G
+            PRINT *, '   AAW  = ', AAW
+            PRINT *, '   AAA2 = ', AAA2
+c ... C.B. Exclusive AZ production through Spin-0 resonance 05-2016
+           ELSEIF(IPROC.EQ.16071) THEN
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AZ '
+            PRINT *, 'With extra spin 0 even neutral resonances '
+            PRINT *, 'Exotic resonance parameters set to:'
+            PRINT *, '   AAM  = ', AAM
+            PRINT *, '   AAF0 = ', AAF0
+            PRINT *, '   AAF0H= ', AAF0H
+            PRINT *, '   AAW  = ', AAW
+            PRINT *, '   AAA2 = ', AAA2
+c ... C.B. Exclusive AZ, EFT
+           ELSEIF(IPROC.EQ.16072) THEN
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->AZ '
+            PRINT *, 'Effective field theory'
+            PRINT *, 'Vertex coupling set to:'
+            PRINT *, '   A1A  = ', A1A
+            PRINT *, '   A32  = ', A2A
+            PRINT *, 'ANOMCUTOFF=', ANOMCUTOFF
+c ... C.B. AA->ZZ, OH induced (See S.Fichet/Gero notes)
+           ELSEIF(IPROC.EQ.16073) THEN
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for AA->ZZ '
+            PRINT *, 'With extra spin 0 even neutral resonances '
+            PRINT *, 'Exotic resonance parameters set to:'
+            PRINT *, '   AAM  = ', AAM
+            PRINT *, '   AAF0 = ', AAF0
+            PRINT *, '   AAF0H= ', AAF0H
+            PRINT *, '   AAW  = ', AAW
+            PRINT *, '   AAA2 = ', AAA2
            ENDIF
          ELSE
                PRINT *, 'Unknown AAEXOTIC = ', AAEXOTIC
@@ -948,7 +1017,7 @@ c...B.Cox and J. Forshaw 11/05/00
       DOUBLE PRECISION F,Z,TMIN,TMAX,TTMIN,TTMAX
       INTEGER IPRO,IND
       DOUBLE PRECISION V,W,X,FAC
-      DOUBLE PRECISION QZERO,EXPARG,ALPHAE,EI,QMIN2
+      DOUBLE PRECISION QZERO,EXPARG,ALPHAE,EI
       DOUBLE PRECISION RZERO,R,BMIN,XM,ZZERO,ARG,F1,F2
       DOUBLE PRECISION HWUALF,DGAGNC,DBESK0,DBESK1
       INCLUDE 'fpmc.inc'
@@ -1044,7 +1113,6 @@ c         print *,'BMIN = ',RBMIN
          F=F-ARG**2.D0*(DBESK1(ARG)**2.D0-DBESK0(ARG)**2.D0)
          F=F*ZION**2.D0*ALPHAE/PI/Z
 
-
       ELSEIF (NFLUX.EQ.23) THEN
 C---Photon flux from ions : should be valid for all Z
 c ... T.K. : Implemented factorized flux (11) in Cahn, Jackson; PR D42 (1990) 3690
@@ -1052,17 +1120,17 @@ c ... M.B. : coherency conditions are adapted for ions
 c CHR ions 10/2014
 c         print *,'con',FMCONV,AMASS
          IF(IND.EQ.1) THEN
-c         Q2MIN = Z*Z*0.88d0/(1d0-Z)/QSCALE
-c         Q2MAX = TMAX/QSCALE
-c         F = ALPHAE/PI*(1d0-Z)/Z*(PHI(Q2MAX,Z)-PHI(Q2MIN,Z))
+         Q2MIN = Z*Z*0.88d0/(1d0-Z)/QSCALE
+         Q2MAX = TMAX/QSCALE
+         F = ALPHAE/PI*(1d0-Z)/Z*(PHI(Q2MAX,Z)-PHI(Q2MIN,Z))
 c ... Rangel and Goncalves: PRD 39 (1989) 2536
-         QMIN2 = (Z*AMASS)**2.D0
-         ARG   = 1.D0+0.71D0/QMIN2
-         F = DLOG(ARG)-11.D0/6.D0+3.D0/ARG
-         F = F-3.D0/(2.D0*ARG*ARG)+1.D0/(3.D0*ARG*ARG*ARG)
-         F = F*ALPHAE/PI
-         F = F*(1.D0-Z+(1.D0/2.D0)*Z*Z)
-         F = F/Z
+c         QMIN2 = (Z*AMASS)**2.D0
+c         ARG   = 1.D0+0.71D0/QMIN2
+c         F = DLOG(ARG)-11.D0/6.D0+3.D0/ARG
+c         F = F-3.D0/(2.D0*ARG*ARG)+1.D0/(3.D0*ARG*ARG*ARG)
+c         F = F*ALPHAE/PI
+c         F = F*(1.D0-Z+(1.D0/2.D0)*Z*Z)
+c         F = F/Z
          ELSEIF(IND.EQ.2) THEN
          RZERO=1.2/FMCONV
          R=RZERO*(AION**(1./3.))
@@ -1144,15 +1212,15 @@ c         BMIN=1.1*R
       ELSEIF (NFLUX.EQ.13) THEN
 C---Photon flux for protons
 c ... Rangel and Goncalves: PRD 39 (1989) 2536
-         QMIN2 = (Z*AMASS)**2.D0
-         ARG   = 1.D0+0.71D0/QMIN2
-         F = DLOG(ARG)-11.D0/6.D0+3.D0/ARG
-         F = F-3.D0/(2.D0*ARG*ARG)+1.D0/(3.D0*ARG*ARG*ARG)
-         F = F*ALPHAE/PI
-         F = F*(1.D0-Z+(1.D0/2.D0)*Z*Z)
-         F = F/Z
+c         QMIN2 = (Z*AMASS)**2.D0
+c         ARG   = 1.D0+0.71D0/QMIN2
+c         F = DLOG(ARG)-11.D0/6.D0+3.D0/ARG
+c         F = F-3.D0/(2.D0*ARG*ARG)+1.D0/(3.D0*ARG*ARG*ARG)
+c         F = F*ALPHAE/PI
+c         F = F*(1.D0-Z+(1.D0/2.D0)*Z*Z)
+c         F = F/Z
 c         print *,'*** data:',z,exparg,ei,f
-      ELSEIF (NFLUX.EQ.17) THEN
+c      ELSEIF (NFLUX.EQ.17) THEN
 C---Photon flux from heavy ions (Ca, Pb):
 c ... T.K. : Implemented (6) in Drees, Ellis, Zeppenfeld; PL B223 (1989) 455
          QZERO=6.D-2 ! best fit
@@ -3535,11 +3603,27 @@ c ... O.K. : HQ=15 ZZ
 c ... M.S./O.K. : HQ=16 AA
 c ... M.S.      : HQ=60,61,62,63,64,65 SM AA + AAANOM=3 def
           IF (HQ.GT.6.AND.HQ.LE.10) HQ=2*HQ+107
+          IF (HQ.EQ.67.OR.HQ.EQ.73) THEN
+            HQ=142 !ZZ
+            AAANOM=3 !Enters M.S. section
+          ENDIF
+            IF (HQ.EQ.68) THEN
+              HQ=198 !WW
+              AAANOM=3
+            ENDIF
+          IF (HQ.EQ.71) THEN
+            HQ=201 !AA->HiggsHiggs C.B.
+            AAANOM=3 !Enters M.S. SQME calls ahead
+          ENDIF
           IF (HQ.EQ.15) HQ=200 ! ZZ
           IF (HQ.EQ.16) HQ=59 ! AA
-          IF (HQ.GE.60.AND.HQ.LE.65) THEN
+          IF (HQ.GE.60.AND.HQ.LE.66.OR.HQ.EQ.69.OR.HQ.EQ.72) THEN
             HQ=59 ! AA
             AAANOM=3
+          ENDIF
+          IF (HQ.EQ.70) THEN
+            HQ=13 !AA->GluGlu, C Baldenegro
+            AAANOM=3 !Enters M.S. SQME calls
           ENDIF
           IF (HQ.EQ.127) HQ=198 
           IF (HQ.GE.21.AND.HQ.LE.26) THEN 
@@ -3572,7 +3656,7 @@ C Kinematics
            COSTH=(T-U)/(BE*S)
            EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U)) 
 C Cross-sections
-        IF (HQ.NE.198.AND.HQ.NE.200.AND.HQ.NE.59) THEN
+        IF (HQ.NE.198.AND.HQ.NE.200.AND.HQ.NE.142.AND.HQ.NE.59) THEN
 C --- Begin modif by Tibor Kucs 08/14/2003
 C     Updated by Maarten Boonekamp 11/03/2003
 c ... If QED use the original implementation :
@@ -3731,7 +3815,7 @@ c     $        SQRT(EMSQ), SWEIN, D_KAPPA, LAMBDA, A1A, A2A, ANOMCUTOFF)
               FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
 c ... M.S. symmetry factor in the gamgam->gamgam case
-              IF(HQ.EQ.59) THEN
+              IF(HQ.EQ.59.OR.HQ.EQ.200) THEN
               FACTR=FACTR/2d0
               ENDIF
 
@@ -3741,6 +3825,8 @@ c     $             *(1-2*s*(2*s+3*emsq)/(3*(emsq-t)*(emsq-u))
 c     $           +2*s**2*(s**2+3*emsq*emsq)/(3*(emsq-t)**2*(emsq-u)**2))
 
 
+c         Here you find all the subroutines stored in External/excl_aaaa (Photo-induced processes)
+c         Cristian Baldenegro 09-2016
           ELSEIF(AAANOM.EQ.3)THEN
 c          PTMIN>0 only for AAAA
               IF(HQ.EQ.59.AND.PTMIN.EQ.0) THEN
@@ -3784,12 +3870,55 @@ C ... M.S. Calling SM and EXOTIC exclusive photon pair production
               call resonances0even_sqme_aaaa_c(AMP2, S, T, 1, 0,
      $        AAM, AAF0, AAW, AAA2)
               ENDIF
+              IF(HQ.EQ.59.AND.IPROC.EQ.16066) THEN
+              call resonances2_sqme_aaaa_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAW, AAA2)
+              ENDIF
+              IF(HQ.EQ.142.AND.IPROC.EQ.16067) THEN
+              call resonances0even_sqme_zz_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAF0Z, AAW, AAA2)
+              HQ=200 !Z ID
+              ENDIF
+              IF(HQ.EQ.142.AND.IPROC.EQ.16073) THEN
+              call resonances0evenOH_sqme_zz_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAF0H, AAW, AAA2)
+              HQ=200 !Z ID
+              ENDIF
+c ... C.B. Calling exclusive WW production (Spin0even resonance) AA->WW 05-2016
+c ... According to the convention of O.K. for WW final states
+              IF(HQ.EQ.198.AND.IPROC.EQ.16068) THEN
+              call resonances0even_sqme_ww_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAF0W, AAW, AAA2)
+              ENDIF
+c ... C.B. Calling exclusive AZ production (Spin0even resonance) AA->AZ 05-2016
+c ... According to the convention of O.K. for ZZ final states
+              IF(HQ.EQ.59.AND.IPROC.EQ.16069) THEN
+              call resonances0even_sqme_az_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAF0ZG, AAW, AAA2)
+              ENDIF
+c ... C.B. Calling GluGlu production (Spin0even resonance) AA->Dijet 05-2016
+              IF(HQ.EQ.13.AND.IPROC.EQ.16070) THEN
+              call resonances0even_sqme_gluglu_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAF0G, AAW, AAA2)
+              ENDIF
+c ... C.B. Calling Higgs-Higgs production (Spin0even resonance) AA->Dijet 05-2016
+              IF(HQ.EQ.201.AND.IPROC.EQ.16071) THEN
+              call resonances0even_sqme_hh_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAF0H, AAW, AAA2)
+              ENDIF
+              IF(HQ.EQ.59.AND.IPROC.EQ.16072) THEN
+              call eft_sqme_aaaz_c(AMP2, S, T, 1, A1A, A2A, ANOMCUTOFF)
+              ENDIF
+
              FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
 
-c ... M.S. symmetry factor for gamgam->gamgam
-             FACTR = FACTR/2d0
 
+c ... M.S. symmetry factor for Gamma Gamma -> XX
+          IF(HQ.EQ.59.OR.HQ.EQ.200.OR.HQ.EQ.13.OR.HQ.EQ.201) THEN
+            FACTR = FACTR/2d0
+          ENDIF
+          IF(IPROC.EQ.16069.OR.IPROC.EQ.16072) FACTR=FACTR*2d0
           ELSE
              print *, 'Nonstandard choice of AAANOM=', AAANOM
              stop
@@ -3820,9 +3949,24 @@ c O.K ZZ
                Q=1
             ENDIF
 c O.K AA                    
-            IF (HQ.EQ.59) THEN 
+            IF (HQ.EQ.59.AND.IPROC.NE.16069) THEN 
                ID4=59
                Q=1
+            ENDIF
+c C.B. gluon-gluon
+            IF (HQ.EQ.13) THEN
+              ID4=13
+              Q=1
+            ENDIF
+c C.B. Higgs-Higgs
+            IF (HQ.EQ.201) THEN
+              ID4=201
+              Q=1
+            ENDIF
+c C.B. AZ
+            IF (IPROC.EQ.16069.OR.IPROC.EQ.16072) THEN
+              ID4=200 !ID3=59, ID4=200, AA->AZ
+              Q=1
             ENDIF
             HCS=HCS+Q**4
             IF (GENEV.AND.HCS.GT.RCS) CALL HWHQCP(ID3,ID4,1243,61,*99)
@@ -4275,7 +4419,6 @@ C-----------------------------------------------------------------------
      & MPDF,IHAD,ISET,IOP1,IOP2,IP2
       CHARACTER*20 PARM(20)
       EXTERNAL HWSGAM,HWSDGG,HWSDGQ
-
 
 * B.C. Pomwig
       DOUBLE PRECISION XPQ(-6:6),BCQ, XXX
