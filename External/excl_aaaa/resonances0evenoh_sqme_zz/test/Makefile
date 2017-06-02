@@ -46,20 +46,9 @@
 # IMPORTANT USER SETUP
 #########################################################################
 
-CERNLIB=`cernlib mathlib pawlib packlib` -L$(PWD) -lgfortran
-#CERNLIB=`cernlib mathlib pawlib packlib pdflib804` -L$(PWD) -lgfortran -L$(LHAPDFLIB) -lLHAPDF
+CERNLIB=`cernlib mathlib pawlib packlib pdflib804` -L$(PWD) -lgfortran
 #CERNLIB=`cernlib` -L$(PWD) -lgfortran
 GSLLIB=`gsl-config --cflags --libs`
-
-#LHAPDF_BASE=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/lhapdf/5.9.1-cms3
-LHAPDF_BASE=/afs/cern.ch/sw/lcg/external/MCGenerators/lhapdf/5.8.9/x86_64-slc6-gcc46-opt
-LHAPDFLIB=-L$(LHAPDF_BASE)/lib -lLHAPDF -Wl,-rpath -Wl,$(LHAPDF_BASE)/lib
-LHAPDF_INCLUDE=-I$(LHAPDF_BASE)/include
-
-HEPMC_BASE    = /afs/cern.ch/sw/lcg/external/HepMC/2.06.08/x86_64-slc6-gcc46-opt
-CLHEP_BASE    = /afs/cern.ch/sw/lcg/external/clhep/2.1.4.1/x86_64-slc6-gcc46-opt
-BOOST_BASE    = /afs/cern.ch/sw/lcg/external/Boost/1.50.0_python2.6/x86_64-slc6-gcc46-opt
-#BOOST_BASE=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/boost/1.51.0-cms2
 
 #########################################################################
 
@@ -73,10 +62,10 @@ allModules: fpmc
 examples:oldExamples
 allApp: Fpmc Herwig Externals examples allModules 
 	
-clean: clean_sqme clean_excl_aaaa
+clean:clean_sqme clean_excl_aaaa
 	@find ./ -name "*~" -exec rm -v {} \;
 	@find ./ -name ".*.swp" -exec rm -v {} \;
-	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod fpmc fpmc-hepmc
+	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod
 	
 # FLAGS
 # -------
@@ -90,7 +79,7 @@ clean: clean_sqme clean_excl_aaaa
 #F_COMP = g77 $(F_FLAGS) $(SPEC_FL)
 
 # gforan - setup
-F_FLAGS = -g -O1 -fno-automatic -fPIC -Iinc
+F_FLAGS = -g -O1  -fno-automatic -Iinc
 F_COMP = gfortran $(F_FLAGS) $(SPEC_FL)
 
 # other 
@@ -252,11 +241,8 @@ clean_sqme:
 	$(MAKE) -C $(EXTDIR)/comphep_interface/sqme_aaaa clean
 
 
-# interface to excl aa->aa or aa->X routines
-ext_excl_aaaa_dest=$(OBJDIR)/excl_aaaa_wraper.o $(OBJDIR)/sm_sqme_aaaa.a $(OBJDIR)/bsmf_sqme_aaaa.a $(OBJDIR)/bsmv_sqme_aaaa.a \
-    $(OBJDIR)/resonances0even_sqme_aaaa.a $(OBJDIR)/resonances0even_sqme_zz.a $(OBJDIR)/resonances0even_sqme_ww.a \
-    $(OBJDIR)/resonances0even_sqme_az.a $(OBJDIR)/eft_sqme_aaaa.a $(OBJDIR)/eft_sqme_aaaz.a $(OBJDIR)/resonances2_sqme_aaaa.a \
-    $(OBJDIR)/resonances0even_sqme_gluglu.a $(OBJDIR)/resonances0even_sqme_hh.a $(OBJDIR)/resonances0evenoh_sqme_zz.a \
+# interface to excl aa->aa routines
+ext_excl_aaaa_dest=$(OBJDIR)/excl_aaaa_wraper.o $(OBJDIR)/sm_sqme_aaaa.a $(OBJDIR)/bsmf_sqme_aaaa.a $(OBJDIR)/bsmv_sqme_aaaa.a $(OBJDIR)/resonances0even_sqme_aaaa.a $(OBJDIR)/eft_sqme_aaaa.a
 
 $(OBJDIR)/sm_sqme_aaaa.a:
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/sm_sqme_aaaa	
@@ -274,41 +260,9 @@ $(OBJDIR)/resonances0even_sqme_aaaa.a:
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_aaaa	
 	cp -f $(EXTDIR)/excl_aaaa/resonances0even_sqme_aaaa/resonances0even_sqme_aaaa.a $(OBJDIR)
 
-$(OBJDIR)/resonances0even_sqme_zz.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_zz	
-	cp -f $(EXTDIR)/excl_aaaa/resonances0even_sqme_zz/resonances0even_sqme_zz.a $(OBJDIR)
-
-$(OBJDIR)/resonances0even_sqme_ww.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_ww	
-	cp -f $(EXTDIR)/excl_aaaa/resonances0even_sqme_ww/resonances0even_sqme_ww.a $(OBJDIR)	
-
-$(OBJDIR)/resonances0even_sqme_az.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_az	
-	cp -f $(EXTDIR)/excl_aaaa/resonances0even_sqme_az/resonances0even_sqme_az.a $(OBJDIR)	
-
 $(OBJDIR)/eft_sqme_aaaa.a:
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/eft_sqme_aaaa	
 	cp -f $(EXTDIR)/excl_aaaa/eft_sqme_aaaa/eft_sqme_aaaa.a $(OBJDIR)
-
-$(OBJDIR)/eft_sqme_aaaz.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/eft_sqme_aaaz
-	cp -f $(EXTDIR)/excl_aaaa/eft_sqme_aaaz/eft_sqme_aaaz.a $(OBJDIR)
-
-$(OBJDIR)/resonances2_sqme_aaaa.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances2_sqme_aaaa	
-	cp -f $(EXTDIR)/excl_aaaa/resonances2_sqme_aaaa/resonances2_sqme_aaaa.a $(OBJDIR)
-
-$(OBJDIR)/resonances0even_sqme_gluglu.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_gluglu
-	cp -f $(EXTDIR)/excl_aaaa/resonances0even_sqme_gluglu/resonances0even_sqme_gluglu.a $(OBJDIR)
-
-$(OBJDIR)/resonances0even_sqme_hh.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_hh
-	cp -f $(EXTDIR)/excl_aaaa/resonances0even_sqme_hh/resonances0even_sqme_hh.a $(OBJDIR)
-
-$(OBJDIR)/resonances0evenoh_sqme_zz.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0evenoh_sqme_zz
-	cp -f $(EXTDIR)/excl_aaaa/resonances0evenoh_sqme_zz/resonances0evenoh_sqme_zz.a $(OBJDIR)
 
 $(OBJDIR)/excl_aaaa_wraper.o:$(EXTDIR)/excl_aaaa/excl_aaaa_wraper.cpp
 	$(CC) -c -o $@ $<
@@ -318,15 +272,8 @@ clean_excl_aaaa:
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmf_sqme_aaaa clean
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmv_sqme_aaaa clean
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_aaaa clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances2_sqme_aaaa clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_az clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_zz clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_hh clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_gluglu clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_ww clean
 	$(MAKE) -C $(EXTDIR)/excl_aaaa/eft_sqme_aaaa clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/eft_sqme_aaaz clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0evenoh_sqme_zz clean
+
 
 
 
@@ -340,20 +287,17 @@ $(OBJDIR)/ntuple.o:External/ntuple.f
 $(OBJDIR)/ffcard.o:Examples/ffcard.f Examples/ffcard.inc
 	$(F_COMP) -c $< -o $@
 
-# LHE functions
-$(OBJDIR)/fpmc_lhe.o:Examples/fpmc_lhe.f
-	$(F_COMP) -c $< -o $@
 
 # ----------------
 # Objects variables
 # ----------------
-OBJSTAND = $(OBJDIR)/herwig6500.o  $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o $(OBJDIR)/fpmc_lhe.o
-OBJEXT   = $(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_excl_aaaa_dest) $(ext_kmr_obj_dest)  $(ext_softc_obj_dest) \
-	$(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_KMR2_obj_dest) \
+OBJSTAND=$(OBJDIR)/herwig6500.o  $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o
+OBJEXT=$(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_excl_aaaa_dest) $(ext_kmr_obj_dest)  $(ext_softc_obj_dest) \
+       $(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_KMR2_obj_dest) \
 	$(ext_CHIDeGG_obj_dest) $(ext_CHIDeDiphoton_obj_dest) 
-OBJUSR   = $(OBJDIR)/ntuple.o
-LIBS     = $(CERNLIB) $(LHAPDFLIB) $(GSLLIB) $(LIB_OMEGA)
-OBJRECO  = $(reco_obj_dest)
+OBJUSR = $(OBJDIR)/ntuple.o
+LIBS=$(CERNLIB) $(GSLLIB) $(LIB_OMEGA)
+OBJRECO = $(reco_obj_dest)
 
 
 # ----------------
@@ -376,53 +320,3 @@ module: Examples/module.f $(OBJEXT) $(OBJSTAND)  $(OBJUSR) \
   	Examples/ffcard.inc
 	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR)  $(LIBS) -lstdc++ 
 
-#---- Wrapper/HepMC
-#----
-HEPMCLIB      = -L$(HEPMC_BASE)/lib -lHepMCfio -lHepMC -Wl,-rpath -Wl,$(HEPMC_BASE)/lib
-HEPMC_INCLUDE = -I$(HEPMC_BASE)/include
-
-CLHEPLIB      = $(shell $(CLHEP_BASE)/bin/clhep-config --libs) -Wl,-rpath -Wl,$(CLHEP_BASE)/lib
-CLHEP_INCLUDE = $(shell $(CLHEP_BASE)/bin/clhep-config --include) 
-
-BOOST_INCLUDE = -I$(BOOST_BASE)/include
-
-LIBDIR  = lib
-CFLAGS  = -g -O2 -ansi -pedantic -W -Wall -Wshadow -fPIC
-LDFLAGS = -g -O2 -ansi -pedantic -W -Wall -Wshadow -fPIC
-
-wrapper_f=HepMCWrapper/f77out.f HepMCWrapper/hwaend_dummy.f
-wrapper_f_obj=$(wrapper_f:HepMCWrapper/%.f=%.o)
-wrapper_f_obj_dest=$(wrapper_f_obj:%=$(OBJDIR)/%)
-
-$(wrapper_f_obj_dest): $(OBJDIR)/%.o: HepMCWrapper/%.f
-	$(F_COMP) -fPIC -c $< -o $@
-
-wrapper=HepMCWrapper/fostream.cc HepMCWrapper/Fpmc.cc
-wrapper_obj=$(wrapper:HepMCWrapper/%.cc=%.o)
-wrapper_obj_dest=$(wrapper_obj:%=$(OBJDIR)/%)
-
-$(wrapper_obj_dest): $(OBJDIR)/%.o: HepMCWrapper/%.cc
-	$(CC) $(CFLAGS) $(HEPMC_INCLUDE) $(CLHEP_INCLUDE) $(LHAPDF_INCLUDE) -c $< -o $@
-
-$(LIBDIR)/FPMCHepMCWrapper.so:$(wrapper_f_obj_dest) $(wrapper_obj_dest)
-	mkdir -p $(LIBDIR); \
-	$(CC) $(LDFLAGS) -shared $(wrapper_f_obj_dest) $(wrapper_obj_dest) $(HEPMCLIB) $(CLHEPLIB) -o $@
-
-$(LIBDIR)/FPMCHepMCWrapper.a:$(wrapper_f_obj_dest) $(wrapper_obj_dest)
-	mkdir -p $(LIBDIR); \
-	ar -r $@ $(wrapper_f_obj_dest) $(wrapper_obj_dest)
-
-$(OBJDIR)/fpmc-hepmc.o: HepMCWrapper/main.cc
-	$(CC) $(CFLAGS) $(BOOST_INCLUDE) $(HEPMC_INCLUDE) $(CLHEP_INCLUDE) $(LHAPDF_INCLUDE) -c $< -o $@
-
-fpmc-hepmc: \
-$(OBJDIR)/herwig6500.o \
-$(OBJDIR)/fpmc.o \
-$(OBJDIR)/ffcard.o \
-$(OBJEXT) \
-$(wrapper_f_obj_dest) $(wrapper_obj_dest) \
-$(OBJDIR)/fpmc-hepmc.o
-	$(CC) $(LDFLAGS) $(OBJDIR)/herwig6500.o $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o $(OBJEXT) \
-	$(wrapper_f_obj_dest) $(wrapper_obj_dest) $(OBJDIR)/fpmc-hepmc.o \
-	$(CERNLIB) $(LHAPDFLIB) $(GSLLIB) $(LIB_OMEGA) $(HEPMCLIB) $(CLHEPLIB) -o $@
-#----

@@ -1,3 +1,20 @@
+2016-10-07 Cristian Baldenegro <c.baldenegro@cern.ch / crisx.baldenegro@gmail.com>
+
+ * Added EFT for AA->AZ, according to Sylvain and Gero's computations. Datacard: dataQED_AZanom
+ * In 2017-02-15 corrected the ME to include two operators which induce the Zgamma process.
+
+2016-09-23 Cristian Baldenegro <c.baldenegro@cern.ch / crisx.baldenegro@gmail.com>
+
+ * Correction for AA->Spin2->AA (-1 factor when calling Mxxxx matrix elements)
+ * Couldn't run dataQED_ZZanom anymore; now it's corrected.
+
+2016-06-20 Cristian Baldenegro <c.baldenegro@cern.ch / crisx.baldenegro@gmail.com>
+
+ * Exclusive AA-> HH (IPROC=16071) and AA->Dijet (IPROC=16070) were included
+ * Matrix elements calculated by Gero von Gersdorff and Sylvain Fichet
+ * Correspond to Datacards:  dataQED_HHexoticSPin0EvenResonances and dataQED_GluGluexoticSpin0EvenResonances respectively
+ * New parameters (F0H and F0G)
+
 2016-05-20 Cristian Baldenegro <c.baldenegro@cern.ch / crisx.baldenegro@gmail.com>
 
  * Exclusive AA->ZZ (IPROC=16066) and AA->AZ (IPROC=16068)
@@ -5,18 +22,16 @@
  * Helicity amplitudes from Gero von Gersdorff and Sylvain Fichet
  * Corresponding datacards: dataQED_ZZexoticSpin0EvenResonances and dataQED_AZexoticSpin0EvenResonances
 dataQED_WWexoticSpin0EvenResonances and dataQED_AAexoticSpin2Resonances
- * New parameter F0Z (1/coupling for Phi->ZZ) AF0ZG (1/coupling for Phi->AZ)
+ * New parameter F0Z (1/coupling for Phi->ZZ) AF0ZG (1/coupling for Phi->gamma Z)
  * New parameter F0W (1/coupling for phi->WW)
  * Such exclusive productions are included in the same subroutine calling section as Matthias' (AAANOM=3, AAEXOTIC=1)
- * First time that AZ is included in FPMC, suspicions are well received.
-
 
 2015-07-24 Matthias Saimpert <matthias.saimpert@cern.ch>
   * IMPORTANT BUG CORRECTIONS: symmetry factor was omitted for
   gamgam->gamgam, now added. As a result, gamgam->gamgam xsec twice smaller
 
 2015-06-25 Matthias Saimpert <matthias.saimpert@cern.ch>
-  * exclusive gg->gg studies, exotic spin 0-even resonance added
+  * exclusive gamma gamma->gamma gamma studies, exotic spin 0-even resonance added
   * IPROC=16065, associated datacard, dataQED_AAexoticSpin0EvenResonances
   * new parameters AAF0 (1/coupling), AAW (width const), AAA2 (dumping factor
   for sqrt(s) dependence of the width)
@@ -24,7 +39,6 @@ dataQED_WWexoticSpin0EvenResonances and dataQED_AAexoticSpin2Resonances
 2015-01-20 Christophe Royon <christophe.royon@cern.ch>, Murilo Rangel <murilo.rangel@cern.ch>
   * correct for normalisation for reggeon (applied in PDFs and not in flux)
   
-
 2014-11-26 Christophe Royon <christophe.royon@cern.ch>
   * new code for heavy ion flux (nflux=11) 
   * new cards to transmit BMIN
@@ -32,8 +46,8 @@ dataQED_WWexoticSpin0EvenResonances and dataQED_AAexoticSpin2Resonances
   * bug fix for photon pom
 
 2014-09-11 Matthias Saimpert <matthias.saimpert@cern.ch>
-  * Fix for gg->gg, high energy limit implemented (sqrt(s)>>m)
-  * Final release for gg->gg :)
+  * Fix for gamma gamma->gamma gamma, high energy limit implemented (sqrt(s)>>m)
+  * Final release for gamma gamma->gamma gamma :)
 
 2014-08-18 Matthias Saimpert <matthias.saimpert@cern.ch>
   * Anomalous aaaa with compHEP routine found to be wrong (around a factor 2.1
