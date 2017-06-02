@@ -67,11 +67,7 @@ void me_SM(void (*me)(double,double ,double *, double *, int),
   *im *= - 8 * alpha_em*alpha_em;
   // the factor of - 8 is needed because of the conventions in
   // Costantini, DeTollis, Pistoni
-
-  
-  return;
-    
-};
+}
 
 /////////////////////////////// gg final state from OG operator
 
@@ -89,15 +85,8 @@ double sqme(double s,double t, int exclude_loops_SM, int exclude_loops_EX, doubl
     return 0;
   }
   
-  // reduced Mandelstam variables
-  double sred = s/(4 * mass * mass);
-  double tred = t/(4 * mass * mass); 
-
-  
   double re_ex;
   double im_ex;
-  double re_SM;
-  double im_SM;
 
   double value=0;
    
@@ -140,6 +129,6 @@ double sqme(double s,double t, int exclude_loops_SM, int exclude_loops_EX, doubl
  
   return 0.5*value;
 
-};
+}
 
 }

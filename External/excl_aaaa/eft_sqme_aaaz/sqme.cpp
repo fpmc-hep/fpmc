@@ -5,13 +5,9 @@
 using namespace std;
 
 namespace eft_aaaz {
-    
-const double alpha_em = 1./137.036; // EM coupling at zero momentum (on shell scheme)
-
-
-
-void me_SM(void (*me)(double,double ,double *, double *, int),
-	  double s,double t, double *re, double*im, int exclude_loops){
+  const double alpha_em = 1./137.036; // EM coupling at zero momentum (on shell scheme)
+  void me_SM(void (*me)(double,double ,double *, double *, int), double s,double t, double *re, double*im, int exclude_loops)
+  {
   // This routine computes the complex SM amplitude
   // The first argument can be any of the helicity amplitudes Mpppp,Mppmm,Mpmpm,Mpmmp,Mpppm
 
@@ -68,11 +64,7 @@ void me_SM(void (*me)(double,double ,double *, double *, int),
    
   // the factor of 8 is needed because of the conventions in
   // Costantini, DeTollis, Pistoni
-
-  
-  return;
-    
-};
+}
 
 
 // Computes the  squared matrix element and the SM interference from free zeta_1, zeta_2
@@ -91,7 +83,5 @@ double sqme (double s,double t, int exclude_loops_SM, double z1, double z3){
   value = 4.*(3.*zeta1*zeta1+3.*zeta3*zeta3-2.*zeta1*zeta3)*((s*s+t*t+s*t)*(s*s+t*t+s*t)-2.*mZ*mZ*(s+t)*(3.*(s*s+t*t)+s*t)+mZ*mZ*mZ*mZ*(3.*(s*s+t*t)+2.*s*t))+16./3.*zeta1*zeta3*mZ*mZ*(mZ*mZ-s-t)*s*t;
   return value; //Symmetry factor; returns squared matrix element
 
-};
-
-
+}
 }  //namespace eft_aaaa
