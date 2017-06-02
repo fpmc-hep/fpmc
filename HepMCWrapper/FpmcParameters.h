@@ -34,16 +34,16 @@ namespace fpmc
 
       std::map<std::string,std::string> map() const { return *this; }
 
-      void getHWPRAM( hwpram_t& ) const;
-      void getHWPROP( hwprop_t& ) const;
-      void getHWHARD( hwhard_t& ) const;
-      void getXSECT( xsect_t& ) const;
-      void getPDFS( pdfs_t& ) const;
-      void getAAANOMAL( aaanomal_t& ) const;
-      void getAAEXOTICAL( aaexotical_t& ) const;
-      void getCHIDEFPMC( chidefpmc_t& ) const;
-      void getKMR2FPMC( kmr2fpmc_t& ) const;
-      void getION( ion_t& ) const;
+      void fetchHWPRAM( hwpram_t& ) const;
+      void fetchHWPROP( hwprop_t& ) const;
+      void fetchHWHARD( hwhard_t& ) const;
+      void fetchXSECT( xsect_t& ) const;
+      void fetchPDFS( pdfs_t& ) const;
+      void fetchAAANOMAL( aaanomal_t& ) const;
+      void fetchAAEXOTICAL( aaexotical_t& ) const;
+      void fetchCHIDEFPMC( chidefpmc_t& ) const;
+      void fetchKMR2FPMC( kmr2fpmc_t& ) const;
+      void fetchION( ion_t& ) const;
       
       void add( const std::string& key, const std::string& value ) {
         auto pair = find( key );

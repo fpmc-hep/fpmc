@@ -1,12 +1,16 @@
 #include "Fpmc.h"
 
+#ifndef HEPMC_VERSION2
+extern HEPEVT hepevt_;
+#endif
+
 namespace fpmc
 {
   Fpmc::Fpmc( double comEnergy, long int seed, const char* card ) :
     herwigVerbosity_( 1 ), hepMCVerbosity_( true ), maxEventsToPrint_( 2 ),
     comEnergy_( comEnergy ),
     params_( FpmcParameters::parseCard( card ) ),
-    hadronize_( true ), debug_( false )
+    hadronize_( true ), debug_( false ), dbg_( std::cout )
   {
     params_.dump();
   }
@@ -40,21 +44,21 @@ namespace fpmc
       if ( seed0<0 ) seed0 = CLHEP::RandFlat::shoot( randomEngine.get(), 1L, 10000L );
       if ( seed1<0 ) seed1 = CLHEP::RandFlat::shoot( randomEngine.get(), 1L, 10000L );
 
-      if ( debug_ ) std::cout << "[FPMC Wrapper] SEEDS: " << seed0 << ", " << seed1 << std::endl;
+      if ( debug_ ) dbg_ << "[FPMC Wrapper] SEEDS: " << seed0 << ", " << seed1 << std::endl;
     }
 
     //--- print the FPMC greetings
     fpmc_welcome();
 
     if ( debug_ ) {
-      std::cout << "[FPMC Wrapper] UTYPEPR = " << params_.getString( "typepr" ) << std::endl
-		<< "               UTYPINT = " << params_.getString( "typint" ) << std::endl
-		<< "               UTMASS  = " << params_.getFloat( "tmass" ) << std::endl;
+      dbg_ << "[FPMC Wrapper] UTYPEPR = " << params_.getString( "typepr" ) << std::endl
+           << "               UTYPINT = " << params_.getString( "typint" ) << std::endl
+           << "               UTMASS  = " << params_.getFloat( "tmass" ) << std::endl;
     }
 
-    std::cout << "[FPMC Wrapper] Initializing HERWIG/FPMC" << std::endl;
+    dbg_ << "[FPMC Wrapper] Initializing HERWIG/FPMC" << std::endl;
 
-    // Call hwudat to set up HERWIG block data
+    //--- call hwudat to set up HERWIG block data
     //hwudat();
 
     if ( params_.has( "part1" ) ) params_.getString( "part1" ).copy( hwbmch_.PART1, 8 );
@@ -69,18 +73,18 @@ namespace fpmc
     if ( params_.has( "iproc" ) ) hwproc_.IPROC = params_.getInt( "iproc" );
 
     hadronize_ = strcmp( params_.getString( "hadr" ).c_str(), "Y" )==0;  
-    std::cout << "[FPMC Wrapper] Run hadronization/showering: " << hadronize_ << std::endl; 
+    dbg_ << "[FPMC Wrapper] Run hadronization/showering: " << hadronize_ << std::endl;
   
     if ( debug_ ) {
-      std::cout << "[FPMC Wrapper] PART1  = '" << hwbmch_.PART1 << "'" << std::endl
-                << "[FPMC Wrapper] PART2  = '" << hwbmch_.PART2 << "'" << std::endl
-                << "[FPMC Wrapper] TYPEPR = " << prtype_.TYPEPR << std::endl
-                << "[FPMC Wrapper] TYPINT = " << prtype_.TYPINT << std::endl
-                << "[FPMC Wrapper] IPROC  = " << hwproc_.IPROC << std::endl;
+      dbg_ << "[FPMC Wrapper] PART1  = '" << hwbmch_.PART1 << "'" << std::endl
+           << "[FPMC Wrapper] PART2  = '" << hwbmch_.PART2 << "'" << std::endl
+           << "[FPMC Wrapper] TYPEPR = " << prtype_.TYPEPR << std::endl
+           << "[FPMC Wrapper] TYPINT = " << prtype_.TYPINT << std::endl
+           << "[FPMC Wrapper] IPROC  = " << hwproc_.IPROC << std::endl;
     }
     hwigin_();
 
-    params_.getHWPRAM( hwpram_ );
+    params_.fetchHWPRAM( hwpram_ );
     hwpram_.IPRINT = herwigVerbosity_;
     hwpram_.EFFMIN = 1.e-6;
     hwpram_.MODPDF[1] = -111;
@@ -101,19 +105,21 @@ namespace fpmc
 
     hwevnt_.MAXPR = maxEventsToPrint_;
 
-    params_.getHWPROP( hwprop_ );
-    params_.getHWHARD( hwhard_ );
+    //--- feed the parameters from the steering card to the generator core
 
-    params_.getXSECT( xsect_ );
-    params_.getPDFS( pdfs_ );
-    params_.getAAANOMAL( aaanomal_ );
-    params_.getAAEXOTICAL( aaexotical_ );
+    params_.fetchHWPROP( hwprop_ );
+    params_.fetchHWHARD( hwhard_ );
 
-    params_.getCHIDEFPMC( chidefpmc_ );
+    params_.fetchXSECT( xsect_ );
+    params_.fetchPDFS( pdfs_ );
+    params_.fetchAAANOMAL( aaanomal_ );
+    params_.fetchAAEXOTICAL( aaexotical_ );
+
+    params_.fetchCHIDEFPMC( chidefpmc_ );
     chidefpmc_.CHIDeS = comEnergy_*comEnergy_;
-    params_.getKMR2FPMC( kmr2fpmc_ );
+    params_.fetchKMR2FPMC( kmr2fpmc_ );
 
-    params_.getION( ion_ );
+    params_.fetchION( ion_ );
 
     //--- initialize model/pdf dependant parameters
     hwmodini();
@@ -152,6 +158,7 @@ namespace fpmc
   Fpmc::run()
   {
 #ifndef HEPMC_VERSION2
+    HepMC::HEPEVT_Wrapper::set_hepevt_address( ( char* )&hepevt_ );
     HepMC::HEPEVT_Wrapper::zero_everything();
 #endif
     //--- call herwig routines to create HEPEVT
@@ -159,6 +166,7 @@ namespace fpmc
     hwuine(); // initialize event
 
     hwepro(); // generate hard subprocess
+std::cout << "haha" << std::endl;
 
     if ( hadronize_ ) {
       hwbgen();	// parton cascades
@@ -184,8 +192,8 @@ namespace fpmc
     std::cout << "---> " << HepMC::HEPEVT_Wrapper::number_entries() << std::endl;
     //HepMC::HEPEVT_Wrapper::set_number_entries( 4000 );
     //HepMC::HEPEVT_Wrapper::set_sizeof_real( 8 );
-    //HepMC::HEPEVT_Wrapper::print_hepevt();
-    //HepMC::HEPEVT_Wrapper::HEPEVT_to_GenEvent( hepMCEvt_.get() );
+    HepMC::HEPEVT_Wrapper::print_hepevt();
+    HepMC::HEPEVT_Wrapper::HEPEVT_to_GenEvent( hepMCEvt_.get() );
 #endif
 
     hepMCEvt_->set_event_number( event_-1 );
@@ -221,10 +229,8 @@ namespace fpmc
     //******** Verbosity ********
     if ( event_<=maxEventsToPrint_ && hepMCVerbosity_ ) {
       // Prints HepMC event
-      std::ostringstream oss;
-      oss << "\n----------------------" << std::endl	
-          << "Event process id = " << hepMCEvt_->signal_process_id() << std::endl; 
-      std::cout << oss.str();
+      dbg_ << "\n----------------------" << std::endl
+           << "Event process id = " << hepMCEvt_->signal_process_id() << std::endl;
       hepMCEvt_->print();
     }
 #endif

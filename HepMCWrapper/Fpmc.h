@@ -8,19 +8,20 @@
  ***************************************/
 
 #include "HepMC/GenEvent.h"
-#include "HepMC/GenParticle.h"
-#include "HepMC/GenVertex.h"
-//#include "HepMC/HerwigWrapper.h"
 #include "HepMC/HEPEVT_Wrapper.h"
 #include "HepMC/Version.h"
 
-#ifdef HEPMC_VERSION_CODE // HepMC v>=3
-#include "HepMC/WriterAscii.h"
-#include "HepMC/GenPdfInfo.h"
-#else // HepMC v2
+#ifndef HEPMC_VERSION_CODE // HepMC v2
 #define HEPMC_VERSION2
+
 #include "HepMC/IO_HERWIG.h"
 #include "HepMC/PdfInfo.h"
+
+#else // HepMC v>=3
+
+#include "HepMC/WriterAscii.h"
+#include "HepMC/GenPdfInfo.h"
+
 #endif
 
 #include "CLHEP/Random/JamesRandom.h"
@@ -37,7 +38,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <iostream>
-#include <cstring>
 
 namespace fpmc
 {
@@ -52,6 +52,7 @@ namespace fpmc
       void end();
       void write( const char* );
 
+      /// Retrieve the last event generated
       const HepMC::GenEvent* event() const { return hepMCEvt_.get(); } 
 
     private:
@@ -59,6 +60,7 @@ namespace fpmc
 #ifdef HEPMC_VERSION2
       HepMC::IO_HERWIG conv_;
 #endif
+      /// Last event generated
       std::shared_ptr<HepMC::GenEvent> hepMCEvt_;
  
       /// HERWIG verbosity
@@ -68,13 +70,19 @@ namespace fpmc
       /// Events to print if verbosity
       unsigned int maxEventsToPrint_;
 
+      /// Number of events already generated
       unsigned int event_;
+      /// Centre of mass energy for the initial system
       double comEnergy_;
 
+      /// List of parameters obtained from the steering card
       FpmcParameters params_;
 
+      /// Enable/disable the hadronisation
       bool hadronize_;
+      /// Enable/disable the extra printout
       bool debug_;
+      std::ostream& dbg_;
   };
 } 
 
