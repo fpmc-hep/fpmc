@@ -41,5 +41,5 @@ libexcl_aaaa.so:$(f_0_objects) $(commons_objects)
 	$(CC) $(CFLAGS) $(SOFLAGS) $(INS) -c $< -o $@ $(GSL) $(COMMON)
 
 clean:
-	rm -rf src/*.o test/*.o *.a *.so
+	rm -rf src/*.o test/*.o *.a *.so $(objects)
 

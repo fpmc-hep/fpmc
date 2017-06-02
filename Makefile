@@ -261,37 +261,11 @@ $(OBJDIR)/excl_aaaa.a:
 	$(MAKE) -C $(EXTDIR)/excl_aaaa
 	cp -f $(EXTDIR)/excl_aaaa/excl_aaaa.a $(OBJDIR)
 
-$(OBJDIR)/resonances0even_sqme_gluglu.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_gluglu
-	cp -f $(EXTDIR)/excl_aaaa/resonances0even_sqme_gluglu/resonances0even_sqme_gluglu.a $(OBJDIR)
-
-$(OBJDIR)/resonances0even_sqme_hh.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_hh
-	cp -f $(EXTDIR)/excl_aaaa/resonances0even_sqme_hh/resonances0even_sqme_hh.a $(OBJDIR)
-
-$(OBJDIR)/resonances0evenoh_sqme_zz.a:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0evenoh_sqme_zz
-	cp -f $(EXTDIR)/excl_aaaa/resonances0evenoh_sqme_zz/resonances0evenoh_sqme_zz.a $(OBJDIR)
-
 $(OBJDIR)/excl_aaaa_wraper.o:$(EXTDIR)/excl_aaaa/excl_aaaa_wraper.cpp
 	$(CC) -c -o $@ $<
 
 clean_excl_aaaa:
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/commons clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/sm_sqme_aaaa clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmf_sqme_aaaa clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/bsmv_sqme_aaaa clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_aaaa clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances2_sqme_aaaa clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_az clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_zz clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_hh clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_gluglu clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0even_sqme_ww clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/eft_sqme_aaaa clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/eft_sqme_aaaz clean
-	$(MAKE) -C $(EXTDIR)/excl_aaaa/resonances0evenoh_sqme_zz clean
-
+	$(MAKE) -C $(EXTDIR)/excl_aaaa clean
 
 
 # ----- user objects

@@ -44,7 +44,6 @@ int main( int argc, char* argv[] )
    
    vector<string> optional_parameters_;
    optional_parameters_.push_back("fileout");
-   optional_parameters_.push_back("seed");
 
    // Read command line parameters 
    vector<string> command_line_parameters_;
@@ -113,27 +112,23 @@ int main( int argc, char* argv[] )
    // Required parameters 
    string datacard_ = required_parameters_map_["cfg"];
    unsigned int maxEvents_ = atoi( required_parameters_map_["nevents"].c_str() );
-   //long int seed_ = atol( required_parameters_map_["seed"].c_str() );
    double comEnergy_ = atof( required_parameters_map_["comenergy"].c_str() );
    
    // Optional parameters 
    string outputFileName_ = "fpmc.hepmc";
    if( optional_parameters_map_.find("fileout") != optional_parameters_map_.end() ) outputFileName_ = optional_parameters_map_["fileout"];
-   int seed_ = -1;
-   if( optional_parameters_map_.find("seed") != optional_parameters_map_.end() ) seed_ = atoi( optional_parameters_map_["seed"].c_str() );
 
    stringstream oss;
    oss  << "=========================================================" << endl
         << "FPMC (Wrapper) will initialize with parameters: " << endl
         << "  Datacard:    " << datacard_ << endl
         << "  N events:    " << maxEvents_ << endl
-        << "  Seed:        " << seed_ << endl
         << "  COM energy:  " << comEnergy_ << endl
         << "  Output file: " << outputFileName_ << endl
         << "=========================================================" << endl;
    cout << oss.str();
 
-   fpmc::Fpmc* generator = new fpmc::Fpmc( comEnergy_, seed_, datacard_.c_str() );
+   fpmc::Fpmc* generator = new fpmc::Fpmc( comEnergy_, datacard_.c_str() );
    generator->begin();
 
 #ifdef HEPMC_VERSION2

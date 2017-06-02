@@ -26,7 +26,7 @@ namespace fpmc
   {
     public:
       FpmcParameters();
-      FpmcParameters( const std::map<std::string,std::string>& map ) : std::map<std::string,std::string>( map ) {}
+      FpmcParameters( const std::map<std::string,std::string>& params ) : std::map<std::string,std::string>( params ) {}
       ~FpmcParameters() {}
 
       static FpmcParameters parseCard( const char* filename );

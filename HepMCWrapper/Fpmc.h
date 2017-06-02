@@ -44,7 +44,7 @@ namespace fpmc
   class Fpmc
   {
     public:
-      Fpmc( double, long int, const char* );
+      Fpmc( double, const char* );
       ~Fpmc();
 
       void begin();

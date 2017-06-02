@@ -6,7 +6,7 @@ extern HEPEVT hepevt_;
 
 namespace fpmc
 {
-  Fpmc::Fpmc( double comEnergy, long int seed, const char* card ) :
+  Fpmc::Fpmc( double comEnergy, const char* card ) :
     herwigVerbosity_( 1 ), hepMCVerbosity_( true ), maxEventsToPrint_( 2 ),
     comEnergy_( comEnergy ),
     params_( FpmcParameters::parseCard( card ) ),
@@ -166,7 +166,6 @@ namespace fpmc
     hwuine(); // initialize event
 
     hwepro(); // generate hard subprocess
-std::cout << "haha" << std::endl;
 
     if ( hadronize_ ) {
       hwbgen();	// parton cascades
