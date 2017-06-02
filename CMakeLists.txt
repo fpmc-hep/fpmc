@@ -3,7 +3,6 @@ project(FPMC)
 set(PROJECT_VERSION 1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -std=c++11 -g")
-#set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/CMake)
 
 set(MODULES Fpmc Herwig External HepMCWrapper Examples)
 
@@ -51,11 +50,6 @@ else()
 endif()
 
 include_directories(${CLHEP_INCLUDE})
-#if(LHAPDF_LIB)
-#  message(STATUS "LHAPDF found at " ${LHAPDF_LIB})
-#else()
-#  message(FATAL_ERROR "Did not find LHAPDF in the common paths!")
-#endif()
 
 #----- build all the intermediate objects
 
@@ -64,31 +58,28 @@ foreach(_mod ${MODULES})
   add_subdirectory(${_mod})
 endforeach()
 
-#----- link everything in a single shared FPMC library
+#----- link everything in a single shared FPMC library (FPMC and HERWIG altogether)
 
-add_library(FPMC SHARED $<TARGET_OBJECTS:FPMCCore>
-                        $<TARGET_OBJECTS:HerwigCore>)
+add_library(FPMC SHARED $<TARGET_OBJECTS:FPMCCore> $<TARGET_OBJECTS:HerwigCore>)
 set_target_properties(FPMC PROPERTIES LINKER_LANGUAGE CXX)
 
-#----- link the HepMC wrapper into an export library
+#----- link the HepMC wrapper into a dedicated library
 
 if(HEPMC_LIB)
-  add_library(FPMCHepMC SHARED $<TARGET_OBJECTS:FPMCCore>
-                               $<TARGET_OBJECTS:HerwigCore>
-                               $<TARGET_OBJECTS:Export>)
-  target_link_libraries(FPMCHepMC ${CLHEP_LIB})
+  add_library(HepMCWrapper SHARED $<TARGET_OBJECTS:Export>)
+  target_link_libraries(HepMCWrapper ${CLHEP_LIB})
 endif()
 
 #----- all useful libraries
 
-set(LIBRARIES Externals comphep ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
+set(LIBRARIES FPMC Externals comphep ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
 
 #----- test executable
 
 if(CERNLIB_LIB)
   include_directories(Examples)
   add_executable(fpmc Examples/fpmc_main.f Examples/fpmc_lhe.f External/ntuple.f External/reco_ok/reco_ok.f External/reco_ok/pxcone_mod_new.f Examples/ffcard.f Examples/fpmc_welcome.f)
-  target_link_libraries(fpmc FPMC ${LIBRARIES} ${CERNLIB_LIB} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
+  target_link_libraries(fpmc ${LIBRARIES} ${CERNLIB_LIB} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
 endif()
 
 if(HEPMC_LIB)
@@ -96,7 +87,5 @@ if(HEPMC_LIB)
   message(STATUS "HepMC found at " ${HEPMC_LIB})
   include_directories(HepMCWrapper Examples)
   add_executable(fpmc-hepmc HepMCWrapper/main.cc Examples/dummy_hwaend.f)
-  target_link_libraries(fpmc-hepmc ${LIBRARIES} FPMCHepMC ${HEPMC_LIB} ${HEPMC_FIO_LIB})
-  #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -DHEPMC_NO_DEPRECATED")
-  #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,${LHAPDF_LIB}")
+  target_link_libraries(fpmc-hepmc ${LIBRARIES} HepMCWrapper ${HEPMC_LIB} ${HEPMC_FIO_LIB})
 endif()
