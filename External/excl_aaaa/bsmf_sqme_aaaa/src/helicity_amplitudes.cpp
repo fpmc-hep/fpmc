@@ -47,7 +47,7 @@ void Mxxxx_fermion(double x, double y, double * re, double * im){
   *re=1;
   *im=0;
 
-  double z = - x - y;
+  double z =-x-y;
   
   double temp;
 
@@ -459,7 +459,7 @@ void Mpmpm_vector(double sred, double tred, double *re, double *im, int exclude_
 
 void Mpppm_vector(double sred, double tred, double * re, double * im, int exclude_loops){
 
-double ured=-tred-sred;
+//double ured=-tred-sred;
 
 
 if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
@@ -484,7 +484,7 @@ else{
 
 void Mppmm_vector(double sred, double tred, double * re, double * im, int exclude_loops){
 
-  double ured = -sred-tred;
+//  double ured = -sred-tred;
 
 if(exclude_loops==2||exclude_loops==3) {*re=0; *im=0;}
 else{   
@@ -525,7 +525,7 @@ void Mxxxx_spin0even(double x, double y, double m, double f0, double w_const, do
   *re=0;
   *im=0;
 
-  double z = - x - y;
+//  double z = - x - y;
 
   *re += -4./(f0*f0) * x*x/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) * (x-m*m);
   *im += -4./(f0*f0) * x*x/((x-m*m)*(x-m*m) +m*m*width_gen(x,m,f0,w_const,a2)*width_gen(x,m,f0,w_const,a2) ) *(- m*width_gen(x,m,f0,w_const,a2));
@@ -534,20 +534,17 @@ void Mxxxx_spin0even(double x, double y, double m, double f0, double w_const, do
 };
 
 void Mpppp_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-   Mxxxx_spin0even(s,t,m,f0,w_const,a2,re,im);
+  Mxxxx_spin0even(s,t,m,f0,w_const,a2,re,im);
 //std::cout <<"re pppp normal" <<"\t" << *re  << std::endl;
-  return;
 };
 
 void Mpmmp_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-   Mxxxx_spin0even(t,s,m,f0,w_const,a2,re,im);
-
-  return;
+  Mxxxx_spin0even(t,s,m,f0,w_const,a2,re,im);
 };
 
 void Mpmpm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
-   Mxxxx_spin0even(u,t,m,f0,w_const,a2,re,im);
-  return;
+  double u=-s-t;
+  Mxxxx_spin0even(u,t,m,f0,w_const,a2,re,im);
 };
 
 void Mppmm_spin0even(double s, double t, double m, double f0, double w_const, double a2, double *re, double *im){
