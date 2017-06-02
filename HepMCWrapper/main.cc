@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
 #include <iomanip>
 
 #ifdef HEPMC_VERSION2
@@ -36,7 +35,7 @@ void print_help(vector<string> const& required_parameters, vector<string> const&
    cout << oss.str(); 
 }
 
-int main(int argc, char **argv)
+int main( int argc, char* argv[] )
 {
    vector<string> required_parameters_;
    required_parameters_.push_back("cfg");

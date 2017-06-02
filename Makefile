@@ -306,7 +306,7 @@ OBJEXT   = $(ext_obj_dest) $(ext_pdf_dest) $(ext_comphep_dest) $(ext_excl_aaaa_d
 	$(ext_CHIDeCommon_obj_dest) $(ext_CHIDeHiggs_obj_dest) $(ext_KMR2_obj_dest) \
 	$(ext_CHIDeGG_obj_dest) $(ext_CHIDeDiphoton_obj_dest) 
 OBJUSR   = $(OBJDIR)/ntuple.o
-LIBS     = $(CERNLIB) $(LHAPDFLIB) $(GSLLIB) $(LIB_OMEGA)
+LIBS     = $(CERNLIB) $(LHAPDFLIB) $(GSLLIB)
 OBJRECO  = $(reco_obj_dest)
 
 
@@ -357,7 +357,5 @@ $(OBJDIR)/fpmc-hepmc.o: HepMCWrapper/main.cc
 	$(CC) $(CFLAGS) $(HEPMC_INCLUDE) $(CLHEP_INCLUDE) $(LHAPDF_INCLUDE) $(GENERAL_INCLUDE) -c $< -o $@
 
 fpmc-hepmc: $(OBJDIR)/herwig6500.o $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o $(OBJDIR)/fpmc_welcome.o $(OBJEXT) $(OBJDIR)/fpmc-hepmc.o $(OBJDIR)/Fpmc.o $(OBJDIR)/FpmcParameters.o $(OBJDIR)/dummy_hwaend.o
-	$(CC) $(LDFLAGS) $(OBJDIR)/herwig6500.o $(OBJDIR)/fpmc.o $(OBJDIR)/ffcard.o $(OBJDIR)/fpmc_welcome.o $(OBJDIR)/Fpmc.o $(OBJDIR)/FpmcParameters.o $(OBJDIR)/dummy_hwaend.o $(OBJEXT) \
-	$(OBJDIR)/fpmc-hepmc.o \
-	$(CERNLIB) $(LHAPDFLIB) $(GSLLIB) $(LIB_OMEGA) $(HEPMCLIB) $(CLHEPLIB) -o $@
+	$(CC) $(LDFLAGS) $^ $(CERNLIB) $(LHAPDFLIB) $(GSLLIB) $(HEPMCLIB) $(CLHEPLIB) -o $@
 #----
