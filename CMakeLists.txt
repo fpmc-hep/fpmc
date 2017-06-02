@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(FPMC)
 set(PROJECT_VERSION 1)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic -std=c++11 -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -std=c++11 -g")
+#set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/CMake)
+
 set(MODULES Fpmc Herwig External HepMCWrapper Examples)
 
 #----- enable Fortran
@@ -15,9 +17,10 @@ if($ENV{HOSTNAME} MATCHES "^lxplus[0-9]+.cern.ch")
   set(BASE_DIR "/cvmfs/sft.cern.ch/lcg/external")
   set(GSL_DIR "${BASE_DIR}/GSL/1.14/x86_64-slc5-gcc44-opt")
   set(CLHEP_DIR "${BASE_DIR}/clhep/2.2.0.4/x86_64-slc6-gcc48-opt")
+  set(HEPMC_DIR "${BASE_DIR}/HepMC/2.06.08/x86_64-slc6-gcc48-opt")
   set(LHAPDF_DIR "${BASE_DIR}/MCGenerators/lhapdf/5.8.9/x86_64-slc6-gcc46-opt")
 
-  message(STATUS "Compiling on LXPLUS")
+  message(STATUS "Compiling on LXPLUS. Do not forget to source the environment variables!")
 
   find_library(GSL_LIB gsl HINTS "${GSL_DIR}/lib")
   find_library(GSL_CBLAS_LIB gslcblas HINTS "${GSL_DIR}/lib")
@@ -27,11 +30,9 @@ if($ENV{HOSTNAME} MATCHES "^lxplus[0-9]+.cern.ch")
   #--- searching for LHAPDF
   find_library(LHAPDF_LIB LHAPDF HINTS "${LHAPDF_DIR}/lib")
   #--- searching for HepMC
-  find_library(HEPMC_LIB HepMC HINTS "${BASE_DIR}/HepMC/2.06.08/x86_64-slc6-gcc48-opt/lib")
-  find_library(HEPMC_FIO_LIB HepMCfio HINTS "${BASE_DIR}/HepMC/2.06.08/x86_64-slc6-gcc48-opt/lib")
-  find_path(HEPMC_INCLUDE HepMC HINTS "${BASE_DIR}/HepMC/2.06.08/x86_64-slc6-gcc48-opt/include")
-  #find_library(HEPMC_LIB HepMC HINTS "${HEPMC_DIR}/lib")
-  #find_path(HEPMC_INCLUDE HepMC HINTS "${HEPMC_DIR}/include")
+  find_library(HEPMC_LIB HepMC HINTS "${HEPMC_DIR}/lib")
+  find_library(HEPMC_FIO_LIB HepMCfio HINTS "${HEPMC_DIR}/lib")
+  find_path(HEPMC_INCLUDE HepMC HINTS "${HEPMC_DIR}/include")
 else()
   find_library(GSL_LIB gsl)
   find_library(GSL_CBLAS_LIB gslcblas)
@@ -43,7 +44,6 @@ else()
 endif()
 
 include_directories(${CLHEP_INCLUDE})
-find_package(ROOT)
 #if(LHAPDF_LIB)
 #  message(STATUS "LHAPDF found at " ${LHAPDF_LIB})
 #else()
@@ -68,27 +68,23 @@ set_target_properties(FPMC PROPERTIES LINKER_LANGUAGE CXX)
 if(HEPMC_LIB)
   add_library(FPMCHepMC SHARED $<TARGET_OBJECTS:FPMCCore>
                                $<TARGET_OBJECTS:HerwigCore>
-                               #$<TARGET_OBJECTS:ff>
                                $<TARGET_OBJECTS:Export>)
   target_link_libraries(FPMCHepMC ${CLHEP_LIB})
 endif()
 
 #----- test executable
 
-set(LIBRARIES FPMC Externals comphep ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
+set(LIBRARIES Externals comphep ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
 include_directories(Examples)
 add_executable(fpmc Examples/fpmc_main.f)
-target_link_libraries(fpmc ${LIBRARIES})
+target_link_libraries(fpmc FPMC ${LIBRARIES})
 
 if(HEPMC_LIB)
   include_directories(${HEPMC_INCLUDE})
   message(STATUS "HepMC found at " ${HEPMC_LIB})
-  if(ROOT_LIBRARIES)
-    message(STATUS "ROOT found in " ${ROOT_INCLUDE_DIRS})
-    include_directories(HepMCWrapper Examples)
-    add_executable(fpmc-hepmc HepMCWrapper/main.cc)
-    #target_link_libraries(fpmc-hepmc ${LIBRARIES} FPMCHepMC ${HEPMC_LIB} ${HEPMC_FIO_LIB} ${ROOT_LIBRARIES})
-    target_link_libraries(fpmc-hepmc ${LIBRARIES} FPMCHepMC ${HEPMC_LIB} ${HEPMC_FIO_LIB})
-    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -DHEPMC_NO_DEPRECATED")
-  endif()
+  include_directories(HepMCWrapper Examples)
+  add_executable(fpmc-hepmc HepMCWrapper/main.cc Examples/dummy_hwaend.f)
+  target_link_libraries(fpmc-hepmc ${LIBRARIES} FPMCHepMC ${HEPMC_LIB} ${HEPMC_FIO_LIB})
+  #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -DHEPMC_NO_DEPRECATED")
+  #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath -Wl,${LHAPDF_LIB}")
 endif()

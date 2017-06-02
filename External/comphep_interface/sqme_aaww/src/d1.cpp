@@ -22,8 +22,8 @@ namespace anom_aaww {
     if ( Q2!=NULL ) free( Q2 );
     Q1 = new real[3];
     Q2 = new real[3];
-    Q1[2] = va[10]*va[10] - sqrMom("\1\3",momenta);
-    Q1[1] = va[10]*va[10] - sqrMom("\1\4",momenta);
+    Q1[2] = va[10]*va[10] - sqrMom( ( char* )"\1\3", momenta );
+    Q1[1] = va[10]*va[10] - sqrMom( ( char* )"\1\4", momenta );
     for ( int I=1; I<=2;I++) {
       if ( ( Q1[I]>0 ? Q1[I]:-Q1[I] ) < 10*s0max ) err = DENOMINATOR_ERROR;
       if ( !Q1[I] ) Q1[I] = s0max;
