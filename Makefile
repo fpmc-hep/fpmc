@@ -66,15 +66,15 @@ CLHEP_BASE    = /afs/cern.ch/sw/lcg/external/clhep/2.1.4.1/x86_64-slc6-gcc46-opt
 #-------------------------------------------------------------------------------------
 
 all: allModules 
-#allModules: module module_reco fpmc
-allModules: fpmc
+#allModules: module module_reco fpmc-paw
+allModules: fpmc-paw fpmc-hepmc
 examples:oldExamples
 allApp: Fpmc Herwig Externals examples allModules 
 	
 clean: clean_sqme clean_excl_aaaa
 	@find ./ -name "*~" -exec rm -v {} \;
 	@find ./ -name ".*.swp" -exec rm -v {} \;
-	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod fpmc fpmc-hepmc
+	rm -f Objects/* module* fort.* *.hbook last.kumac *.ntp example_* *.mod fpmc-paw fpmc-hepmc
 	
 # FLAGS
 # -------
@@ -310,7 +310,7 @@ $(pgm): % : Examples/%.f $(OBJSTAND) $(OBJEXT)
 oldExamples:$(pgm)
 
 ### modules to be used by the end user###
-fpmc: Examples/fpmc_main.f $(OBJEXT) $(OBJSTAND) $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
+fpmc-paw: Examples/fpmc_main.f $(OBJEXT) $(OBJSTAND) $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
 	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR) $(OBJRECO) $(LIBS) -lstdc++  	
 module_reco: Examples/module_reco.f $(OBJEXT) $(OBJSTAND) $(OBJUSR) $(OBJRECO) Examples/ffcard.inc
 	$(F_COMP) -o $@ $< $(OBJSTAND) $(OBJEXT) $(OBJUSR) $(OBJRECO) $(LIBS) -lstdc++  	

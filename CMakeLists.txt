@@ -78,8 +78,8 @@ set(LIBRARIES FPMC Externals comphep ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
 
 if(CERNLIB_LIB)
   include_directories(Examples)
-  add_executable(fpmc Examples/fpmc_main.f Examples/fpmc_lhe.f External/ntuple.f External/reco_ok/reco_ok.f External/reco_ok/pxcone_mod_new.f Examples/ffcard.f Examples/fpmc_welcome.f)
-  target_link_libraries(fpmc ${LIBRARIES} ${CERNLIB_LIB} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
+  add_executable(fpmc-paw Examples/fpmc_main.f Examples/fpmc_lhe.f External/ntuple.f External/reco_ok/reco_ok.f External/reco_ok/pxcone_mod_new.f Examples/ffcard.f Examples/fpmc_welcome.f)
+  target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_LIB} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
 endif()
 
 if(HEPMC_LIB)
