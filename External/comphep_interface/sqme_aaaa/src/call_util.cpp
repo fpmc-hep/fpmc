@@ -2,73 +2,65 @@
 #include <math.h>
 
 namespace anom_aaaa {
+  extern double sqme_(int nsub, double *momenta, int *err);
+  ////////////////////////////////////////////////////////////////////
+  // sqme wrapper for comphep
+  ////////////////////////////////////////////////////////////////////
+  inline double sqme(double s, double t, double mw) {
+    mw = 0;  // gg->gg !!!!
 
-extern double sqme_(int nsub, double *momenta, int *err);
+    double sqrts = sqrt(s);
+    const double phi = 0;
 
+    double u = -t - s + 2*mw*mw;
+    double beta=sqrt(1-4*mw*mw/s);
+    //double costheta=(1+2*(t-mw*mw)/s)/beta;
+    // this holds in general case too!
+    double costheta = (t-u)/beta/s;
 
-//////////////////////////////////////////////////////////////////// 
-// sqme wrapper for comphep
-//////////////////////////////////////////////////////////////////// 
-double sqme(double s, double t, double mw) {
+    double momenta[4*4];
 
-   mw = 0;  // gg->gg !!!!
+    momenta[0] = sqrts/2;
+    momenta[1] = 0;
+    momenta[2] = 0;
+    momenta[3] = sqrts/2;
 
-   double sqrts = sqrt(s);   
-   const double phi = 0;
+    momenta[4+0] = sqrts/2;
+    momenta[4+1] = 0;
+    momenta[4+2] = 0;
+    momenta[4+3] = -sqrts/2;
 
-   double u = -t - s + 2*mw*mw;
-   double beta=sqrt(1-4*mw*mw/s);
-   //double costheta=(1+2*(t-mw*mw)/s)/beta;
-   // this holds in general case too!
-   double costheta = (t-u)/beta/s;
+    double e = sqrts/2;
+    double p = sqrt(e*e - mw*mw);
 
-   double momenta[4*4];
+    double pz = p*costheta;
+    double pt = p*sqrt(1-costheta*costheta);
+    double px = pt*cos(phi);
+    double py = pt*sin(phi);
 
-   momenta[0] = sqrts/2;
-   momenta[1] = 0;
-   momenta[2] = 0;
-   momenta[3] = sqrts/2;
+    momenta[8+0] = e;
+    momenta[8+1] = px;
+    momenta[8+2] = py;
+    momenta[8+3] = pz;
 
-   momenta[4+0] = sqrts/2;
-   momenta[4+1] = 0;
-   momenta[4+2] = 0;
-   momenta[4+3] = -sqrts/2;
+    momenta[12+0] = e;
+    momenta[12+1] = -px;
+    momenta[12+2] = -py;
+    momenta[12+3] = -pz;
 
-   double e = sqrts/2;
-   double p = sqrt(e*e - mw*mw);
+    int err;
+    return sqme_(1, momenta, &err);
+  }
 
-   double pz = p*costheta;
-   double pt = p*sqrt(1-costheta*costheta);
-   double px = pt*cos(phi);
-   double py = pt*sin(phi);
+  double sqme_deg(double s, double angle_deg, double mw) {
+    mw = 0;  // gg->gg
 
-   momenta[8+0] = e;
-   momenta[8+1] = px;
-   momenta[8+2] = py;
-   momenta[8+3] = pz;
+    const double pi = acos(-1);
+    double cs = cos(angle_deg/180.*pi);
 
-   momenta[12+0] = e;
-   momenta[12+1] = -px;
-   momenta[12+2] = -py;
-   momenta[12+3] = -pz;
+    double beta=sqrt(1-4*mw*mw/s);
+    double t = -s/2.*(1.-beta*cs)+mw*mw;
 
-   int err;
-   return sqme_(1, momenta, &err);
-}
-
-double sqme_deg(double s, double angle_deg, double mw) {
-
-   mw = 0;  // gg->gg 
-
-   const double pi = acos(-1);
-   double cs = cos(angle_deg/180.*pi);
-
-   double beta=sqrt(1-4*mw*mw/s);
-   double t = -s/2.*(1.-beta*cs)+mw*mw;
-
-   return sqme(s, t, mw);
-}
-
+    return sqme(s, t, mw);
+  }
 } //namespace anom_aaaa
-
-

@@ -1,420 +1,173 @@
-/*
- *  $Date: $
- *  $Revision: $
- *  
- */
-
 #include "Fpmc.h"
-#include "fostream.h"
 
-#include <sstream>
-#include <stdexcept>
-#include <iostream>
-#include <cstring>
+#ifndef HEPMC_VERSION2
+extern HEPEVT hepevt_;
+#endif
 
-#include <HepMC/GenEvent.h>
-#include <HepMC/GenParticle.h>
-#include <HepMC/GenVertex.h>
-#include <HepMC/PdfInfo.h>
-#include <HepMC/HerwigWrapper.h>
-#include <HepMC/HEPEVT_Wrapper.h>
-#include <HepMC/IO_HERWIG.h>
-
-#include <CLHEP/Random/JamesRandom.h>
-#include <CLHEP/Random/RandFlat.h>
-
-#include "herwig.h"
-#include "fpmc.h"
-
-using namespace std;
-using namespace fpmc;
-
-Fpmc::Fpmc(double comEnergy, long int seed, vector<string> const& params):
-  event_(0), 
-  comEnergy_(comEnergy),
-  seed_(seed), 
-  params_(params) {
-  
-  herwigVerbosity_ = 1; 
-  hepMCVerbosity_ = true;
-  maxEventsToPrint_ = 2;
-  hadronize_ = true;
-  debug_ = false; 
-}
-
-Fpmc::~Fpmc(){
-}
-
-void Fpmc::write(std::ostream& out){
-  hepMCEvt_->write(out);
-}
-
-void Fpmc::begin() {
-  event_ = 0;
-
-  // Write datacard  
-  int iunit = 5;	
-  fostream config(iunit,"datacard.txt");	
-  /* ===============================    
-  Example:    
-  config << "TYPEPR      'INC'";
-  config << "TYPINT      'QED'";
-  config << "IPROC       16010";
-  config << "NFLUX       15";
-  config << "NRN1        33781";
-  config << "NRN2        11776";
-  config << "YJMAX       6.";
-  config << "YJMIN      -6.";
-  config << "PTMIN       10.";
-  config << "IFIT        10";
-  config << "ISOFTM      1";
-  =============================== */
-
-  std::vector<std::string> invalidParams;
-
-  // Loop over all parameters and stop in case of error
-  for( vector<string>::const_iterator itPar = params_.begin(); itPar != params_.end(); ++itPar ) {
-     // Check for invalid parameters
-     for(std::vector<std::string>::const_iterator itInvPar = invalidParams.begin(); itInvPar != invalidParams.end(); ++itInvPar){
-        if( 0 == itPar->compare(0,itInvPar->size(),*itInvPar) ){
-           stringstream oss;
-           oss << "FpmcError: The following parameter is not accepted in this mode: " << endl
-               << *itInvPar << endl;      
-           throw runtime_error( oss.str() );
-        }
-     }
-     // Pass string to datacard
-     config << itPar->c_str();
+namespace fpmc
+{
+  Fpmc::Fpmc( double comEnergy, const char* card ) :
+    herwigVerbosity_( 1 ), hepMCVerbosity_( true ), maxEventsToPrint_( 2 ),
+    comEnergy_( comEnergy ),
+    params_( FpmcParameters::parseCard( card ) ),
+    hadronize_( true ), debug_( false ), dbg_( std::cout )
+  {
+    params_.dump();
   }
 
-  // Use random seeds from datacard
-  // ===============================    
-  // Using CLHEP engines
-  long seed0_ = -1, seed1_ = -1;   
-  if( seed_ != -1 ){  
-     fRandomEngine_ = new CLHEP::HepJamesRandom(seed_);
-     fRandomGenerator_ = new CLHEP::RandFlat(fRandomEngine_);
+  Fpmc::~Fpmc()
+  {}
 
-     seed0_ = fRandomGenerator_->fireInt(1L,10000L);
-     seed1_ = fRandomGenerator_->fireInt(1L,10000L);
-     cout << "[FPMC Wrapper] SEED: " << seed0_ << endl;
-     cout << "[FPMC Wrapper] SEED: " << seed1_ << endl;
-  }
-  // ===============================
-
-  config.rewind();
-
-  cout << "[FPMC Wrapper] Read datacard" << endl;
-
-  int read = 1;
-  fpmc_var_ini(&read); 
-
-  if(debug_) cout << "[FPMC Wrapper] UTYPEPR = " << string(cc1.UTYPEPR) << endl; 
-  if(debug_) cout << "[FPMC Wrapper] UTYPINT = " << string(cc2.UTYPINT) << endl; 
-  if(debug_) cout << "[FPMC Wrapper] UTMASS  = " << myffread1.UTMASS << endl;
-
-  cout << "[FPMC Wrapper] Initializing HERWIG/FPMC" << endl;
-
-  // Call hwudat to set up HERWIG block data
-  //hwudat();
-
-  //PART1=UPART1
-  //PART2=UPART2
-  //
-  for(int i=0;i<8;++i){
-     hwbmch.PART1[i] = ' ';
-     hwbmch.PART2[i] = ' ';
-  } 
-  memcpy(hwbmch.PART1, cc3.UPART1, 4);
-  memcpy(hwbmch.PART2, cc4.UPART2, 4);
-
-  hwproc.PBEAM1 = comEnergy_/2.;
-  hwproc.PBEAM2 = comEnergy_/2.;
-
-  //TYPEPR = UTYPEPR
-  //TYPINT = UTYPINT
-  //
-  for(int i=0;i<3;++i){
-     prtype.TYPEPR[i] = ' ';
-     prtype.TYPINT[i] = ' ';
-  }
-  memcpy(prtype.TYPEPR, cc1.UTYPEPR, 3);
-  memcpy(prtype.TYPINT, cc2.UTYPINT, 3);
-
-  // 
-  //IPROC = UIPROC
-  //
-  hwproc.IPROC = myffread3.UIPROC;
-
-  //ANSWER=UHADR 
-  //
-  hadronize_ = strcmp(cc0.UHADR, "Y") == 0;  
-  cout << "[FPMC Wrapper] Run hadronization/showering: " << hadronize_ << endl; 
-  
-  if(debug_) cout << "[FPMC Wrapper] PART1  = '" << hwbmch.PART1 << "'" << endl; 
-  if(debug_) cout << "[FPMC Wrapper] PART2  = '" << hwbmch.PART2 << "'" << endl; 
-  if(debug_) cout << "[FPMC Wrapper] TYPEPR = " << prtype.TYPEPR << endl; 
-  if(debug_) cout << "[FPMC Wrapper] TYPINT = " << prtype.TYPINT << endl; 
-  if(debug_) cout << "[FPMC Wrapper] IPROC  = " << hwproc.IPROC << endl; 
-
-  //CALL HWIGIN
-  //
-  hwigin();
-
-  // Read random seeds from datacard  
-  //NRN(1) = UNRN1 ! set again later in the code
-  //NRN(2) = UNRN2 ! set again later in the code
-  //
-  if( seed_ != -1 ){
-     hwevnt.NRN[0] = seed0_;
-     hwevnt.NRN[1] = seed1_;
-  } else{  
-     hwevnt.NRN[0] = myffread3.UNRN1;
-     hwevnt.NRN[1] = myffread3.UNRN2;
+  void
+  Fpmc::write( const char* out )
+  {
+#ifdef HEPMC_VERSION2
+    std::ofstream output( out );
+    hepMCEvt_->write( output );
+    output.close();
+#else // HepMC v>=3
+    HepMC::WriterAscii output( out );
+    output.write_event( *hepMCEvt_ );
+    output.close();
+#endif
   }
 
-  //EFFMIN = 1d-6
-  //
-  hwpram.EFFMIN = 1E-06;
+  void
+  Fpmc::begin()
+  {
+    //--- use random seeds from datacard
+    long seed0 = ( params_.has( "nrn1" ) ) ? params_.getLong( "nrn1" ) : -1L;
+    long seed1 = ( params_.has( "nrn2" ) ) ? params_.getLong( "nrn2" ) : -1L;
+    if ( seed0<0 || seed1<0 ) {
+      auto randomEngine = std::make_shared<CLHEP::HepJamesRandom>();
 
-  hwevnt.MAXER = 100000000; // O(inf)
-  hwpram.LWSUD = 0;         // don't write Sudakov form factors
-  hwdspn.LWDEC = 0;         // don't write three/four body decays
-                            // (no fort.77 and fort.88 ...)
-  // Init LHAPDF glue
-  std::memset(hwprch.AUTPDF, ' ', sizeof(hwprch.AUTPDF));
-  for(unsigned int i = 0; i < 2; i++) {
-     hwpram.MODPDF[i] = -111;
-     std::memcpy(hwprch.AUTPDF[i], "HWLHAPDF", 8);
-  }
+      if ( seed0<0 ) seed0 = CLHEP::RandFlat::shoot( randomEngine.get(), 1L, 10000L );
+      if ( seed1<0 ) seed1 = CLHEP::RandFlat::shoot( randomEngine.get(), 1L, 10000L );
 
-  hwevnt.MAXPR = maxEventsToPrint_;
-  hwpram.IPRINT = herwigVerbosity_;
+      if ( debug_ ) dbg_ << "[FPMC Wrapper] SEEDS: " << seed0 << ", " << seed1 << std::endl;
+    }
 
-  hwpram.MODPDF[0] = cc5.UMODPDF1;
-  hwpram.MODPDF[1] = cc5.UMODPDF2;
+    //--- print the FPMC greetings
+    fpmc_welcome();
 
-  //    PARAMETER(NMXRES=500)
-  //    COMMON/HWPROP/RLTIM(0:NMXRES),RMASS(0:NMXRES),RSPIN(0:NMXRES),
-  //   & ICHRG(0:NMXRES),IDPDG(0:NMXRES),IFLAV(0:NMXRES),NRES,
-  //   & VTOCDK(0:NMXRES),VTORDK(0:NMXRES),
-  //   & QORQQB(0:NMXRES),QBORQQ(0:NMXRES) */
-  //RMASS(201) = UHMASS
-  //RMASS(6)   = UTMASS ! top mass
-  //RMASS(198) = UWMASS ! W mass
-  //RMASS(406) = UMST1 ! stop1 mass
-  //RMASS(405) = UMSB1 ! stop2 mass
-  //
-  hwprop.RMASS[201] = myffread1.UHMASS;
-  hwprop.RMASS[6]   = myffread1.UTMASS;
-  hwprop.RMASS[198] = myffread1.UWMASS;
-  hwprop.RMASS[406] = myffread1.UMST1;
-  hwprop.RMASS[405] = myffread1.UMSB1;
+    if ( debug_ ) {
+      dbg_ << "[FPMC Wrapper] UTYPEPR = " << params_.getString( "typepr" ) << std::endl
+           << "               UTYPINT = " << params_.getString( "typint" ) << std::endl
+           << "               UTMASS  = " << params_.getFloat( "tmass" ) << std::endl;
+    }
 
-  //    COMMON/HWHARD/ASFIXD,CLQ(7,6),COSS,COSTH,CTMAX,DISF(13,2),EMLST,
-  //   & EMMAX,EMMIN,EMPOW,EMSCA,EPOLN(3),GCOEF(7),GPOLN,OMEGA0,PHOMAS,
-  //   & PPOLN(3),PTMAX,PTMIN,PTPOW,Q2MAX,Q2MIN,Q2POW,Q2WWMN,Q2WWMX,QLIM,
-  //   & SINS,THMAX,Y4JT,TMNISR,TQWT,XX(2),XLMIN,XXMIN,YBMAX,YBMIN,YJMAX,
-  //   & YJMIN,YWWMAX,YWWMIN,WHMIN,ZJMAX,ZMXISR,IAPHIG,IBRN(2),IBSH,
-  //   & ICO(10),IDCMF,IDN(10),IFLMAX,IFLMIN,IHPRO,IPRO,MAPQ(6),MAXFL,
-  //   & BGSHAT,COLISR,FSTEVT,FSTWGT,GENEV,HVFCEN,TPOL,DURHAM   */
-  //Q2WWMN=UQ2WWMN
-  //Q2WWMX=UQ2WWMX
-  //
-  hwhard.Q2WWMN = myffread2.UQ2WWMN;
-  hwhard.Q2WWMX = myffread2.UQ2WWMX;
+    dbg_ << "[FPMC Wrapper] Initializing HERWIG/FPMC" << std::endl;
 
-  //YWWMIN=UYWWMIN
-  //YWWMAX=UYWWMAX
-  //
-  hwhard.YWWMIN = myffread2.UYWWMIN;
-  hwhard.YWWMAX = myffread2.UYWWMAX;
+    //--- call hwudat to set up HERWIG block data
+    //hwudat();
 
-  //YJMAX = UYJMAX
-  //YJMIN = UYJMIN
-  //
-  hwhard.YJMAX = myffread1.UYJMAX;
-  hwhard.YJMIN = myffread1.UYJMIN;
+    if ( params_.has( "part1" ) ) params_.getString( "part1" ).copy( hwbmch_.PART1, 8 );
+    if ( params_.has( "part2" ) ) params_.getString( "part2" ).copy( hwbmch_.PART2, 8 );
+
+    hwproc_.PBEAM1 = comEnergy_/2.;
+    hwproc_.PBEAM2 = comEnergy_/2.;
+
+    if ( params_.has( "typepr" ) ) params_.getString( "typepr" ).copy( prtype_.TYPEPR, 3 );
+    if ( params_.has( "typint" ) ) params_.getString( "typint" ).copy( prtype_.TYPINT, 3 );
+
+    if ( params_.has( "iproc" ) ) hwproc_.IPROC = params_.getInt( "iproc" );
+
+    hadronize_ = strcmp( params_.getString( "hadr" ).c_str(), "Y" )==0;  
+    dbg_ << "[FPMC Wrapper] Run hadronization/showering: " << hadronize_ << std::endl;
   
-  //PTMIN=UPTMIN
-  //PTMAX=UPTMAX
-  //
-  hwhard.PTMIN = myffread1.UPTMIN;
-  hwhard.PTMAX = myffread1.UPTMAX;
+    if ( debug_ ) {
+      dbg_ << "[FPMC Wrapper] PART1  = '" << hwbmch_.PART1 << "'" << std::endl
+           << "[FPMC Wrapper] PART2  = '" << hwbmch_.PART2 << "'" << std::endl
+           << "[FPMC Wrapper] TYPEPR = " << prtype_.TYPEPR << std::endl
+           << "[FPMC Wrapper] TYPINT = " << prtype_.TYPINT << std::endl
+           << "[FPMC Wrapper] IPROC  = " << hwproc_.IPROC << std::endl;
+    }
+    hwigin_();
 
-  //EMMIN=UEMMIN
-  //
-  hwhard.EMMIN = myffread1.UEMMIN;
+    params_.fetchHWPRAM( hwpram_ );
+    hwpram_.IPRINT = herwigVerbosity_;
+    hwpram_.EFFMIN = 1.e-6;
+    hwpram_.MODPDF[1] = -111;
+    hwpram_.MODPDF[0] = -111;
+    hwpram_.LWSUD = 0; // don't write Sudakov form factors
 
-  //NFLUX = UNFLUX
-  //
-  xsect.NFLUX = myffread3.UNFLUX;
+    hwevnt_.NRN[0] = seed0;
+    hwevnt_.NRN[1] = seed1;
+    hwevnt_.MAXER = 100000000; // O(inf)
+    hwdspn_.LWDEC = 0; // don't write three/four body decays
+    // (no fort.77 and fort.88 ...)
 
-  //IFITPDF = UIFIT
-  //
-  pdfs.IFITPDF = myffread3.UIFIT;
+    // Init LHAPDF glue
+    const std::string pdfset( "HWLHAPDF" );
+    for ( unsigned int i=0; i<2; i++ ) {
+      pdfset.copy( hwprch_.AUTPDF[i], 8 );
+    }
 
-  //AAANOM = UAAANOM
-  //D_KAPPA = UDKAPPA
-  //LAMBDA = UDLAMBDA
-  //A0W = UA0W
-  //ACW = UACW
-  //A0Z = UA0Z
-  //ACZ = UACZ
-  //A1A = UA1A
-  //A2A = UA2A
-  //ANOMCUTOFF = UANOMCUTOFF
-  //
-  //AAEXOTIC = UAAEXOTIC
-  //AAM = UAAM
-  //AAQ = UAAQ
-  //AAN = UAAN
-  //AAF0 = UAAF0
-  //AAW = UAAW
-  //AAA2 = UAAA2
-  //
-  aaanomal.AAANOM = myffread3.UAAANOM;
-  aaanomal.D_KAPPA = myffread1.UDKAPPA;
-  aaanomal.LAMBDA = myffread2.UDLAMBDA;
-  aaanomal.A0W = myffread1.UA0W;
-  aaanomal.ACW = myffread1.UACW;
-  aaanomal.A0Z = myffread1.UA0Z;
-  aaanomal.ACZ = myffread1.UACZ;
-  aaanomal.A1A = myffread1.UA1A;
-  aaanomal.A2A = myffread1.UA2A;
-  aaanomal.ANOMCUTOFF = myffread2.UANOMCUTOFF;
+    hwevnt_.MAXPR = maxEventsToPrint_;
 
-  aaexotical.AAEXOTIC = myffread3.UAAEXOTIC;
-  aaexotical.AAM = myffread1.UAAM;
-  aaexotical.AAQ = myffread1.UAAQ;
-  aaexotical.AAN = myffread1.UAAN;
-  aaexotical.AAF0 = myffread1.UAAF0;
-  aaexotical.AAW  = myffread1.UAAW;
-  aaexotical.AAA2 = myffread1.UAAA2;
+    //--- feed the parameters from the steering card to the generator core
 
-  //CHIDeIGLU = UCHIDeIGLU
-  //CHIDeX   =  UCHIDeX
-  //CHIDeXP  =  UCHIDeXP
-  //CHIDeS2  =  UCHIDeS2
-  //CHIDeS   =  UECMS*UECMS
-  //XI1MIN = UXI1MIN
-  //XI1MAX = UXI1MAX
-  //XI2MIN = UXI2MIN
-  //XI2MAX = UXI2MAX
-  //CHIDeGapMin = UCHIDeGapMin
-  //CHIDeGapMax = UCHIDeGapMax
-  //CHIDePATH = UCHIDePATH
-  //
-  chidefpmc.CHIDeIGLU = myffread3.UCHIDeIGLU;
-  chidefpmc.CHIDeX = myffread1.UCHIDeX;
-  chidefpmc.CHIDeXP = myffread1.UCHIDeXP;
-  chidefpmc.CHIDeS2 = myffread1.UCHIDeS2;
-  chidefpmc.CHIDeS = comEnergy_*comEnergy_;
-  
-  //KMR2Q2CUT=UKMR2Q2CUT
-  //KMR2SURV=UKMR2SURV
-  //KMR2SCALE=UKMR2SCALE
-  //KMR2DELTA=UKMR2DELTA
-  //
-  kmr2fpmc.KMR2DELTA = myffread3.UKMR2DELTA;
-  kmr2fpmc.KMR2Q2CUT = myffread1.UKMR2Q2CUT;
-  kmr2fpmc.KMR2SURV = myffread1.UKMR2SURV;
-  kmr2fpmc.KMR2SCALE = myffread1.UKMR2SCALE;
+    params_.fetchHWPROP( hwprop_ );
+    params_.fetchHWHARD( hwhard_ );
 
-  //ISOFTM = UISOFTM
-  //  
-  xsect.ISOFTM = myffread3.UISOFTM;
+    params_.fetchXSECT( xsect_ );
+    params_.fetchPDFS( pdfs_ );
+    params_.fetchAAANOMAL( aaanomal_ );
+    params_.fetchAAEXOTICAL( aaexotical_ );
 
-  //ZION = UZION
-  //AION = UAION
-  //RBMIN = UBMIN
-  ion.ZION = myffread3.UZION;
-  ion.AION = myffread3.UAION;
-  ion.RBMIN = myffread3.UBMIN;
+    params_.fetchCHIDEFPMC( chidefpmc_ );
+    chidefpmc_.CHIDeS = comEnergy_*comEnergy_;
+    params_.fetchKMR2FPMC( kmr2fpmc_ );
 
-  //c---Initialize model/pdf dependant parameters
-  //CALL HWMODINI
-  //
-  hwmodini();
-  
-  //c---Compute parameter dependent constants
-  //CALL HWUINC
-  //
-  hwuinc();
-  
-  //c---Check POMWIG Settings + Initialisations for consistency
-  //CALL HWCHEK
-  //
-  hwchek();
+    params_.fetchION( ion_ );
 
-  //c---Call HWUSTA to make any particle stable
-  //CALL HWUSTA('PI0     ')      
-  //
-  int iopt = 1;
-  int iwig = 0;
-  char nwig[9] = "        ";
+    //--- initialize model/pdf dependant parameters
+    hwmodini();
 
-  int ipdg = 111;
-  hwuidt(&iopt, &ipdg, &iwig, nwig);
-  if(ipdg) hwusta(nwig, 1);
+    //--- compute parameter dependent constants
+    hwuinc();
+
+    //--- check POMWIG Settings + Initialisations for consistency
+    hwchek();
+
+    //--- call HWUSTA to make any particle stable
+    int iopt = 1;
+    int iwig = 0;
+    char nwig[9] = "        ";
+
+    int ipdg = 111;
+    hwuidt( &iopt, &ipdg, &iwig, nwig );
+    if ( ipdg ) hwusta(nwig, 1);
  
-  //c---Initialize elementary process
-  //CALL HWEINI
-  //
-  hweini();
+    //--- initialize elementary process
+    hweini();
 
-  //c---Initialize event record fixing : this will replace the beam 
-  //c   electrons by protons, radiated photons by pomerons/reggeons etc
-  //CALL HWFXER(.TRUE.,IPROC)
-  //
-  int init = 1;
-  hwfxer(&init); 
+    //--- initialize event record fixing
+    // this will replace the beam electrons by protons, radiated photons by pomerons/reggeons, etc.
+    int init = 1;
+    hwfxer( &init );
 
-}
+    params_.writeCard( "lastrun.card" );
+  }
 
-void Fpmc::end() {
- 
-}
+  void
+  Fpmc::end()
+  {}
 
-bool Fpmc::run() {
+  bool
+  Fpmc::run()
+  {
+#ifndef HEPMC_VERSION2
+    HepMC::HEPEVT_Wrapper::set_hepevt_address( ( char* )&hepevt_ );
+    HepMC::HEPEVT_Wrapper::zero_everything();
+#endif
+    //--- call herwig routines to create HEPEVT
 
-   //c---Loop over events
-   //      DO 100 N=1,MAXEV
-   //c...Initialize event
-   //         CALL HWUINE
-   //c...Generate hard subprocesses
-   //         CALL HWEPRO
-   //c...Include showering and hadronization
-   //         IF (ANSWER.EQ.'Y') THEN
-   //            CALL HWBGEN
-   //            CALL HWDHOB
-   //            CALL HWCFOR
-   //            CALL HWCDEC
-   //            CALL HWDHAD
-   //            CALL HWDHVY
-   //            CALL HWMEVT
-   //         END IF
-   //c...Finish event
-   //         CALL HWUFNE
-   //c...Fix event record (i.e. restore correct intermediate states); print result
-   //         CALL HWFXER(.FALSE.,IPROC)
-   //         IF(N.LE.MAXPR) THEN
-   //           PRINT*, ' '
-   //           PRINT*, ' '
-   //           PRINT*, ' '
-   //           PRINT*, ' '
-   //           PRINT*, 'AFTER EVENT RECORD FIXING:'
-   //           CALL HWUEPR
-   //         ENDIF
-   // 100  CONTINUE
+    hwuine(); // initialize event
 
-   // Call herwig routines to create HEPEVT
-   //
-   hwuine();	// initialize event
+    hwepro(); // generate hard subprocess
 
-   hwepro();
-
-   if(hadronize_){
+    if ( hadronize_ ) {
       hwbgen();	// parton cascades
 
       hwdhob();	// heavy quark decays
@@ -424,56 +177,66 @@ bool Fpmc::run() {
       hwdhad();	// unstable particle decays
       hwdhvy();	// heavy flavour decays
       hwmevt();	// soft underlying event		
-   }
+    }
 
-   hwufne();	// finalize event
+    hwufne(); // finalize event
 
-   int init = 0;
-   hwfxer(&init);
+    int init = 0;
+    hwfxer( &init ); // fix event record (i.e. restore correct intermediate states)
 
-   if (hwevnt.IERROR) {
-      return false;
-   }
+    if ( hwevnt_.IERROR ) return false;
+#ifdef HEPMC_VERSION2
+    hepMCEvt_ = std::make_shared<HepMC::GenEvent>( *conv_.read_next_event() );
+#else
+    std::cout << "---> " << HepMC::HEPEVT_Wrapper::number_entries() << std::endl;
+    //HepMC::HEPEVT_Wrapper::set_number_entries( 4000 );
+    //HepMC::HEPEVT_Wrapper::set_sizeof_real( 8 );
+    HepMC::HEPEVT_Wrapper::print_hepevt();
+    HepMC::HEPEVT_Wrapper::HEPEVT_to_GenEvent( hepMCEvt_.get() );
+#endif
 
-   hepMCEvt_ = conv_.read_next_event();
-   ++event_;
+    hepMCEvt_->set_event_number( event_-1 );
+#ifdef HEPMC_VERSION2
+    hepMCEvt_->set_signal_process_id( hwproc_.IPROC );
+    hepMCEvt_->set_event_scale( -1. );
+#endif
+    hepMCEvt_->weights().push_back( hwevnt_.EVWGT );
 
-   hepMCEvt_->set_event_number(event_ - 1);
-   hepMCEvt_->set_signal_process_id( hwproc.IPROC );
-   hepMCEvt_->weights().push_back( hwevnt.EVWGT );
+#ifdef HEPMC_VERSION2
+    HepMC::PdfInfo pdfInfo;
+    pdfInfo.set_x1( hwhard_.XX[0] );
+    pdfInfo.set_x2( hwhard_.XX[1] );
+    pdfInfo.set_scalePDF( hwhard_.EMSCA );
+    hepMCEvt_->set_pdf_info( pdfInfo );
+#else
+    auto pdf_info = std::make_shared<HepMC::GenPdfInfo>();
+    pdf_info->set( 0, 0, hwhard_.XX[0], hwhard_.XX[1], hwhard_.EMSCA, 0, 0 );
+    hepMCEvt_->set_pdf_info( pdf_info );
+#endif
 
-   hepMCEvt_->set_event_scale( -1. );
-
-   HepMC::PdfInfo pdfInfo;
-   pdfInfo.set_x1( hwhard.XX[0] );
-   pdfInfo.set_x2( hwhard.XX[1] );
-   pdfInfo.set_scalePDF( hwhard.EMSCA );
-   hepMCEvt_->set_pdf_info( pdfInfo );
-
-   /*HepMC::GenParticle* incomingParton = NULL;
-   HepMC::GenParticle* targetParton = NULL;
-   // find incoming parton (first entry with IST=121)
-   for(HepMC::GenEvent::particle_const_iterator it = event()->particles_begin(); 
-      (it != event()->particles_end() && incomingParton==NULL); it++)
+    /*HepMC::GenParticle* incomingParton = NULL;
+    HepMC::GenParticle* targetParton = NULL;
+    // find incoming parton (first entry with IST=121)
+    for(HepMC::GenEvent::particle_const_iterator it = event()->particles_begin(); (it != event()->particles_end() && incomingParton==NULL); it++)
       if((*it)->status()==121) incomingParton = (*it);
   
-   // find target parton (first entry with IST=122)
-   for(HepMC::GenEvent::particle_const_iterator it = event()->particles_begin(); 
-      (it != event()->particles_end() && targetParton==NULL); it++)
+    // find target parton (first entry with IST=122)
+    for(HepMC::GenEvent::particle_const_iterator it = event()->particles_begin(); (it != event()->particles_end() && targetParton==NULL); it++)
       if((*it)->status()==122) targetParton = (*it);*/
 
-
-   //******** Verbosity ********
-   if(event_ <= maxEventsToPrint_ && hepMCVerbosity_) {
+#ifdef HEPMC_VERSION2
+    //******** Verbosity ********
+    if ( event_<=maxEventsToPrint_ && hepMCVerbosity_ ) {
       // Prints HepMC event
-      if(hepMCVerbosity_) {
-	 stringstream oss;
-	 oss << "\n----------------------" << endl	
-	     << "Event process id = " << hepMCEvt_->signal_process_id() << endl; 
-	 cout << oss.str();
-	 hepMCEvt_->print();
-      }
-   }
-   
-   return true;
+      dbg_ << "\n----------------------" << std::endl
+           << "Event process id = " << hepMCEvt_->signal_process_id() << std::endl;
+      hepMCEvt_->print();
+    }
+#endif
+
+    //--- increment the events counter
+    ++event_;
+
+    return true;
+  }
 }

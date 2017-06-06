@@ -7,12 +7,13 @@
 #include <algorithm>
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
 #include <iomanip>
 
-#include <boost/lexical_cast.hpp>
-
+#ifdef HEPMC_VERSION2
 #include "HepMC/IO_GenEvent.h"
+#else
+#include "HepMC/WriterAscii.h"
+#endif
 
 using namespace std;
 
@@ -34,7 +35,7 @@ void print_help(vector<string> const& required_parameters, vector<string> const&
    cout << oss.str(); 
 }
 
-int main(int argc, char **argv)
+int main( int argc, char* argv[] )
 {
    vector<string> required_parameters_;
    required_parameters_.push_back("cfg");
@@ -43,7 +44,6 @@ int main(int argc, char **argv)
    
    vector<string> optional_parameters_;
    optional_parameters_.push_back("fileout");
-   optional_parameters_.push_back("seed");
 
    // Read command line parameters 
    vector<string> command_line_parameters_;
@@ -111,47 +111,31 @@ int main(int argc, char **argv)
    //----------------------------
    // Required parameters 
    string datacard_ = required_parameters_map_["cfg"];
-   unsigned int maxEvents_ = boost::lexical_cast<unsigned int>( required_parameters_map_["nevents"] );
-   //long int seed_ = boost::lexical_cast<long int>( required_parameters_map_["seed"] );
-   double comEnergy_ = boost::lexical_cast<double>( required_parameters_map_["comenergy"] );
+   unsigned int maxEvents_ = atoi( required_parameters_map_["nevents"].c_str() );
+   double comEnergy_ = atof( required_parameters_map_["comenergy"].c_str() );
    
    // Optional parameters 
    string outputFileName_ = "fpmc.hepmc";
    if( optional_parameters_map_.find("fileout") != optional_parameters_map_.end() ) outputFileName_ = optional_parameters_map_["fileout"];
-   int seed_ = -1;
-   if( optional_parameters_map_.find("seed") != optional_parameters_map_.end() ) seed_ = boost::lexical_cast<int>( optional_parameters_map_["seed"] );
 
    stringstream oss;
    oss  << "=========================================================" << endl
         << "FPMC (Wrapper) will initialize with parameters: " << endl
         << "  Datacard:    " << datacard_ << endl
         << "  N events:    " << maxEvents_ << endl
-        << "  Seed:        " << seed_ << endl
         << "  COM energy:  " << comEnergy_ << endl
         << "  Output file: " << outputFileName_ << endl
         << "=========================================================" << endl;
    cout << oss.str();
 
-   // Read parameters
-   ifstream input;
-   input.open( datacard_.c_str() );
-
-   vector<string> fpmc_params_;
-   while( !input.eof() ){
-      char line[256];
-      input.getline(line,256);
-  
-      fpmc_params_.push_back( line );
-   }
-   input.close();
-
-   fpmc::Fpmc* generator = new fpmc::Fpmc(comEnergy_,seed_,fpmc_params_);
-   //fpmc::Fpmc* generator = new fpmc::Fpmc(comEnergy_,-1,fpmc_params_);
+   fpmc::Fpmc* generator = new fpmc::Fpmc( comEnergy_, datacard_.c_str() );
    generator->begin();
 
-   //HepMC::IO_GenEvent* output = new HepMC::IO_GenEvent("fpmc.hepmc",ios::out);
-   HepMC::IO_GenEvent output(outputFileName_.c_str(),ios::out);
-   cout << endl;
+#ifdef HEPMC_VERSION2
+   HepMC::IO_GenEvent output( outputFileName_, ios::out );
+#else
+   HepMC::WriterAscii output( outputFileName_ );
+#endif
    for(unsigned int evt = 0; evt < maxEvents_; ++evt){
       cout << "[FPMC Wrapper] Processing event " << (evt + 1) << endl;
       bool success = generator->run();
@@ -159,7 +143,11 @@ int main(int argc, char **argv)
          cout << "[FPMC Wrapper] WARNING: Event " << (evt + 1) << " failed." << endl;
          continue;
       }
+#ifdef HEPMC_VERSION2
       output.write_event( generator->event() );
+#else
+      output.write_event( *generator->event() );
+#endif
    }    
    generator->end();
 

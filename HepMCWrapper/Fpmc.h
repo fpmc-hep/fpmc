@@ -8,53 +8,81 @@
  ***************************************/
 
 #include "HepMC/GenEvent.h"
-#include <HepMC/IO_HERWIG.h>
+#include "HepMC/HEPEVT_Wrapper.h"
+#include "HepMC/Version.h"
+
+#ifndef HEPMC_VERSION_CODE // HepMC v2
+#define HEPMC_VERSION2
+
+#include "HepMC/IO_HERWIG.h"
+#include "HepMC/PdfInfo.h"
+
+#else // HepMC v>=3
+
+#include "HepMC/WriterAscii.h"
+#include "HepMC/GenPdfInfo.h"
+
+#endif
+
 #include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RandFlat.h"
+
+#include "herwig.h"
+#include "fpmc.h"
+
+#include "FpmcParameters.h"
 
 #include <vector>
 #include <string>
 #include <ostream>
+#include <sstream>
+#include <stdexcept>
+#include <iostream>
 
 namespace fpmc
 {
-  class Fpmc{
-  public:
-    Fpmc(double, long int, std::vector<std::string> const&);
-    ~Fpmc();
+  class Fpmc
+  {
+    public:
+      Fpmc( double, const char* );
+      ~Fpmc();
 
-    void begin();
-    bool run();
-    void end();
-    void write(std::ostream&);
+      void begin();
+      bool run();
+      void end();
+      void write( const char* );
 
-    const HepMC::GenEvent* event() const { return hepMCEvt_; } 
+      /// Retrieve the last event generated
+      const HepMC::GenEvent* event() const { return hepMCEvt_.get(); } 
 
-  private:
-
-    HepMC::IO_HERWIG  conv_;
-    HepMC::GenEvent  *hepMCEvt_;
+    private:
+      void initialiseParams();
+#ifdef HEPMC_VERSION2
+      HepMC::IO_HERWIG conv_;
+#endif
+      /// Last event generated
+      std::shared_ptr<HepMC::GenEvent> hepMCEvt_;
  
-    /// HERWIG verbosity
-    unsigned int herwigVerbosity_;
-    /// HepMC verbosity
-    bool hepMCVerbosity_;
-    /// Events to print if verbosity
-    unsigned int maxEventsToPrint_;    
+      /// HERWIG verbosity
+      unsigned int herwigVerbosity_;
+      /// HepMC verbosity
+      bool hepMCVerbosity_;
+      /// Events to print if verbosity
+      unsigned int maxEventsToPrint_;
 
-    unsigned int event_;
-    double comEnergy_;
-    // Not used temporarily (take from datacard)
-    long int seed_;
+      /// Number of events already generated
+      unsigned int event_;
+      /// Centre of mass energy for the initial system
+      double comEnergy_;
 
-    std::vector<std::string> params_;
+      /// List of parameters obtained from the steering card
+      FpmcParameters params_;
 
-    bool hadronize_;
-  
-    bool debug_;
-
-    CLHEP::HepRandomEngine* fRandomEngine_;
-    CLHEP::RandFlat*        fRandomGenerator_; 
+      /// Enable/disable the hadronisation
+      bool hadronize_;
+      /// Enable/disable the extra printout
+      bool debug_;
+      std::ostream& dbg_;
   };
 } 
 
