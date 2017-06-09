@@ -24,21 +24,27 @@ namespace fpmc
   class Fpmc
   {
     public:
+      Fpmc();
       Fpmc( const char* card );
       Fpmc( const FpmcParameters& params );
       ~Fpmc();
 
+      FpmcParameters& parameters() { return params_; }
+
+      void initialise();
+      double crossSection() const;
+
       bool next( hwevnt_t& evt );
 
     protected:
-      void init() const;
-      void initHerwig() const;
+      void initHerwig();
  
       /// HERWIG verbosity
       unsigned int herwigVerbosity_;
       /// Events to print if verbosity
       unsigned int maxEventsToPrint_;
 
+      bool initialised_;
       /// Number of events already generated
       unsigned int event_;
 

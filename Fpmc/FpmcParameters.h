@@ -36,6 +36,12 @@ namespace fpmc
 
       bool hadronise() const { return strcmp( getString( "hadr" ).c_str(), "Y" )==0; }
 
+      void setProcessId( unsigned int iproc ) { add( "iproc", iproc ); }
+      unsigned int processId() const { return getInt( "iproc" ); }
+
+      void setInitialFlux( unsigned int nflux ) { add( "nflux", nflux ); }
+      unsigned int initialFlux() const { return getInt( "nflux" ); }
+
       void setSqrtS( double sqrts ) { add( "ecms", sqrts ); }
       double sqrtS() const { return getFloat( "ecms" ); }
       

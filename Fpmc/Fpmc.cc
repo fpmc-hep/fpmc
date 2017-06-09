@@ -2,14 +2,22 @@
 
 namespace fpmc
 {
+  Fpmc::Fpmc() :
+    herwigVerbosity_( 1 ), maxEventsToPrint_( 2 ),
+    initialised_( false ),
+    debug_( false ), dbg_( std::cout )
+  {}
+
   Fpmc::Fpmc( const char* card ) :
     herwigVerbosity_( 1 ), maxEventsToPrint_( 2 ),
+    initialised_( false ),
     params_( FpmcParameters::parseCard( card ) ),
     debug_( false ), dbg_( std::cout )
   {}
 
   Fpmc::Fpmc( const FpmcParameters& params ) :
     herwigVerbosity_( 1 ), maxEventsToPrint_( 2 ),
+    initialised_( false ),
     params_( params ),
     debug_( false ), dbg_( std::cout )
   {}
@@ -18,23 +26,26 @@ namespace fpmc
   {}
 
   void
-  Fpmc::init() const
+  Fpmc::initialise()
   {
     //--- print the FPMC greetings
     fpmc_welcome();
 
     if ( debug_ ) {
-      dbg_ << "[FPMC Wrapper] UTYPEPR = " << params_.getString( "typepr" ) << std::endl
-           << "               UTYPINT = " << params_.getString( "typint" ) << std::endl
-           << "               UTMASS  = " << params_.getFloat( "tmass" ) << std::endl;
+      dbg_ << "UTYPEPR = " << params_.getString( "typepr" ) << std::endl
+           << "UTYPINT = " << params_.getString( "typint" ) << std::endl
+           << "UTMASS  = " << params_.getFloat( "tmass" ) << std::endl;
     }
+    initHerwig();
     params_.writeCard( "lastrun.card" );
   }
 
   void
-  Fpmc::initHerwig() const
+  Fpmc::initHerwig()
   {
-    dbg_ << "[FPMC Wrapper] Initializing HERWIG/FPMC" << std::endl;
+    if ( initialised_ ) dbg_ << "WARNING: Herwig already initialised for this run!" << std::endl;
+
+    dbg_ << "Initializing HERWIG/FPMC" << std::endl;
 
     //--- call hwudat to set up HERWIG block data
     //hwudat();
@@ -47,14 +58,14 @@ namespace fpmc
     if ( params_.has( "typepr" ) ) params_.getString( "typepr" ).copy( prtype_.TYPEPR, 3 );
     if ( params_.has( "typint" ) ) params_.getString( "typint" ).copy( prtype_.TYPINT, 3 );
 
-    if ( params_.has( "iproc" ) ) hwproc_.IPROC = params_.getInt( "iproc" );
+    if ( params_.has( "iproc" ) ) hwproc_.IPROC = params_.processId();
 
     if ( debug_ ) {
-      dbg_ << "[FPMC Wrapper] PART1  = '" << hwbmch_.PART1 << "'" << std::endl
-           << "[FPMC Wrapper] PART2  = '" << hwbmch_.PART2 << "'" << std::endl
-           << "[FPMC Wrapper] TYPEPR = " << prtype_.TYPEPR << std::endl
-           << "[FPMC Wrapper] TYPINT = " << prtype_.TYPINT << std::endl
-           << "[FPMC Wrapper] IPROC  = " << hwproc_.IPROC << std::endl;
+      dbg_ << "PART1  = '" << hwbmch_.PART1 << "'" << std::endl
+           << "PART2  = '" << hwbmch_.PART2 << "'" << std::endl
+           << "TYPEPR = " << prtype_.TYPEPR << std::endl
+           << "TYPINT = " << prtype_.TYPINT << std::endl
+           << "IPROC  = " << hwproc_.IPROC << std::endl;
     }
     hwigin_();
 
@@ -74,7 +85,7 @@ namespace fpmc
       if ( seed0<0 ) seed0 = CLHEP::RandFlat::shoot( randomEngine.get(), 1L, 10000L );
       if ( seed1<0 ) seed1 = CLHEP::RandFlat::shoot( randomEngine.get(), 1L, 10000L );
 
-      if ( debug_ ) dbg_ << "[FPMC Wrapper] SEEDS: " << seed0 << ", " << seed1 << std::endl;
+      if ( debug_ ) dbg_ << "SEEDS: " << seed0 << ", " << seed1 << std::endl;
     }
 
     hwevnt_.NRN[0] = seed0;
@@ -134,6 +145,18 @@ namespace fpmc
     // this will replace the beam electrons by protons, radiated photons by pomerons/reggeons, etc.
     int init = 1;
     hwfxer( &init );
+
+    initialised_ = true;
+  }
+
+  double
+  Fpmc::crossSection() const
+  {
+    if ( !initialised_ ) {
+      dbg_ << "WARNING: Herwig/FPMC not yet initialised! Invalid cross-section retrieved." << std::endl;
+      return 0.;
+    }
+    return hwevnt_.EVWGT * 1.e3; // return in pb
   }
 
   bool

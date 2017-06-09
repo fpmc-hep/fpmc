@@ -4,7 +4,7 @@ set(PROJECT_VERSION 1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -std=c++11 -g")
 
-set(MODULES Fpmc Herwig External HepMCWrapper Examples)
+set(MODULES Fpmc Herwig External HepMCWrapper Examples Tests)
 
 #----- enable Fortran
 
@@ -51,6 +51,10 @@ endif()
 
 include_directories(${CLHEP_INCLUDE})
 
+#----- all useful libraries
+
+set(LIBRARIES FPMC ${GSL_LIB} ${CLHEP_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
+
 #----- build all the intermediate objects
 
 foreach(_mod ${MODULES})
@@ -77,10 +81,6 @@ if(HEPMC_LIB)
   add_library(HepMCWrapper SHARED $<TARGET_OBJECTS:Wrapper>)
   target_link_libraries(HepMCWrapper ${CLHEP_LIB})
 endif()
-
-#----- all useful libraries
-
-set(LIBRARIES FPMC ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
 
 #----- test executable
 

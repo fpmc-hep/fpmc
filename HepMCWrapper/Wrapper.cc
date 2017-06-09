@@ -34,7 +34,7 @@ namespace fpmc
 
     hepMCEvt_->set_event_number( event_-1 );
 #ifdef HEPMC_VERSION2
-    hepMCEvt_->set_signal_process_id( hwproc_.IPROC ); //FIXME
+    hepMCEvt_->set_signal_process_id( params_.getProcessId() );
     hepMCEvt_->set_event_scale( -1. );
 #endif
     hepMCEvt_->weights().push_back( last_evt.EVWGT );
