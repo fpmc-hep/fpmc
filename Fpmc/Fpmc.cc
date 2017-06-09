@@ -187,7 +187,7 @@ namespace fpmc
 
     event = hwevnt_;
 
-    if ( hwevnt_.IERROR ) return false;
+    if ( event.IERROR ) return false;
 
     //--- increment the events counter
     ++event_;

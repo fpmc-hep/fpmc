@@ -1,6 +1,8 @@
 #ifndef FpmcInterface_FpmcParameters_h
 #define FpmcInterface_FpmcParameters_h
 
+#include "FpmcTypes.h"
+
 #include "herwig.h"
 #include "fpmc.h"
 
@@ -39,8 +41,8 @@ namespace fpmc
       void setProcessId( unsigned int iproc ) { add( "iproc", iproc ); }
       unsigned int processId() const { return getInt( "iproc" ); }
 
-      void setInitialFlux( unsigned int nflux ) { add( "nflux", nflux ); }
-      unsigned int initialFlux() const { return getInt( "nflux" ); }
+      void setIntermediateFlux( const Flux& nflux ) { add( "nflux", nflux ); }
+      Flux intermediateFlux() const { return static_cast<Flux>( getInt( "nflux" ) ); }
 
       void setSqrtS( double sqrts ) { add( "ecms", sqrts ); }
       double sqrtS() const { return getFloat( "ecms" ); }

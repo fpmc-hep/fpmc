@@ -5,7 +5,7 @@ int main()
 {
   fpmc::Fpmc gen;
   gen.parameters().setProcessId( 16008 ); // QED yy->mu,mu
-  gen.parameters().setInitialFlux( 15 );
+  gen.parameters().setIntermediateFlux( fpmc::PhotonPhotonBudnevCoherent );
   gen.initialise();
 
   hwevnt_t event;
