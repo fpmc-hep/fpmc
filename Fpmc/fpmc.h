@@ -137,6 +137,10 @@ extern "C"
   //extern cc5_t cc5_;
   typedef struct { char NTNAME[32], CHIDePATH[32]; } cyfflong1_t;
   //extern cyfflong1_t cyfflong1_;
+  typedef struct { char dgdtab1[50], dgdtab2[50], dgdtab3[50], dgdtab4[50], sudatab[50]; } chidepath_t;
+  extern chidepath_t chidepath_;
+  typedef struct { char CHIDe_PATH[500]; } chideenv_t;
+  extern chideenv_t chideenv_;
 
 #ifdef __cplusplus
 }

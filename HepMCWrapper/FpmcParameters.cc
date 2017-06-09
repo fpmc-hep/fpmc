@@ -155,4 +155,22 @@ namespace fpmc
     if ( has( "aion" ) ) ion.AION = getInt( "aion" );
     if ( has( "ubmin" ) ) ion.RBMIN = getFloat( "ubmin" );
   }
+
+  void
+  FpmcParameters::fetchCYFFLONG1( cyfflong1_t& cyfflong1 ) const
+  {
+    if ( has( "chidepath" ) ) getString( "chidepath" ).copy( cyfflong1.CHIDePATH, 32 );
+  }
+
+  void
+  FpmcParameters::fetchCHIDEPATH( chidepath_t& chidepath ) const
+  {
+    if ( has( "chidepath" ) ) getString( "chidepath" ).copy( chidepath.sudatab, 50 );
+  }
+
+  void
+  FpmcParameters::fetchCHIDEENV( chideenv_t& chideenv ) const
+  {
+    if ( has( "chidepath" ) ) getString( "chidepath" ).copy( chideenv.CHIDe_PATH, 500 );
+  }
 }

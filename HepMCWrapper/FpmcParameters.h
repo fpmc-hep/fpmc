@@ -44,6 +44,9 @@ namespace fpmc
       void fetchCHIDEFPMC( chidefpmc_t& ) const;
       void fetchKMR2FPMC( kmr2fpmc_t& ) const;
       void fetchION( ion_t& ) const;
+      void fetchCYFFLONG1( cyfflong1_t& ) const;
+      void fetchCHIDEPATH( chidepath_t& ) const;
+      void fetchCHIDEENV( chideenv_t& ) const;
       
       void add( const std::string& key, const std::string& value ) {
         auto pair = find( key );

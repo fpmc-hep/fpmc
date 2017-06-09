@@ -730,8 +730,8 @@ c---To pass the relative GAP Srv. prob factor for BL inclusive modified dist.
 
 
 c ... begin R.S.
-      character*500  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
-       common/CHIDePATH/ dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
+      character*50  dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
+      common/CHIDePATH/ dgdtab1, dgdtab2, dgdtab3, dgdtab4, sudatab
 c ... end R.S.
        
 
@@ -859,6 +859,7 @@ c       XI1MAX=1d0 ! CHIDeZ1 = CHIDeB1 + CHIDeB2
         dgdtab3=TRIM(CHIDePATH) // "dgdtab3.d"
         dgdtab4=TRIM(CHIDePATH) // "dgdtab4.d"
         sudatab=TRIM(CHIDePATH) // "ggsudatab.d"
+        print *,'sudatab=',sudatab
         CALL CHIDeDiphotonInit(CHIDeS,DBLE(PTMIN),CHIDeS2,
      &       CHIDeX,CHIDeXP,CHIDeIGLU,
      &       XI1Min, XI1Max, XI2Min, XI2Max,
@@ -932,23 +933,23 @@ c            zh1=0.003
             zh1=0.003
          ELSEIF((IFITPDF.EQ.100).OR.(IFITPDF.EQ.101)) THEN
            IF(IFITPDF.EQ.100) THEN              ! ... H1 fit A
-                  alphaP=1.118
+             alphaP=1.118
 C CHR YURA
-                  Cr=0.0017
-               ELSEIF(IFITPDF.EQ.101) THEN       ! ... H1 fit B
-                  alphaP=1.111
+             Cr=0.0017
+           ELSEIF(IFITPDF.EQ.101) THEN       ! ... H1 fit B
+             alphaP=1.111
 C CHR YURA
-		  Cr=0.0014
-            ENDIF
+             Cr=0.0014
+           ENDIF
             
-            alphaPp=0.06
-            Bpom=5.5                  ! pomeron
+           alphaPp=0.06
+           Bpom=5.5                  ! pomeron
 c CHR/YURA modify values for reggeon	    
-            alphaR=0.5
-            alphaRp=0.3
-            Breg=1.6
-            Cr=0.0014             ! reggeon only normalization from POMWIG
-            zh1=0.003
+           alphaR=0.5
+           alphaRp=0.3
+           Breg=1.6
+           Cr=0.0014             ! reggeon only normalization from POMWIG
+           zh1=0.003
          ENDIF   
 c___________________________________________________________________          
 c         old version

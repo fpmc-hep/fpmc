@@ -60,7 +60,15 @@ endforeach()
 
 #----- link everything in a single shared FPMC library (FPMC and HERWIG altogether)
 
-add_library(FPMC SHARED $<TARGET_OBJECTS:FPMCCore> $<TARGET_OBJECTS:HerwigCore>)
+add_library(FPMCBare SHARED EXCLUDE_FROM_ALL $<TARGET_OBJECTS:FPMCCore> $<TARGET_OBJECTS:HerwigCore>)
+set_target_properties(FPMCBare PROPERTIES LINKER_LANGUAGE CXX)
+
+add_library(FPMCDeps SHARED EXCLUDE_FROM_ALL $<TARGET_OBJECTS:CHIDe> $<TARGET_OBJECTS:KMR_lumi> $<TARGET_OBJECTS:KMR_lumi_2> $<TARGET_OBJECTS:excl_aaaa> $<TARGET_OBJECTS:softc> $<TARGET_OBJECTS:miscellaneous>)
+target_link_libraries(FPMCDeps comphep)
+set_target_properties(FPMCDeps PROPERTIES LINKER_LANGUAGE CXX)
+
+add_library(FPMC SHARED $<TARGET_OBJECTS:FPMCCore> $<TARGET_OBJECTS:HerwigCore> $<TARGET_OBJECTS:CHIDe> $<TARGET_OBJECTS:KMR_lumi> $<TARGET_OBJECTS:KMR_lumi_2> $<TARGET_OBJECTS:excl_aaaa> $<TARGET_OBJECTS:softc> $<TARGET_OBJECTS:miscellaneous>)
+target_link_libraries(FPMC comphep)
 set_target_properties(FPMC PROPERTIES LINKER_LANGUAGE CXX)
 
 #----- link the HepMC wrapper into a dedicated library
@@ -72,7 +80,7 @@ endif()
 
 #----- all useful libraries
 
-set(LIBRARIES FPMC Externals comphep ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
+set(LIBRARIES FPMC ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
 
 #----- test executable
 
@@ -89,3 +97,7 @@ if(HEPMC_LIB)
   add_executable(fpmc-hepmc HepMCWrapper/main.cc Examples/dummy_hwaend.f)
   target_link_libraries(fpmc-hepmc ${LIBRARIES} HepMCWrapper ${HEPMC_LIB} ${HEPMC_FIO_LIB})
 endif()
+
+#----- copies
+
+file(COPY ${PROJECT_SOURCE_DIR}/External/CHIDe/Data/ DESTINATION External/CHIDe/Data/)

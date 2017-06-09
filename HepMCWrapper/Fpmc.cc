@@ -120,6 +120,7 @@ namespace fpmc
     params_.fetchKMR2FPMC( kmr2fpmc_ );
 
     params_.fetchION( ion_ );
+    params_.fetchCHIDEENV( chideenv_ );
 
     //--- initialize model/pdf dependant parameters
     hwmodini();
