@@ -74,7 +74,7 @@ set_target_properties(FPMC PROPERTIES LINKER_LANGUAGE CXX)
 #----- link the HepMC wrapper into a dedicated library
 
 if(HEPMC_LIB)
-  add_library(HepMCWrapper SHARED $<TARGET_OBJECTS:Export>)
+  add_library(HepMCWrapper SHARED $<TARGET_OBJECTS:Wrapper>)
   target_link_libraries(HepMCWrapper ${CLHEP_LIB})
 endif()
 

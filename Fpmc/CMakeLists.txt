@@ -1,4 +1,4 @@
 include_directories(${PROJECT_SOURCE_DIR}/External ${PROJECT_SOURCE_DIR}/Herwig)
 
-add_library(FPMCCore OBJECT fpmc.f)
+add_library(FPMCCore OBJECT Fpmc.cc fpmc.f FpmcParameters.cc ${PROJECT_SOURCE_DIR}/Examples/fpmc_welcome.f)
 set_target_properties(FPMCCore PROPERTIES LINKER_LANGUAGE CXX POSITION_INDEPENDENT_CODE ON)

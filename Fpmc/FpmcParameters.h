@@ -34,6 +34,11 @@ namespace fpmc
 
       std::map<std::string,std::string> map() const { return *this; }
 
+      bool hadronise() const { return strcmp( getString( "hadr" ).c_str(), "Y" )==0; }
+
+      void setSqrtS( double sqrts ) { add( "ecms", sqrts ); }
+      double sqrtS() const { return getFloat( "ecms" ); }
+      
       void fetchHWPRAM( hwpram_t& ) const;
       void fetchHWPROP( hwprop_t& ) const;
       void fetchHWHARD( hwhard_t& ) const;

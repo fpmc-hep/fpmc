@@ -1,4 +1,4 @@
-#include "Fpmc.h"
+#include "Wrapper.h"
 
 #include <vector>
 #include <string>
@@ -128,8 +128,7 @@ int main( int argc, char* argv[] )
         << "=========================================================" << endl;
    cout << oss.str();
 
-   fpmc::Fpmc* generator = new fpmc::Fpmc( comEnergy_, datacard_.c_str() );
-   generator->begin();
+   fpmc::Wrapper generator( comEnergy_, datacard_.c_str() );
 
 #ifdef HEPMC_VERSION2
    HepMC::IO_GenEvent output( outputFileName_, ios::out );
@@ -138,18 +137,12 @@ int main( int argc, char* argv[] )
 #endif
    for(unsigned int evt = 0; evt < maxEvents_; ++evt){
       cout << "[FPMC Wrapper] Processing event " << (evt + 1) << endl;
-      bool success = generator->run();
-      if(!success){
-         cout << "[FPMC Wrapper] WARNING: Event " << (evt + 1) << " failed." << endl;
-         continue;
-      }
 #ifdef HEPMC_VERSION2
-      output.write_event( generator->event() );
+      output.write_event( generator.event() );
 #else
-      output.write_event( *generator->event() );
+      output.write_event( *generator.event() );
 #endif
    }    
-   generator->end();
 
    return 0;
 }

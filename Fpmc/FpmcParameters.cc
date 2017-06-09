@@ -4,22 +4,22 @@ namespace fpmc
 {
   FpmcParameters::FpmcParameters() :
     std::map<std::string,std::string>( {
-	{ "rmass", "0.0" }, { "wmass", "80.425" }, { "hmass", "125.0" }, { "tmass", "174.3" }, { "mst1", "250.0" }, { "msb1", "250.0" },
-	{ "ecms", "14000.0" }, { "yjmin", "-6.0" }, { "yjmax", "6.0" }, { "ptmin", "0.0" }, { "ptmax", "1.e8" }, { "emmin", "10.0" }, { "emmax", "1.e8" },
-        { "maxev", "1000" }, { "iproc", "16010" }, { "nflux", "15" }, { "nrn1", "33799" }, { "nrn2", "11799" }, { "ifit", "10" }, { "isoftm", "1" }, { "typepr", "EXC" }, { "typint", "QED" },
-        { "dkappa", "0.0" }, { "acw", "0.0" }, { "a0w", "0.0" }, { "a0z", "0.0" }, { "acz", "0.0" }, { "a1a", "0.0" }, { "a2a", "0.0" },
-        { "aaanom", "0" }, { "aaexotic", "0" },
-        { "aam", "0.0" }, { "aaq", "0.0" }, { "aan", "0.0" }, { "aaf0", "0.0" }, { "aaf0z", "0.0" }, { "aaf0w", "0.0" }, { "aaf0zg", "0.0" }, { "aaw", "0.0" }, { "aaa2", "0.0" },
-        { "chidex", "-1.0" }, { "chidexp", "-1.0" }, { "chides2", "-1.0" }, { "chidegapmin", "0.0" }, { "chidegapmax", "0.0" }, { "chide_iglu", "-1" }, { "chidepath", "External/CHIDe/Data/" },
-	{ "xi1min", "-1.0" }, { "xi1max", "-1.0" }, { "xi2min", "-1.0" }, { "xi2max", "-1.0" },
-        { "kmr2q2cut", "2.0" }, { "kmr2surv", "0.3" }, { "kmr2scale", "0.618" }, { "kmr2_delta", "1" },
-        { "dlambda", "0.0" }, { "anomcutoff", "-1" },
-        { "ywwmin", "0.0" }, { "ywwmax", "0.1" }, { "q2wwmn", "0.0" }, { "q2wwmx", "4.0" },
-        { "output", "1" }, { "outputlhe", "0" }, { "ntname", "tmpntuple.ntp" }, { "lhefile", "FPMC.lhe" },
-        { "zion", "1" }, { "aion", "1" }, { "bmin", "1.0" },
-        { "hadr", "Y" },
-        { "part1", "E+" }, { "part2", "E+" },
-        { "modpdf1", "-1" }, { "modpdf2", "-1" } } ) {}
+      { "rmass", "0.0" }, { "wmass", "80.425" }, { "hmass", "125.0" }, { "tmass", "174.3" }, { "mst1", "250.0" }, { "msb1", "250.0" },
+      { "ecms", "14000.0" }, { "yjmin", "-6.0" }, { "yjmax", "6.0" }, { "ptmin", "0.0" }, { "ptmax", "1.e8" }, { "emmin", "10.0" }, { "emmax", "1.e8" },
+      { "maxev", "1000" }, { "iproc", "16010" }, { "nflux", "15" }, { "nrn1", "33799" }, { "nrn2", "11799" }, { "ifit", "10" }, { "isoftm", "1" }, { "typepr", "EXC" }, { "typint", "QED" },
+      { "dkappa", "0.0" }, { "acw", "0.0" }, { "a0w", "0.0" }, { "a0z", "0.0" }, { "acz", "0.0" }, { "a1a", "0.0" }, { "a2a", "0.0" },
+      { "aaanom", "0" }, { "aaexotic", "0" },
+      { "aam", "0.0" }, { "aaq", "0.0" }, { "aan", "0.0" }, { "aaf0", "0.0" }, { "aaf0z", "0.0" }, { "aaf0w", "0.0" }, { "aaf0zg", "0.0" }, { "aaw", "0.0" }, { "aaa2", "0.0" },
+      { "chidex", "-1.0" }, { "chidexp", "-1.0" }, { "chides2", "-1.0" }, { "chidegapmin", "0.0" }, { "chidegapmax", "0.0" }, { "chide_iglu", "-1" }, { "chidepath", "External/CHIDe/Data/" },
+      { "xi1min", "-1.0" }, { "xi1max", "-1.0" }, { "xi2min", "-1.0" }, { "xi2max", "-1.0" },
+      { "kmr2q2cut", "2.0" }, { "kmr2surv", "0.3" }, { "kmr2scale", "0.618" }, { "kmr2_delta", "1" },
+      { "dlambda", "0.0" }, { "anomcutoff", "-1" },
+      { "ywwmin", "0.0" }, { "ywwmax", "0.1" }, { "q2wwmn", "0.0" }, { "q2wwmx", "4.0" },
+      { "output", "1" }, { "outputlhe", "0" }, { "ntname", "tmpntuple.ntp" }, { "lhefile", "FPMC.lhe" },
+      { "zion", "1" }, { "aion", "1" }, { "bmin", "1.0" },
+      { "hadr", "Y" },
+      { "part1", "E+" }, { "part2", "E+" },
+      { "modpdf1", "-1" }, { "modpdf2", "-1" } } ) {}
 
   FpmcParameters
   FpmcParameters::parseCard( const char* filename )
