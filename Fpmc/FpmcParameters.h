@@ -86,7 +86,25 @@ namespace fpmc
 
       void setSqrtS( double sqrts ) { add( "ecms", sqrts ); }
       double sqrtS() const { return getFloat( "ecms" ); }
-      
+
+      //----- events kinematics
+
+      void setPtRange( double ptmin, double ptmax=0. ) {
+        add( "ptmin", ptmin );
+        if ( ptmax>0. ) add( "ptmax", ptmax );
+      }
+      double ptMin() const { return getFloat( "ptmin" ); }
+      double ptMax() const { return getFloat( "ptmax" ); }
+
+      void setEtaRange( double etamin, double etamax ) {
+        add( "yjmin", etamin );
+        add( "yjmax", etamax );
+      }
+      double etaMin() const { return getFloat( "yjmin" ); }
+      double etaMax() const { return getFloat( "yjmax" ); }
+
+      //----- full common blocks population
+
       void fetchHWPRAM( hwpram_t& ) const;
       void fetchHWPROP( hwprop_t& ) const;
       void fetchHWHARD( hwhard_t& ) const;

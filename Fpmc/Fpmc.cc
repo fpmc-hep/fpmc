@@ -156,7 +156,7 @@ namespace fpmc
       dbg_ << "WARNING: Herwig/FPMC not yet initialised! Invalid cross-section retrieved." << std::endl;
       return 0.;
     }
-    return hwevnt_.EVWGT * 1.e3; // return in pb
+    return hwevnt_.AVWGT * 1.e3; // return in pb
   }
 
   bool
