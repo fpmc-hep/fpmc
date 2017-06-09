@@ -38,11 +38,51 @@ namespace fpmc
 
       bool hadronise() const { return strcmp( getString( "hadr" ).c_str(), "Y" )==0; }
 
+      //----- unique ID of the process to generate
+
       void setProcessId( unsigned int iproc ) { add( "iproc", iproc ); }
       unsigned int processId() const { return getInt( "iproc" ); }
 
+      //----- type of process involved
+
+      void setProcessType( const char* typepr ) { add( "typepr", typepr ); }
+      void setProcessType( const ProcessType& typepr ) {
+        switch ( typepr ) {
+          case ExclusiveProcess: add( "typepr", "EXC" ); break;
+          case InclusiveProcess: add( "typepr", "INC" ); break;
+          default: break;
+        }
+      }
+      ProcessType processType() const {
+        const std::string typepr = getString( "typepr" );
+        if ( typepr.compare( "EXC" )==0 ) return ExclusiveProcess;
+        if ( typepr.compare( "INC" )==0 ) return InclusiveProcess;
+        return InvalidProcess;
+      }
+
+      //----- type of interaction involved
+
+      void setInteractionType( const char* typint ) { add( "typint", typint ); }
+      void setInteractionType( const InteractionType& typint ) {
+        switch ( typint ) {
+          case QED: add( "typint", "QED" ); break;
+          case QCD: add( "typint", "QCD" ); break;
+          default: break;
+        }
+      }
+      InteractionType interactionType() const {
+        const std::string typint = getString( "typint" );
+        if ( typint.compare( "QED" )==0 ) return QED;
+        if ( typint.compare( "QCD" )==0 ) return QCD;
+        return InvalidInteraction;
+      }
+
+      //----- type of intermediate particles flux
+
       void setIntermediateFlux( const Flux& nflux ) { add( "nflux", nflux ); }
       Flux intermediateFlux() const { return static_cast<Flux>( getInt( "nflux" ) ); }
+
+      //----- centre of mass energy of the initial system
 
       void setSqrtS( double sqrts ) { add( "ecms", sqrts ); }
       double sqrtS() const { return getFloat( "ecms" ); }

@@ -5,6 +5,8 @@ int main()
 {
   fpmc::Fpmc gen;
   gen.parameters().setProcessId( 16008 ); // QED yy->mu,mu
+  gen.parameters().setProcessType( fpmc::ExclusiveProcess );
+  gen.parameters().setInteractionType( fpmc::QED );
   gen.parameters().setIntermediateFlux( fpmc::PhotonPhotonBudnevCoherent );
   gen.initialise();
 

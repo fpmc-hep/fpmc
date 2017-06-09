@@ -25,17 +25,8 @@ namespace fpmc
     PomeronPhotonPA = 25
   };
 
-  /*enum ProcessType
-  {
-    ExclusiveProcess = "EXC",
-    InclusiveProcess = "INC"
-  };
-
-  enum InteractionType
-  {
-    QED = "QED",
-    QCD = "QCD"
-  };*/
+  enum ProcessType { InvalidProcess = -1, ExclusiveProcess = 0, InclusiveProcess = 1 };
+  enum InteractionType { InvalidInteraction = -1, QED = 0, QCD = 1 };
 }
 
 #endif
