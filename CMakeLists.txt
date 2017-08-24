@@ -45,6 +45,11 @@ if(HEPMC_LIB)
   target_link_libraries(fpmc-hepmc ${LIBRARIES} ${HEPMC_LIB} ${HEPMC_FIO_LIB})
 endif()
 
+#----- installation procedure
+
+install(DIRECTORY Fpmc DESTINATION include FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY Fpmc DESTINATION include FILES_MATCHING PATTERN "*.inc")
+
 #----- copies
 
 file(COPY ${PROJECT_SOURCE_DIR}/Datacards/ DESTINATION Datacards/)
