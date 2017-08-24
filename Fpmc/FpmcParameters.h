@@ -31,6 +31,8 @@ namespace fpmc
       FpmcParameters( const std::map<std::string,std::string>& params ) : std::map<std::string,std::string>( params ) {}
       ~FpmcParameters() {}
 
+      void validate();
+
       static FpmcParameters parseCard( const char* filename );
       void writeCard( const char* filename ) const;
 
@@ -103,11 +105,20 @@ namespace fpmc
       double etaMin() const { return getFloat( "yjmin" ); }
       double etaMax() const { return getFloat( "yjmax" ); }
 
+      //----- PDF fits
+
+      void setPDFfits( const PDFfits& fits ) { add( "ifit", fits ); }
+      PDFfits pdfFits() const { return static_cast<PDFfits>( getInt( "ifit" ) ); }
+
       //----- full common blocks population
 
+      void fetchHWPROC( hwproc_t& ) const;
+      void fetchHWBMCH( hwbmch_t& ) const;
       void fetchHWPRAM( hwpram_t& ) const;
       void fetchHWPROP( hwprop_t& ) const;
       void fetchHWHARD( hwhard_t& ) const;
+      void fetchHWPRCH( hwprch_t& ) const;
+      void fetchPRTYPE( prtype_t& ) const;
       void fetchXSECT( xsect_t& ) const;
       void fetchPDFS( pdfs_t& ) const;
       void fetchAAANOMAL( aaanomal_t& ) const;

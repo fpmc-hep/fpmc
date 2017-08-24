@@ -23,7 +23,9 @@ extern "C"
   extern double pmass_; // 938e-3
 
   //--- normalizations of partonic PDFs inside the pomeron:
-  typedef struct { double XPQNRM[12]; } pdfnrm_t; // warning: XPQNRM(-6:6)
+  typedef struct {
+    double XPQNRM[12];
+  } pdfnrm_t; // warning: XPQNRM(-6:6)
   //extern pdfnrm_t pdfnrm_;
       
   //--- atomic and proton numbers of the ion
@@ -33,7 +35,9 @@ extern "C"
   extern ion_t ion_;
       
   //--- flags carrying info whether the process is inclusive or exclusive:
-  typedef struct { char TYPEPR[3], TYPINT[3]; } prtype_t;
+  typedef struct {
+    char TYPEPR[3], TYPINT[3];
+  } prtype_t;
   extern prtype_t prtype_;
 
   //--- model parameters
@@ -44,7 +48,9 @@ extern "C"
   extern xsect_t xsect_;
 
   //--- PDF parameter
-  typedef struct { int IFITPDF; } pdfs_t;
+  typedef struct {
+    int IFITPDF;
+  } pdfs_t;
   extern pdfs_t pdfs_;
 
   //--- FLUX - POMERON + REGEON PARAMETERS
@@ -62,8 +68,12 @@ extern "C"
   extern aaanomal_t aaanomal_;
  
   //--- variables for exotic  AA->AA
+  //--- and in the future AA->WW and AA->AZ
+  //--- (C. Baldenegro, 05-2016)
   typedef struct {
-    double AAM, AAQ, AAN, AAF0, AAW, AAA2;
+    double AAM, AAQ, AAN,
+           AAF0, AAF0Z, AAF0W, AAF0ZG, AAF0G, AAF0H,
+           AAW, AAA2;
     int    AAEXOTIC;
   } aaexotical_t;
   extern aaexotical_t aaexotical_;
@@ -83,7 +93,9 @@ extern "C"
   extern kmr2fpmc_t kmr2fpmc_;
 
   //--- temporal variables
-  typedef struct { int ICOUNT; } oktemp_t;
+  typedef struct {
+    int ICOUNT;
+  } oktemp_t;
   //extern oktemp_t oktemp_;
 
   //--- custom definition of subroutine hwaend()
@@ -110,11 +122,13 @@ extern "C"
            KMR2Q2CT, KMR2SRV, KMR2SCALE;
   } myffread1_t;
   //extern myffread1_t myffread1_;
+
   typedef struct {
     float dlambda, anom_cutoff, yww_min, yww_max,
           q2ww_min, q2ww_max;
   } myffread2_t;
   //extern myffread2_t myffread2_;
+
   typedef struct {
     int OUTPUT, OUTPUTLHE, MAXEV, IPROC, NFLUX, NRN1,
         NRN2, IFIT, ISOFTM, ZION, AION;
@@ -123,23 +137,50 @@ extern "C"
         CHIDeIGL, KMR2DELTA;
   } myffread3_t;
   //extern myffread3_t myffread3_;
-  typedef struct { char HADR[1]; } cc0_t;
+
+  typedef struct {
+    char HADR[1];
+  } cc0_t;
   //extern cc0_t cc0_;
-  typedef struct { char TYPEPR[3]; } cc1_t;
+
+  typedef struct {
+    char TYPEPR[3];
+  } cc1_t;
   //extern cc1_t cc1_;
-  typedef struct { char TYPINT[3]; } cc2_t;
+
+  typedef struct {
+    char TYPINT[3];
+  } cc2_t;
   //extern cc2_t cc2_;
-  typedef struct { char PART1[4]; } cc3_t;
+
+  typedef struct {
+    char PART1[4];
+  } cc3_t;
   //extern cc3_t cc3_;
-  typedef struct { char PART2[4]; } cc4_t;
+
+  typedef struct {
+    char PART2[4];
+  } cc4_t;
   //extern cc4_t cc4_;
-  typedef struct { int MODPDF1, MODPDF2; } cc5_t;
+
+  typedef struct {
+    int MODPDF1, MODPDF2;
+  } cc5_t;
   //extern cc5_t cc5_;
-  typedef struct { char NTNAME[32], CHIDePATH[32]; } cyfflong1_t;
+
+  typedef struct {
+    char NTNAME[32], CHIDePATH[32];
+  } cyfflong1_t;
   //extern cyfflong1_t cyfflong1_;
-  typedef struct { char dgdtab1[50], dgdtab2[50], dgdtab3[50], dgdtab4[50], sudatab[50]; } chidepath_t;
+
+  typedef struct {
+    char dgdtab1[50], dgdtab2[50], dgdtab3[50], dgdtab4[50], sudatab[50];
+  } chidepath_t;
   extern chidepath_t chidepath_;
-  typedef struct { char CHIDe_PATH[500]; } chideenv_t;
+
+  typedef struct {
+    char CHIDe_PATH[500];
+  } chideenv_t;
   extern chideenv_t chideenv_;
 
 #ifdef __cplusplus

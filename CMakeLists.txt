@@ -36,6 +36,9 @@ if(CERNLIB_LIB)
   target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_LIB} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
 endif()
 
+add_executable(fpmc Examples/fpmc-bare.cc Examples/dummy_hwaend.f)
+target_link_libraries(fpmc ${LIBRARIES})
+
 if(HEPMC_LIB)
   include_directories(${HEPMC_INCLUDE})
   list(APPEND LIBRARIES FpmcHepMC)

@@ -3,7 +3,7 @@
 
 //-------------------------HERWIG common block -------------------------------------
 
-static const int nmxres = 500;
+static const int nmxres = 501;
 static const int nmxsud = 1024; // max number of entries for Sudakov lookup table
 static const int nmxcdk = 4000;
 static const int nmxhep = 4000;
@@ -42,7 +42,9 @@ extern "C"
   } hwevnt_t;
   extern hwevnt_t hwevnt_;
 
-  typedef struct { char PART1[8], PART2[8]; } hwbmch_t;
+  typedef struct {
+    char PART1[8], PART2[8];
+  } hwbmch_t;
   extern hwbmch_t hwbmch_;
 
   typedef struct {
@@ -66,11 +68,16 @@ extern "C"
 
   //--- arrays for particle properties (NMXRES = max no of particles defined)
   typedef struct {
-    double RLTIM[nmxres+1], RMASS[nmxres+1], RSPIN[nmxres+1];
-    int ICHRG[nmxres+1], IDPDG[nmxres],IFLAV[nmxres+1], NRES;
-    int VTOCDK[nmxres+1], VTORDK[nmxres+1], QORQQB[nmxres+1], QBORQQ[nmxres+1]; // starting from 0...
+    double RLTIM[nmxres], RMASS[nmxres], RSPIN[nmxres];
+    int ICHRG[nmxres], IDPDG[nmxres],IFLAV[nmxres], NRES;
+    int VTOCDK[nmxres], VTORDK[nmxres], QORQQB[nmxres], QBORQQ[nmxres]; // starting from 0...
   } hwprop_t;
   extern hwprop_t hwprop_;
+
+  typedef struct {
+    unsigned char RNAME[8][nmxres],TXNAME[37][2][nmxres];
+  } hwunam_t;
+  extern hwunam_t hwunam_;
 
   //--- parameters for Sudakov form factors
   typedef struct {
@@ -108,7 +115,7 @@ extern "C"
 
   //--- weights used in cluster decays
   typedef struct {
-    double REPWT[5][5][4],SNGWT,DECWT,QWT[3],PWT[12],SWTEF[nmxres+1];
+    double REPWT[5][5][4],SNGWT,DECWT,QWT[3],PWT[12],SWTEF[nmxres];
   } hwuwts_t;
   extern hwuwts_t hwuwts_;
 
@@ -235,7 +242,7 @@ extern "C"
 #define hwhdecay hwhdecay_
 
   //---------------------------------------------------------------
-  void hwuidt_( int* iopt, int* ipdg, int* iwig, char nwig[8] );
+  void hwuidt_( int* iopt, int* ipdg, int* iwig, unsigned char nwig[8] );
 #define hwuidt hwuidt_
   double hwualf_( int *mode, double* scale );
 #define hwualf hwualf_
@@ -251,7 +258,7 @@ extern "C"
 #define hwepro hwepro_
   void hwigin_(); // initialise other common blocks
 #define hwigin hwigin_
-  void hwusta_( const char*, int ); // make any particle stable
+  void hwusta_( const unsigned char*, int ); // make any particle stable
 #define hwusta hwusta_
   void hwuinc_(); // compute parameter-dependent constants
 #define hwuinc hwuinc_

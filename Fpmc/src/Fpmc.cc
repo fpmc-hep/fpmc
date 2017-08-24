@@ -50,30 +50,22 @@ namespace fpmc
     //--- call hwudat to set up HERWIG block data
     //hwudat();
 
-    if ( params_.has( "part1" ) ) params_.getString( "part1" ).copy( hwbmch_.PART1, 8 );
-    if ( params_.has( "part2" ) ) params_.getString( "part2" ).copy( hwbmch_.PART2, 8 );
-
-    hwproc_.PBEAM1 = hwproc_.PBEAM2 = params_.sqrtS()/2.;
-
-    if ( params_.has( "typepr" ) ) params_.getString( "typepr" ).copy( prtype_.TYPEPR, 3 );
-    if ( params_.has( "typint" ) ) params_.getString( "typint" ).copy( prtype_.TYPINT, 3 );
-
-    if ( params_.has( "iproc" ) ) hwproc_.IPROC = params_.processId();
+    params_.fetchHWBMCH( hwbmch_ );
+    params_.fetchHWPROC( hwproc_ );
+    params_.fetchPRTYPE( prtype_ );
 
     if ( debug_ ) {
-      dbg_ << "PART1  = '" << hwbmch_.PART1 << "'" << std::endl
-           << "PART2  = '" << hwbmch_.PART2 << "'" << std::endl
-           << "TYPEPR = " << prtype_.TYPEPR << std::endl
-           << "TYPINT = " << prtype_.TYPINT << std::endl
-           << "IPROC  = " << hwproc_.IPROC << std::endl;
+      dbg_ << "PART1  = '" << hwbmch_.PART1 << "'\n"
+           << "PART2  = '" << hwbmch_.PART2 << "'\n"
+           << "TYPEPR = " << prtype_.TYPEPR << "\n"
+           << "TYPINT = " << prtype_.TYPINT << "\n"
+           << "IPROC  = " << hwproc_.IPROC << "\n";
     }
     hwigin_();
 
     params_.fetchHWPRAM( hwpram_ );
     hwpram_.IPRINT = herwigVerbosity_;
     hwpram_.EFFMIN = 1.e-6;
-    hwpram_.MODPDF[1] = -111;
-    hwpram_.MODPDF[0] = -111;
     hwpram_.LWSUD = 0; // don't write Sudakov form factors
 
     //--- use random seeds from datacard
@@ -96,10 +88,7 @@ namespace fpmc
     // (no fort.77 and fort.88 ...)
 
     // Init LHAPDF glue
-    const std::string pdfset( "HWLHAPDF" );
-    for ( unsigned int i=0; i<2; i++ ) {
-      pdfset.copy( hwprch_.AUTPDF[i], 8 );
-    }
+    params_.fetchHWPRCH( hwprch_ );
 
     hwevnt_.MAXPR = maxEventsToPrint_;
 
@@ -109,6 +98,7 @@ namespace fpmc
     params_.fetchHWHARD( hwhard_ );
 
     params_.fetchXSECT( xsect_ );
+std::cout << "--------->" << xsect_.GAPSPR << std::endl;
     params_.fetchPDFS( pdfs_ );
     params_.fetchAAANOMAL( aaanomal_ );
     params_.fetchAAEXOTICAL( aaexotical_ );
@@ -125,6 +115,7 @@ namespace fpmc
 
     //--- compute parameter dependent constants
     hwuinc();
+std::cout << "--->"  << std::endl;
 
     //--- check POMWIG Settings + Initialisations for consistency
     hwchek();
@@ -132,7 +123,7 @@ namespace fpmc
     //--- call HWUSTA to make any particle stable
     int iopt = 1;
     int iwig = 0;
-    char nwig[9] = "        ";
+    unsigned char nwig[9] = "        ";
 
     int ipdg = 111;
     hwuidt( &iopt, &ipdg, &iwig, nwig );
@@ -162,8 +153,11 @@ namespace fpmc
   bool
   Fpmc::next( hwevnt_t& event )
   {
+    if ( !initialised_ ) initialise();
+
     //--- call herwig routines to create HEPEVT
 
+std::cout << "aaa" << std::endl;
     hwuine(); // initialize event
 
     hwepro(); // generate hard subprocess

@@ -39,13 +39,14 @@ int main( int argc, char* argv[] )
 
   fpmc::HepMCWrapper generator( comEnergy_, datacard_.c_str() );
 
+
 #ifdef HEPMC_VERSION2
   HepMC::IO_GenEvent output( outputFileName_, ios::out );
 #else
   HepMC::WriterAscii output( outputFileName_ );
 #endif
   for( unsigned int evt = 0; evt < maxEvents_; ++evt ) {
-    cout << "[FPMC Wrapper] Processing event " << (evt + 1) << endl;
+    cout << "[FPMC Wrapper] Processing event " << ( evt+1 ) << endl;
 #ifdef HEPMC_VERSION2
     output.write_event( generator.event() );
 #else

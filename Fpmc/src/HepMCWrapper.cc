@@ -10,7 +10,7 @@ namespace fpmc
     Fpmc( card ), hepMCVerbosity_( true )
   {
     params_.setSqrtS( comEnergy );
-    params_.dump();
+    //params_.dump();
   }
 
   HepMCWrapper::~HepMCWrapper()
