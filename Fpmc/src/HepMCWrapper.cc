@@ -6,18 +6,18 @@ extern HEPEVT hepevt_;
 
 namespace fpmc
 {
-  Wrapper::Wrapper( double comEnergy, const char* card ) :
+  HepMCWrapper::HepMCWrapper( double comEnergy, const char* card ) :
     Fpmc( card ), hepMCVerbosity_( true )
   {
     params_.setSqrtS( comEnergy );
     params_.dump();
   }
 
-  Wrapper::~Wrapper()
+  HepMCWrapper::~HepMCWrapper()
   {}
 
   const HepMC::GenEvent*
-  Wrapper::event()
+  HepMCWrapper::event()
   {
     //----- start by generating the next event with FPMC
 
@@ -75,7 +75,7 @@ namespace fpmc
   }
 
   void
-  Wrapper::write( const char* out )
+  HepMCWrapper::write( const char* out )
   {
     if ( !hepMCEvt_.get() ) return;
 

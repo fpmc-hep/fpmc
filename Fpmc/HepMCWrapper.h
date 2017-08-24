@@ -34,11 +34,11 @@
 
 namespace fpmc
 {
-  class Wrapper : public Fpmc
+  class HepMCWrapper : public Fpmc
   {
     public:
-      Wrapper( double, const char* );
-      ~Wrapper();
+      HepMCWrapper( double, const char* );
+      ~HepMCWrapper();
 
       /// Retrieve the last event generated
       const HepMC::GenEvent* event();
