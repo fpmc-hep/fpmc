@@ -1,4 +1,4 @@
-#include "Wrapper.h"
+#include "Fpmc/HepMCWrapper.h"
 
 #include <vector>
 #include <string>
