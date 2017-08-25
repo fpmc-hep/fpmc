@@ -37,7 +37,7 @@ set(LIBRARIES FPMC ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB} ${CLHEP_LIB})
 
 if(CERNLIB_LIB)
   include_directories(Examples)
-  add_executable(fpmc-paw Examples/fpmc_main.f Examples/fpmc_lhe.f Fpmc/External/ntuple.f Fpmc/External/reco_ok/reco_ok.f Fpmc/External/reco_ok/pxcone_mod_new.f)
+  add_executable(fpmc-paw Examples/fpmc_main.f Examples/fpmc_lhe.f Examples/ntuple.f Examples/reco_ok/reco_ok.f Examples/reco_ok/pxcone_mod_new.f)
   target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_LIB} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
 endif()
 
