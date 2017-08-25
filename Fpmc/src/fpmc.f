@@ -285,7 +285,7 @@ C     Prints out what it finds
 C
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       INTEGER IPR
       INTEGER PDFID, ACTID
 
@@ -716,7 +716,7 @@ c-------------------------------------------------------------------
       SUBROUTINE HWMODINI
 
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       INCLUDE 'CHIDe.inc'
 c---To pass the relative GAP Srv. prob factor for BL inclusive modified dist.
       DOUBLE PRECISION GAPSPRREL
@@ -1021,7 +1021,7 @@ c...B.Cox and J. Forshaw 11/05/00
       DOUBLE PRECISION QZERO,EXPARG,ALPHAE,EI
       DOUBLE PRECISION RZERO,R,BMIN,XM,ZZERO,ARG,F1,F2
       DOUBLE PRECISION HWUALF,DGAGNC,DBESK0,DBESK1
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       EXTERNAL HWUALF,DGAGNC,DBESK0,DBESK1
       PARAMETER(ALPHAE=1.D0/137.D0)
 c... parameters for the Budnev flux (thanks K.Piotrzkowski)
@@ -1406,7 +1406,7 @@ C     GENERATES A PHOTON IN WEIZSACKER-WILLIAMS (WWA=.TRUE.) OR
 C     ELSE EQUIVALENT PHOTON APPROX FROM INCOMING E+, E-, MU+ OR MU-
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       DOUBLE PRECISION GAPSPRREL
       COMMON /BLMODIF/  GAPSPRREL
 
@@ -2414,7 +2414,7 @@ C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
 C ... begin R.S.
       include 'CHIDe.inc'
-      INCLUDE 'Fpmc/interface/fpmc.inc' ! To be able to check NFLUX
+      INCLUDE 'fpmc.inc' ! To be able to check NFLUX
 C ... end R.S.
       DOUBLE PRECISION CIRCKP(2)
       COMMON /HWCIR2/CIRCKP
@@ -2948,7 +2948,7 @@ C     M.Boonekamp, Jun 2004
 C
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       DOUBLE PRECISION HWUALF,HWRGEN,EMH,CSFAC,EMFAC
       DOUBLE PRECISION TAUT,TAUW,EMW,TAUTR,TAUTI,TAUWR,TAUWI,SUMR,
      &     SUMI,HWIDTH,EPSM,P2OLD,P2NEW
@@ -3016,7 +3016,7 @@ C     A LOT IS HARDCODED AND A POTENTIAL SOURCE OF PROBLEMS
 C
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       DOUBLE PRECISION PMOM,PRESC
       INTEGER I,J,ISEC,IPOM,IREG
       LOGICAL INIFX
@@ -3308,7 +3308,7 @@ C     If TYPINT = 'QCD' then g + g -> Higgs cross-section needed for
 C     exclusive DPE is calculated.
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       DOUBLE PRECISION HWUALF,HWHIGT,HWRGEN,HWUSQR,HWUAEM,BRHIGQ,EMH,
      &     CSFAC,EVSUM(13),EMFAC,CV,CA,BR,RWGT,E1,E2,EMQ,GFACTR
       DOUBLE PRECISION TAUT,TAUW,EMW,TAUTR,TAUTI,TAUWR,TAUWI,SUMR,
@@ -3547,7 +3547,7 @@ C     O.Kepka, April, 2009 :
 C        Anomalous ZZ
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       DOUBLE PRECISION RCS,HCS,RS,S,EMSQ,BE,TMIN,TMAX,T,U,FACTR,Q,CFAC,
      $     HWRGEN
       INTEGER HQ,ID3,ID4,I1,I2
@@ -4120,7 +4120,7 @@ C
 C     Tibor Kucs, Dec 2003 : 
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       DOUBLE PRECISION RCS,HCS,RS,S,EMSQ,BE,TMIN,TMAX,T,U,FACTR,Q,CFAC,
      $     HWRGEN,A2,XMSQ,ALPHAS,CHGSUM,FACT,HWUALF,HWHBOX
       COMPLEX*16 CA1,CM1111,CM1122,CM2211,CM1212,CM2222,CM
@@ -4181,7 +4181,7 @@ C     Quark box diagram contribution to photon/gluon scattering
 C     Internal quark mass neglected: m_q << U,T,S
 C-----------------------------------------------------------------------
       IMPLICIT NONE
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       DOUBLE PRECISION S,T,U,A2
       COMPLEX*16 CA1,CM1111,CM1122,CM2211,CM1212,CM2222,CM
       EXTERNAL CA1,A2
@@ -4234,7 +4234,7 @@ C     CHI PRODUCTION VIA GLUON OR FUSION
 C     MEAN EVWGT = CHI PRODUCTION C-S * BRANCHING FRACTION IN NB
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       DOUBLE PRECISION HWUALF,HWHIGT,HWRGEN,HWUSQR,HWUAEM,BRHIGQ,EMH,
      & CSFAC,EMFAC,CV,CA,RWGT,E1,E2,EMQ,HWIDTH
       INTEGER IDEC,I,J,ID1,ID2,ICHI,INDEX
@@ -4403,7 +4403,7 @@ C   FOR CERN PDFLIB DETAILS SEE PDFLIB DOC Q ON CERNVM OR
 C   CERN_ROOT:[DOC]PDFLIB.TXT ON VXCERN
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
       DOUBLE PRECISION HWSGAM,X,SCALE,XOLD,QOLD,XMWN,QSCA,SS,SMIN,S,T,
      & TMIN,TMAX,VX,AA,VT,WT,UPV,DNV,SEA,STR,CHM,BTM,TOP,GLU,WX,XQSUM,
      & DMIN,TPMIN,TPMAX,DIST(13),G(2),Q0(5),QL(5),F(5),A(6,5),
@@ -5497,7 +5497,7 @@ C-- Author :    Oldrich Kepka
 C-- prints important user setting
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
 
       write(*,*) ''
       write(*,*) ' FPMC - USER SETTINGS'
@@ -5558,7 +5558,7 @@ C-----------------------------------------------------------------------
 
       SUBROUTINE FPMCDEBUGPART
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'Fpmc/interface/fpmc.inc'
+      INCLUDE 'fpmc.inc'
 
       INTEGER N, IPART, I, ID
       DOUBLE PRECISION PX, PY, PT, PZ, E, M

@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-dec
 set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -g -O1 -fno-automatic -fPIC")
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/cmake)
 
-set(MODULES Fpmc Herwig Examples Tests)
+set(MODULES Fpmc Herwig Tests)
 
 #----- enable Fortran
 
@@ -42,11 +42,8 @@ target_link_libraries(fpmc ${LIBRARIES})
 
 if(HEPMC_LIB)
   include_directories(${HEPMC_INCLUDE})
-  list(APPEND LIBRARIES FpmcHepMC)
-  message(STATUS "HepMC found at " ${HEPMC_LIB})
-  include_directories(Examples)
   add_executable(fpmc-hepmc Examples/fpmc-wrapper.cc Examples/dummy_hwaend.f)
-  target_link_libraries(fpmc-hepmc ${LIBRARIES} ${HEPMC_LIB} ${HEPMC_FIO_LIB})
+  target_link_libraries(fpmc-hepmc ${LIBRARIES})
 endif()
 
 #----- installation procedure
