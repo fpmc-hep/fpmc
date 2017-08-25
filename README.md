@@ -3,13 +3,15 @@ If the process you are looking for is not included there, look at the FPMC docum
 
 To run FPMC, first:
 ```sh
-make clean
+mkdir build
+cd build
+cmake {PATH_TO_FPMC_SOURCES}
 make
 ```
 
 For example, for the process &gamma;&gamma; &rarr; Spin 0 neutral resonance &varphi; &rarr; &gamma;&gamma; (With intact protons), use the command:
 ```sh
-./fpmc <Datacards/dataQED_AASpin0EvenResonances
+./fpmc-hepmc --cfg Datacards/dataQED_AASpin0EvenResonances --comenergy 13000 --nevents 1000
 ```
 
 You can check some basic parameters of the collision and the coupling by editing the datacard, for example:
@@ -20,17 +22,7 @@ You can check some basic parameters of the collision and the coupling by editing
 - the output filename (default: `tmpntuple.ntp`)`
 - etc.
 
-You will find `tmpntuple.ntp` file as an output.
-You can convert this file to a ROOT file with the `h2root` command:
-```sh
-h2root tmpntuple.ntp yourfilename.root
-```
-This ROOT file has all the basic kinematical quantities of the individual photons and protons.
-You can then run an analysis code for this ROOT file.
-In case you want to do a quick check instead (Look at the hard subprocess, parton showering, hadronization, etc. event by event) you can write the output to a `.dat` file with the command
-```sh
-./fpmc <Datacards/dataQED_AASpin0EvenResonances>yourfilename.dat
-```
+You will find `fpmc.hepmc` file as an output.
 
 Note:
 
