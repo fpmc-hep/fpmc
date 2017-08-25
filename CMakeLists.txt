@@ -3,6 +3,7 @@ project(FPMC)
 set(PROJECT_VERSION 1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -std=c++11 -g")
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -g -O1 -fno-automatic -fPIC")
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/cmake)
 
 set(MODULES Fpmc Herwig Examples Tests)

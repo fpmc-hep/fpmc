@@ -9,7 +9,7 @@ namespace fpmc
   {}
 
   Fpmc::Fpmc( const char* card ) :
-    herwigVerbosity_( 1 ), maxEventsToPrint_( 2 ),
+    herwigVerbosity_( 5 ), maxEventsToPrint_( 2 ),
     initialised_( false ),
     params_( FpmcParameters::parseCard( card ) ),
     debug_( false ), dbg_( std::cout )
@@ -36,7 +36,10 @@ namespace fpmc
            << "UTYPINT = " << params_.getString( "typint" ) << std::endl
            << "UTMASS  = " << params_.getFloat( "tmass" ) << std::endl;
     }
+    //--- initialise the common blocks
     initHerwig();
+
+    //--- dump the configuration into an output card
     params_.writeCard( "lastrun.card" );
   }
 
@@ -46,9 +49,6 @@ namespace fpmc
     if ( initialised_ ) dbg_ << "WARNING: Herwig already initialised for this run!" << std::endl;
 
     dbg_ << "Initializing HERWIG/FPMC" << std::endl;
-
-    //--- call hwudat to set up HERWIG block data
-    //hwudat();
 
     params_.fetchHWBMCH( hwbmch_ );
     params_.fetchHWPROC( hwproc_ );
@@ -61,7 +61,17 @@ namespace fpmc
            << "TYPINT = " << prtype_.TYPINT << "\n"
            << "IPROC  = " << hwproc_.IPROC << "\n";
     }
-    hwigin_();
+    //--- call hwudat to set up HERWIG block data
+//    hwudat();
+std::cout << "aaaaaaaaaaa" << std::endl;
+
+    //--- sets the input parameters
+    hwigin();
+
+    for ( unsigned int i = 0; i < 500; ++i ) {
+      std::cout << "hwprop for particle " << i << ": " << hwprop_.RLTIM[i] << "\t" << hwprop_.RMASS[i] << "\t" << hwprop_.RSPIN[i] << "\t" << hwprop_.ICHRG[i] << "\t" << hwprop_.IDPDG[i] << "\t" << hwprop_.IFLAV[i] << std::endl;
+    }
+//    exit(0);
 
     params_.fetchHWPRAM( hwpram_ );
     hwpram_.IPRINT = herwigVerbosity_;
@@ -98,7 +108,6 @@ namespace fpmc
     params_.fetchHWHARD( hwhard_ );
 
     params_.fetchXSECT( xsect_ );
-std::cout << "--------->" << xsect_.GAPSPR << std::endl;
     params_.fetchPDFS( pdfs_ );
     params_.fetchAAANOMAL( aaanomal_ );
     params_.fetchAAEXOTICAL( aaexotical_ );

@@ -3,7 +3,7 @@
 
 //-------------------------HERWIG common block -------------------------------------
 
-static const int nmxres = 501;
+static const int nmxres = 500;
 static const int nmxsud = 1024; // max number of entries for Sudakov lookup table
 static const int nmxcdk = 4000;
 static const int nmxhep = 4000;
@@ -68,9 +68,9 @@ extern "C"
 
   //--- arrays for particle properties (NMXRES = max no of particles defined)
   typedef struct {
-    double RLTIM[nmxres], RMASS[nmxres], RSPIN[nmxres];
-    int ICHRG[nmxres], IDPDG[nmxres],IFLAV[nmxres], NRES;
-    int VTOCDK[nmxres], VTORDK[nmxres], QORQQB[nmxres], QBORQQ[nmxres]; // starting from 0...
+    double RLTIM[nmxres+1], RMASS[nmxres+1], RSPIN[nmxres+1];
+    int ICHRG[nmxres+1], IDPDG[nmxres+1],IFLAV[nmxres+1], NRES;
+    int VTOCDK[nmxres+1], VTORDK[nmxres+1], QORQQB[nmxres+1], QBORQQ[nmxres+1]; // starting from 0...
   } hwprop_t;
   extern hwprop_t hwprop_;
 
@@ -250,6 +250,8 @@ extern "C"
 #define hwuaem hwuaem_
 
   //---------------------------------------------------------------
+  void hwudat_();
+#define hwudat hwudat_
   void hweini_(); // initialise elementary process
 #define hweini hweini_
   void hwuine_(); // initialise event
@@ -278,6 +280,8 @@ extern "C"
 #define hwmevt hwmevt_
   void hwufne_(); // event generation completed, wrap up event, ...
 #define hwufne hwufne_
+  void hwabeg_();
+#define hwabeg hwabeg_
 
 #ifdef __cplusplus
 }

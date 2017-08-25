@@ -5,7 +5,7 @@ namespace fpmc
   FpmcParameters::FpmcParameters() :
     std::map<std::string,std::string>( {
       // particles masses
-      { "rmass", "0.0" }, { "wmass", "80.425" }, { "hmass", "125.0" }, { "tmass", "174.3" }, { "mst1", "250.0" }, { "msb1", "250.0" },
+      { "wmass", "80.425" }, { "hmass", "125.0" }, { "tmass", "174.3" }, { "mst1", "250.0" }, { "msb1", "250.0" },
       // kinematics cuts
       { "ecms", "14000.0" }, { "yjmin", "-6.0" }, { "yjmax", "6.0" }, { "ptmin", "0.0" }, { "ptmax", "1.e8" }, { "emmin", "10.0" }, { "emmax", "1.e8" },
       { "ywwmin", "0.0" }, { "ywwmax", "0.1" }, { "q2wwmn", "0.0" }, { "q2wwmx", "4.0" },
