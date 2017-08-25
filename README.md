@@ -34,5 +34,5 @@ In case you want to do a quick check instead (Look at the hard subprocess, parto
 
 Note:
 
-* If you are working on the lxplus nodes, use `setup_lxplus.sh` to set up the proper CERNLIB environment.
+* If you are working on the lxplus nodes, use `source /cvmfs/sft.cern.ch/lcg/external/gcc/6.1.0/x86_64-slc6/setup.sh` to set up the proper `gcc` environment.
 
