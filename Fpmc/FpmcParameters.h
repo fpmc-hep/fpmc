@@ -2,7 +2,7 @@
 #define FpmcInterface_FpmcParameters_h
 
 #include "herwig.h"
-#include "fpmc.h"
+#include "Fpmc/interface/fpmc.h"
 
 #include <string>
 #include <ostream>

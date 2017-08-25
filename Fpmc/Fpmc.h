@@ -27,9 +27,6 @@
 #include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RandFlat.h"
 
-#include "herwig.h"
-#include "fpmc.h"
-
 #include "FpmcParameters.h"
 
 #include <vector>

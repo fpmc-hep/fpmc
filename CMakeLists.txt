@@ -4,7 +4,7 @@ set(PROJECT_VERSION 1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -std=c++11 -g")
 
-set(MODULES Fpmc Herwig External HepMCWrapper Examples)
+set(MODULES Fpmc Herwig External Examples)
 
 #----- enable Fortran
 
@@ -46,6 +46,7 @@ else()
   find_path(CLHEP_INCLUDE CLHEP)
   find_library(LHAPDF_LIB LHAPDF)
   find_library(HEPMC_LIB HepMC)
+  find_library(HEPMC_FIO_LIB HepMCfio)
   find_path(HEPMC_INCLUDE HepMC)
 endif()
 
@@ -71,16 +72,9 @@ add_library(FPMC SHARED $<TARGET_OBJECTS:FPMCCore> $<TARGET_OBJECTS:HerwigCore> 
 target_link_libraries(FPMC comphep)
 set_target_properties(FPMC PROPERTIES LINKER_LANGUAGE CXX)
 
-#----- link the HepMC wrapper into a dedicated library
-
-if(HEPMC_LIB)
-  add_library(HepMCWrapper SHARED $<TARGET_OBJECTS:Export>)
-  target_link_libraries(HepMCWrapper ${CLHEP_LIB})
-endif()
-
 #----- all useful libraries
 
-set(LIBRARIES FPMC ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB})
+set(LIBRARIES FPMC ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB} ${CLHEP_LIB})
 
 #----- test executable
 
@@ -93,9 +87,9 @@ endif()
 if(HEPMC_LIB)
   include_directories(${HEPMC_INCLUDE})
   message(STATUS "HepMC found at " ${HEPMC_LIB})
-  include_directories(HepMCWrapper Examples)
-  add_executable(fpmc-hepmc HepMCWrapper/main.cc Examples/dummy_hwaend.f)
-  target_link_libraries(fpmc-hepmc ${LIBRARIES} HepMCWrapper ${HEPMC_LIB} ${HEPMC_FIO_LIB})
+  include_directories(Examples)
+  add_executable(fpmc-hepmc Examples/fpmc_hepmc.cc Examples/dummy_hwaend.f)
+  target_link_libraries(fpmc-hepmc ${LIBRARIES} ${HEPMC_LIB} ${HEPMC_FIO_LIB})
 endif()
 
 #----- copies
