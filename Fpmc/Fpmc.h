@@ -10,7 +10,7 @@
 #include "CLHEP/Random/JamesRandom.h"
 #include "CLHEP/Random/RandFlat.h"
 
-#include "Fpmc/interface/herwig.h"
+#include "herwig.h"
 #include "Fpmc/interface/fpmc.h"
 
 #include "FpmcParameters.h"

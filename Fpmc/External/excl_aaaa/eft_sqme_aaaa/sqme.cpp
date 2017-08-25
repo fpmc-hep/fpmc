@@ -2,7 +2,7 @@
 #include <fstream>
 #include <math.h>
 #include "helicity_amplitudes.h"
-#include "Fpmc/interface/herwig.h"
+#include "herwig.h"
 using namespace std;
 #include <assert.h>
 

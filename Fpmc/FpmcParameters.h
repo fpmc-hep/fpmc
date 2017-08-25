@@ -3,8 +3,8 @@
 
 #include "FpmcTypes.h"
 
-#include "Fpmc/interface/herwig.h"
-#include "Fpmc/interface/fpmc.h"
+#include "herwig.h"
+#include "interface/fpmc.h"
 
 #include <string>
 #include <ostream>
