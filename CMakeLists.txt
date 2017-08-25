@@ -4,7 +4,7 @@ set(PROJECT_VERSION 1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -std=c++11 -g")
 
-set(MODULES Fpmc Herwig External Examples)
+set(MODULES Fpmc Herwig External)
 
 #----- enable Fortran
 
@@ -80,7 +80,7 @@ set(LIBRARIES FPMC ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB} ${CLHEP_LIB})
 
 if(CERNLIB_LIB)
   include_directories(Examples)
-  add_executable(fpmc-paw Examples/fpmc_main.f Examples/fpmc_lhe.f External/ntuple.f External/reco_ok/reco_ok.f External/reco_ok/pxcone_mod_new.f Examples/ffcard.f Examples/fpmc_welcome.f)
+  add_executable(fpmc-paw Examples/fpmc_main.f Examples/fpmc_lhe.f External/ntuple.f External/reco_ok/reco_ok.f External/reco_ok/pxcone_mod_new.f)
   target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_LIB} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
 endif()
 
