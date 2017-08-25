@@ -2,6 +2,9 @@
 
 if($ENV{HOSTNAME} MATCHES "^lxplus[0-9]+.cern.ch")
   set(BASE_DIR "/cvmfs/sft.cern.ch/lcg/external")
+  set(CMAKE_CXX_COMPILER "${BASE_DIR}/gcc/6.1.0/x86_64-slc6/bin/g++")
+  set(CMAKE_Fortran_COMPILER "${BASE_DIR}/gcc/6.1.0/x86_64-slc6/bin/gfortran")
+
   set(CERNLIB_DIR "${BASE_DIR}/cernlib/2006a/x86_64-slc6-gcc47-opt")
   set(GSL_DIR "${BASE_DIR}/GSL/1.14/x86_64-slc5-gcc44-opt")
   set(CLHEP_DIR "${BASE_DIR}/clhep/2.2.0.4/x86_64-slc6-gcc48-opt")
@@ -37,4 +40,3 @@ else()
   find_library(HEPMC_FIO_LIB HepMCfio)
   find_path(HEPMC_INCLUDE HepMC)
 endif()
-

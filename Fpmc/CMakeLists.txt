@@ -1,6 +1,7 @@
+include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/Herwig)
-include_directories(External)
-include_directories(interface)
+include_directories(${PROJECT_SOURCE_DIR}/Fpmc/External)
+include_directories(${PROJECT_SOURCE_DIR}/Fpmc/interface)
 
 add_subdirectory(External)
 
