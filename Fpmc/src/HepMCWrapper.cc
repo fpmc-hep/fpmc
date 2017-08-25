@@ -21,9 +21,7 @@ namespace fpmc
   {
     //----- start by generating the next event with FPMC
 
-    hwevnt_t last_evt;
-    if ( !Fpmc::next( last_evt ) ) return 0;
-    if ( last_evt.IERROR ) return 0;
+    if ( !Fpmc::next() || hwevnt_.IERROR ) return 0;
 
 #ifdef HEPMC_VERSION2
     hepMCEvt_ = std::make_shared<HepMC::GenEvent>( *conv_.read_next_event() );
@@ -37,7 +35,7 @@ namespace fpmc
     hepMCEvt_->set_signal_process_id( params_.processId() );
     hepMCEvt_->set_event_scale( -1. );
 #endif
-    hepMCEvt_->weights().push_back( last_evt.EVWGT );
+    hepMCEvt_->weights().push_back( hwevnt_.EVWGT );
 
 #ifdef HEPMC_VERSION2
     HepMC::PdfInfo pdfInfo;

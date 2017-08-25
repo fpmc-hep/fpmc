@@ -45,6 +45,10 @@ endif()
 
 include_directories(${HEPMC_INCLUDE})
 include_directories(Examples)
+
+add_executable(fpmc Examples/fpmc-bare.cc Examples/dummy_hwaend.f)
+target_link_libraries(fpmc ${LIBRARIES})
+
 add_executable(fpmc-hepmc Examples/fpmc_hepmc.cc Examples/dummy_hwaend.f)
 target_link_libraries(fpmc-hepmc ${LIBRARIES})
 
