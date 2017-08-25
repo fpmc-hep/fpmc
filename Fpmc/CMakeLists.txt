@@ -1,6 +1,8 @@
 include_directories(${PROJECT_SOURCE_DIR}/Herwig)
-include_directories(${PROJECT_SOURCE_DIR}/External)
+include_directories(External)
 include_directories(interface)
+
+add_subdirectory(External)
 
 set(fpmc_src src/fpmc.f src/fpmc_welcome.f src/Fpmc.cc src/FpmcParameters.cc)
 if(CERNLIB)
