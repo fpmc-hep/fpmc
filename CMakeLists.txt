@@ -14,6 +14,7 @@ enable_language(Fortran)
 #----- external dependencies
 
 include(UseEnvironment)
+include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${CLHEP_INCLUDE})
 include_directories(${HEPMC_INCLUDE})
 message(STATUS "HepMC found at " ${HEPMC_LIB})
@@ -27,13 +28,13 @@ endforeach()
 
 #----- link everything in a single shared FPMC library (FPMC and HERWIG altogether)
 
-add_library(FPMC SHARED $<TARGET_OBJECTS:FPMCCore> $<TARGET_OBJECTS:HerwigCore> $<TARGET_OBJECTS:CHIDe> $<TARGET_OBJECTS:KMR_lumi> $<TARGET_OBJECTS:KMR_lumi_2> $<TARGET_OBJECTS:excl_aaaa> $<TARGET_OBJECTS:softc> $<TARGET_OBJECTS:miscellaneous>)
-target_link_libraries(FPMC comphep)
-set_target_properties(FPMC PROPERTIES LINKER_LANGUAGE CXX)
+add_library(Fpmc SHARED $<TARGET_OBJECTS:FPMCCore> $<TARGET_OBJECTS:HerwigCore> $<TARGET_OBJECTS:CHIDe> $<TARGET_OBJECTS:KMR_lumi> $<TARGET_OBJECTS:KMR_lumi_2> $<TARGET_OBJECTS:excl_aaaa> $<TARGET_OBJECTS:softc> $<TARGET_OBJECTS:miscellaneous>)
+target_link_libraries(Fpmc comphep)
+set_target_properties(Fpmc PROPERTIES LINKER_LANGUAGE CXX)
 
 #----- all useful libraries
 
-set(LIBRARIES FPMC ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB} ${CLHEP_LIB} ${HEPMC_LIB} ${HEPMC_FIO_LIB})
+set(LIBRARIES Fpmc ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB} ${CLHEP_LIB} ${HEPMC_LIB} ${HEPMC_FIO_LIB})
 
 #----- test executable
 
@@ -52,6 +53,14 @@ target_link_libraries(fpmc ${LIBRARIES})
 add_executable(fpmc-hepmc Examples/fpmc_hepmc.cc Examples/dummy_hwaend.f)
 target_link_libraries(fpmc-hepmc ${LIBRARIES})
 
+#----- installation procedure
+
+install(TARGETS Fpmc DESTINATION lib)
+install(DIRECTORY Fpmc DESTINATION include FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY Fpmc DESTINATION include FILES_MATCHING PATTERN "*.inc")
+
 #----- copies
 
+file(COPY ${PROJECT_SOURCE_DIR}/Datacards/ DESTINATION Datacards/)
 file(COPY ${PROJECT_SOURCE_DIR}/Fpmc/External/CHIDe/Data/ DESTINATION Fpmc/External/CHIDe/Data/)
+
