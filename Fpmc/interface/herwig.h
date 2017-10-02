@@ -2,16 +2,8 @@
 #define HERWIG_INC
 
 //-------------------------HERWIG common block -------------------------------------
-// COMMON block stuff, that doesn't come with the HerwigWrapper6_4.h ....
 
-/*C Arrays for particle properties (NMXRES = max no of particles defined)
-      PARAMETER(NMXRES=500)
-      COMMON/HWPROP/RLTIM(0:NMXRES),RMASS(0:NMXRES),RSPIN(0:NMXRES),
-     & ICHRG(0:NMXRES),IDPDG(0:NMXRES),IFLAV(0:NMXRES),NRES,
-     & VTOCDK(0:NMXRES),VTORDK(0:NMXRES),
-     & QORQQB(0:NMXRES),QBORQQ(0:NMXRES) */
-
-static const int nmxres = 500+1; // we need NMXRES+1 entries ...
+static const int nmxres = 500;
 static const int nmxsud = 1024; // max number of entries for Sudakov lookup table
 static const int nmxcdk = 4000;
 static const int nmxhep = 4000;
@@ -19,11 +11,6 @@ static const int hepevt_size = 4000; // check in HerwigWrapper
 static const int modmax = 50;
 static const int maxhrp = 100;
 static const int imaxch = 20;
-
-static const int NPROC = 117;
-static const int MAXMS = 100;
-static const int NPSIMP = 16;
-static const double SMALL = 1.e-20;
 
 #ifdef __cplusplus
 extern "C"
@@ -55,7 +42,9 @@ extern "C"
   } hwevnt_t;
   extern hwevnt_t hwevnt_;
 
-  typedef struct { char PART1[8], PART2[8]; } hwbmch_t;
+  typedef struct {
+    char PART1[8], PART2[8];
+  } hwbmch_t;
   extern hwbmch_t hwbmch_;
 
   typedef struct {
@@ -77,13 +66,18 @@ extern "C"
   } hwprch_t;
   extern hwprch_t hwprch_;
 
-    
+  //--- arrays for particle properties (NMXRES = max no of particles defined)
   typedef struct {
-    double RLTIM[nmxres], RMASS[nmxres], RSPIN[nmxres];
-    int ICHRG[nmxres], IDPDG[nmxres],IFLAV[nmxres], NRES;
-    int VTOCDK[nmxres], VTORDK[nmxres], QORQQB[nmxres], QBORQQ[nmxres];    
+    double RLTIM[nmxres+1], RMASS[nmxres+1], RSPIN[nmxres+1];
+    int ICHRG[nmxres+1], IDPDG[nmxres+1],IFLAV[nmxres+1], NRES;
+    int VTOCDK[nmxres+1], VTORDK[nmxres+1], QORQQB[nmxres+1], QBORQQ[nmxres+1]; // starting from 0...
   } hwprop_t;
   extern hwprop_t hwprop_;
+
+  typedef struct {
+    unsigned char RNAME[8][nmxres],TXNAME[37][2][nmxres];
+  } hwunam_t;
+  extern hwunam_t hwunam_;
 
   //--- parameters for Sudakov form factors
   typedef struct {
@@ -202,41 +196,23 @@ extern "C"
   extern hw6300_t hw6300_;
 
   //-------------------------- JIMMY COMMON BLOCK -------------------------------
-/*
-      DOUBLE PRECISION YGAMMA, JMZMIN, JMRAD, PTJIM
-      DOUBLE PRECISION PHAD, JMU2, JMV2, SMALL, JMARRY
-c     JMARRY is the array storing gamma-p xsec at various z, & 
-c	max weight for each z
-      DOUBLE PRECISION TOTSCAT, NLOST
-
-      INTEGER MAXMS, NPSIMP, MSFLAG, JMPTYP, JCMVAR, NPROC
-      LOGICAL ANOMOFF
-
-      PARAMETER( NPROC = 117 )
-      PARAMETER( MAXMS  = 100  )  ! Maximum multiple scatters
-      PARAMETER( NPSIMP = 16 )  ! No. of Simpson rule (YBJ)
-C                                 intervals (must be even)
-      PARAMETER( SMALL  = 1.0D-20  )
-      INTEGER JMOUT, JMBUG, FN_TYPE, NSCAT, JMUEO, MAXMSTRY
-      PARAMETER(JMOUT = 6)
-      COMMON / JMPARM /  PTJIM, YGAMMA, JMZMIN, JMRAD(264)
-     &     ,PHAD, JMU2, JMV2, JMARRY( 6+MAXMS,0:NPSIMP )
-     &     ,NLOST, TOTSCAT, ANOMOFF, JCMVAR, JMUEO
-     &     ,JMPTYP(NPROC), JMBUG, FN_TYPE, MSFLAG, MAXMSTRY
-      DOUBLE PRECISION JMPROC, JMVETO
-      COMMON / JMEVNT/ JMPROC(NPROC)
-     &,        JMVETO(2,13), NSCAT
-*/
+  static const int nproc = 117;
+  static const int maxms = 100;
+  static const int npsimp = 16;
+  //static const double small = 1.e-20;
+  //static const int jmout = 6;
 
   typedef struct {
-    double PTJIM,YGAMMA,JMZMIN,JMRAD[264],PHAD,JMU2,JMV2,JMARRY[NPSIMP+1][6+MAXMS],
-      NLOST,TOTSCAT;
-    int ANAMOFF,JCMVAR,JMUEO,JMPTYP[NPROC],JMBUG,FN_TYPE,MSFLAG,MAXMSTRY;
+    double PTJIM,YGAMMA,JMZMIN,JMRAD[264],PHAD,JMU2,JMV2;
+    double JMARRY[npsimp+1][6+maxms]; // array storing gamma-p xsec at various z, and  max weight for each z
+    double NLOST,TOTSCAT;
+    int ANOMOFF; // logical
+    int JCMVAR,JMUEO,JMPTYP[nproc],JMBUG,FN_TYPE,MSFLAG,MAXMSTRY;
   } jmparm_t;
   extern jmparm_t jmparm_;
 
   typedef struct {
-    double JMPROC[NPROC],JMVETO[13][2];
+    double JMPROC[nproc],JMVETO[13][2];
     int NSCAT;
   } jmevnt_t;
   extern jmevnt_t jmevnt_;
@@ -266,7 +242,7 @@ C                                 intervals (must be even)
 #define hwhdecay hwhdecay_
 
   //---------------------------------------------------------------
-  void hwuidt_( int* iopt, int* ipdg, int* iwig, char nwig[8] );
+  void hwuidt_( int* iopt, int* ipdg, int* iwig, unsigned char nwig[8] );
 #define hwuidt hwuidt_
   double hwualf_( int *mode, double* scale );
 #define hwualf hwualf_
@@ -274,6 +250,8 @@ C                                 intervals (must be even)
 #define hwuaem hwuaem_
 
   //---------------------------------------------------------------
+  void hwudat_();
+#define hwudat hwudat_
   void hweini_(); // initialise elementary process
 #define hweini hweini_
   void hwuine_(); // initialise event
@@ -282,7 +260,7 @@ C                                 intervals (must be even)
 #define hwepro hwepro_
   void hwigin_(); // initialise other common blocks
 #define hwigin hwigin_
-  void hwusta_( const char*, int ); // make any particle stable
+  void hwusta_( const unsigned char*, int ); // make any particle stable
 #define hwusta hwusta_
   void hwuinc_(); // compute parameter-dependent constants
 #define hwuinc hwuinc_
@@ -302,6 +280,8 @@ C                                 intervals (must be even)
 #define hwmevt hwmevt_
   void hwufne_(); // event generation completed, wrap up event, ...
 #define hwufne hwufne_
+  void hwabeg_();
+#define hwabeg hwabeg_
 
 #ifdef __cplusplus
 }

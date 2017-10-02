@@ -70,7 +70,6 @@ namespace fpmc
     /*for ( unsigned int i = 0; i < 500; ++i ) {
       std::cout << "hwprop for particle " << i << ": " << hwprop_.RLTIM[i] << "\t" << hwprop_.RMASS[i] << "\t" << hwprop_.RSPIN[i] << "\t" << hwprop_.ICHRG[i] << "\t" << hwprop_.IDPDG[i] << "\t" << hwprop_.IFLAV[i] << std::endl;
     }*/
-//    exit(0);
 
     params_.fetchHWPRAM( hwpram_ );
     hwpram_.IPRINT = herwigVerbosity_;
