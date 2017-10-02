@@ -34,7 +34,7 @@ namespace fpmc
       void initialise();
       double crossSection() const;
 
-      bool next( hwevnt_t& evt );
+      bool next();
 
     protected:
       void initHerwig();

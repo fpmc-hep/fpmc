@@ -157,7 +157,7 @@ namespace fpmc
   }
 
   bool
-  Fpmc::next( hwevnt_t& event )
+  Fpmc::next()
   {
     if ( !initialised_ ) initialise();
 
@@ -184,9 +184,7 @@ namespace fpmc
     int init = 0;
     hwfxer( &init ); // fix event record (i.e. restore correct intermediate states)
 
-    event = hwevnt_;
-
-    if ( event.IERROR ) return false;
+    if ( hwevnt_.IERROR ) return false;
 
     //--- increment the events counter
     ++event_;
