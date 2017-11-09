@@ -1,6 +1,8 @@
 #ifndef Fpmc_FpmcTypes_h
 #define Fpmc_FpmcTypes_h
 
+#include <iostream>
+
 namespace fpmc
 {
   enum Flux
@@ -34,6 +36,23 @@ namespace fpmc
 
   enum ProcessType { InvalidProcess = -1, ExclusiveProcess = 0, InclusiveProcess = 1 };
   enum InteractionType { InvalidInteraction = -1, QED = 0, QCD = 1 };
+
+  inline std::ostream& operator<<( std::ostream& os, const ProcessType& type ) {
+    switch ( type ) {
+      case InvalidProcess: return os << "INV";
+      case ExclusiveProcess: return os << "EXC";
+      case InclusiveProcess: return os << "INC";
+    }
+    return os;
+  }
+  inline std::ostream& operator<<( std::ostream& os, const InteractionType& type ) {
+    switch ( type ) {
+      case InvalidInteraction: return os << "INV";
+      case QED: return os << "QED";
+      case QCD: return os << "QCD";
+    }
+    return os;
+  }
 }
 
 #endif

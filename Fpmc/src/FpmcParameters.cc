@@ -39,8 +39,8 @@ namespace fpmc
     FpmcParameters param;
     std::ifstream card( filename );
     std::string buf;
-    //std::regex rgx_parse( "(\\w+)\\s+(\\S+)" );
-    std::regex rgx_parse( "(\\w+)[ ']+([^'\\n\\t]+)" );
+    std::regex rgx_parse( "(\\w+)\\s+(\\S+)" );
+    //std::regex rgx_parse( "(\\w+)[ ']+([^'\\n\\t]+)" );
     std::smatch match;
     while ( !card.eof() ) {
       std::getline( card, buf );
@@ -48,6 +48,7 @@ namespace fpmc
       std::string key = match[1], value = match[2];
       value.erase( std::find_if( value.rbegin(), value.rend(), std::bind1st( std::not_equal_to<char>(), ' ' ) ).base(), value.end() ); // remove trailing whitespaces
       std::transform( key.begin(), key.end(), key.begin(), ::tolower ); // transform the key to lowercase
+      value.erase( std::remove( value.begin(), value.end(), '\''), value.end() );
       param.add( key, value );
     }
     param.validate();

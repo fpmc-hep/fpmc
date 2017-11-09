@@ -9,7 +9,7 @@ cmake {PATH_TO_FPMC_SOURCES}
 make
 ```
 
-For example, for the process &gamma;&gamma; &rarr; Spin 0 neutral resonance &varphi; &rarr; &gamma;&gamma; (With intact protons), use the command:
+For example, for the process &gamma;&gamma; &rarr; Spin 0 neutral resonance &varphi; &rarr; &gamma;&gamma; (with intact protons), use the command:
 ```sh
 ./fpmc-hepmc --cfg Datacards/dataQED_AASpin0EvenResonances --comenergy 13000 --nevents 1000
 ```
