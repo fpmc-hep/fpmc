@@ -1,0 +1,64 @@
+language: cpp
+sudo: true
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+            - libgsl-dev
+            - libclhep-dev
+      env:
+         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+            - libgsl-dev
+            - libclhep-dev
+            - libhepmc-dev
+      env:
+         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+            - libgsl-dev
+            - libclhep-dev
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+            - libgsl-dev
+            - libclhep-dev
+            - libhepmc-dev
+
+before_script:
+  - mkdir build
+  - eval "${MATRIX_EVAL}"
+  - cd build
+  - cmake ..
+
+script:
+  - make
+
+#install:
+#  - make install
+
