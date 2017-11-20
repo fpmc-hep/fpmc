@@ -40,7 +40,8 @@ int main( int argc, char* argv[] )
   fpmc::HepMCWrapper generator( comEnergy_, datacard_.c_str() );
 
 #ifdef HEPMC_VERSION2
-  HepMC::IO_GenEvent output( outputFileName_, ios::out );
+  std::ofstream output_file( outputFileName_, ios::out );
+  HepMC::IO_GenEvent output( output_file );
 #else
   HepMC::WriterAscii output( outputFileName_ );
 #endif
