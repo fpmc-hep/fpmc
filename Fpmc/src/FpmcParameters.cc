@@ -1,5 +1,7 @@
 #include "FpmcParameters.h"
 
+#include <string>
+
 namespace fpmc
 {
   FpmcParameters::FpmcParameters() :
@@ -30,7 +32,7 @@ namespace fpmc
       // KMR parameters
       { "kmr2q2cut", "2.0" }, { "kmr2surv", "0.3" }, { "kmr2scale", "0.618" }, { "kmr2_delta", "1" },
       // PDF sets
-      { "autpdf1", "HWLHAPDF" }, { "autpdf1", "HWLHAPDF" }, { "modpdf1", "-1" }, { "modpdf2", "-1" }
+      { "autpdf1", "HWLHAPDF" }, { "autpdf2", "HWLHAPDF" }, { "modpdf1", "-1" }, { "modpdf2", "-1" }
     } ) { validate(); }
 
   FpmcParameters
@@ -117,6 +119,10 @@ namespace fpmc
   void
   FpmcParameters::fetchHWBMCH( hwbmch_t& hwbmch ) const
   {
+    //for(unsigned int i = 0; i < 8; ++i){ hwbmch.PART1[i] = ' '; hwbmch.PART2[i] = ' '; } 
+    std::string def_str( "        " );
+    def_str.copy( hwbmch.PART1, 8 );
+    def_str.copy( hwbmch.PART2, 8 );
     if ( has( "part1" ) ) getString( "part1" ).copy( hwbmch.PART1, 8 );
     if ( has( "part2" ) ) getString( "part2" ).copy( hwbmch.PART2, 8 );
   }
