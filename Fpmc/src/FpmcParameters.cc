@@ -119,7 +119,6 @@ namespace fpmc
   void
   FpmcParameters::fetchHWBMCH( hwbmch_t& hwbmch ) const
   {
-    //for(unsigned int i = 0; i < 8; ++i){ hwbmch.PART1[i] = ' '; hwbmch.PART2[i] = ' '; } 
     std::string def_str( "        " );
     def_str.copy( hwbmch.PART1, 8 );
     def_str.copy( hwbmch.PART2, 8 );
