@@ -47,10 +47,12 @@ set(LIBRARIES Fpmc ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB} ${CLHEP_LIB} ${HEPM
 
 #----- test executable
 
-if(CERNLIB_LIB)
+if(CERNLIB_PAWLIB_LIB)
   include_directories(Examples)
-  add_executable(fpmc-paw Examples/fpmc_main.f Examples/fpmc_lhe.f Examples/ntuple.f Examples/reco_ok/reco_ok.f Examples/reco_ok/pxcone_mod_new.f)
-  target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_LIB} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
+  include_directories(Fpmc/External)
+  include_directories(Fpmc/interface)
+  add_executable(fpmc-paw Examples/fpmc_main.f Fpmc/src/ffcard.f Examples/fpmc_lhe.f Examples/ntuple.f Examples/reco_ok/reco_ok.f Examples/reco_ok/pxcone_mod_new.f)
+  target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
 endif()
 
 include_directories(${HEPMC_INCLUDE})

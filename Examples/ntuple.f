@@ -13,7 +13,7 @@ c___ create ntuple
 c______________________________________________________________________________ 
 
       implicit none
-      INCLUDE '../Examples/ffcard.inc'
+      INCLUDE 'ffcard.inc'
       REAL hmemor
       COMMON/pawc/hmemor(1000000)
  

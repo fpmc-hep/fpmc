@@ -13,11 +13,16 @@ if($ENV{HOSTNAME} MATCHES "^lxplus[0-9]+.cern.ch")
 
   message(STATUS "Compiling on LXPLUS. Do not forget to source the environment variables!")
 
-  find_library(CERNLIB_LIB NAMES cernlib HINTS "${CERNLIB_DIR}/lib")
+  #find_library(CERNLIB_LIB NAMES cernlib HINTS "${CERNLIB_DIR}/lib")
   find_library(CERNLIB_MATHLIB_LIB NAMES mathlib HINTS "${CERNLIB_DIR}/lib")
   find_library(CERNLIB_PACKLIB_LIB NAMES packlib HINTS "${CERNLIB_DIR}/lib")
   find_library(CERNLIB_PAWLIB_LIB NAMES pawlib HINTS "${CERNLIB_DIR}/lib")
-  message(STATUS "PAW found in ${CERNLIB_PAWLIB_LIB}")
+  if(CERNLIB_LIB)
+    message(STATUS "CERNLIB found in ${CERNLIB_LIB}")
+  endif()
+  if(CERNLIB_PAWLIB_LIB)
+    message(STATUS "PAW found in ${CERNLIB_PAWLIB_LIB}")
+  endif()
 
   find_library(GSL_LIB gsl HINTS "${GSL_DIR}/lib")
   find_library(GSL_CBLAS_LIB gslcblas HINTS "${GSL_DIR}/lib")
