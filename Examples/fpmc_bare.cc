@@ -17,8 +17,9 @@ int main( int argc, char* argv[] )
 
   gen.parameters().dump();
 
-  for( unsigned int evt = 0; evt < 10e5; ++evt ) {
-    cout << "[FPMC] Processing event " << ( evt+1 ) << endl;
+  for( unsigned int evt = 0; evt < 1e5; ++evt ) {
+    if ( ( evt+1 ) % 10000 == 0 )
+      cout << "[FPMC] Processing event " << ( evt+1 ) << endl;
     gen.next();
   }
   return 0;
