@@ -9,9 +9,9 @@ cmake {PATH_TO_FPMC_SOURCES}
 make
 ```
 
-For example, for the process &gamma;&gamma; &rarr; Spin 0 neutral resonance &varphi; &rarr; &gamma;&gamma; (With intact protons), use the command:
+For example, for the process &gamma;&gamma; &rarr; Spin 0 neutral resonance &varphi; &rarr; &gamma;&gamma; (with intact protons), use the command:
 ```sh
-./fpmc-hepmc --cfg Datacards/dataQED_AASpin0EvenResonances --comenergy 13000 --nevents 1000
+./fpmc-hepmc --cfg Datacards/dataQED_AAexoticSpin0EvenResonances --comenergy 13000 --nevents 1000
 ```
 
 You can check some basic parameters of the collision and the coupling by editing the datacard, for example:

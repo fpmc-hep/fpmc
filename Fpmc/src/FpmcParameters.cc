@@ -1,5 +1,7 @@
 #include "FpmcParameters.h"
 
+#include <string>
+
 namespace fpmc
 {
   FpmcParameters::FpmcParameters() :
@@ -30,7 +32,7 @@ namespace fpmc
       // KMR parameters
       { "kmr2q2cut", "2.0" }, { "kmr2surv", "0.3" }, { "kmr2scale", "0.618" }, { "kmr2_delta", "1" },
       // PDF sets
-      { "autpdf1", "HWLHAPDF" }, { "autpdf1", "HWLHAPDF" }, { "modpdf1", "-1" }, { "modpdf2", "-1" }
+      { "autpdf1", "HWLHAPDF" }, { "autpdf2", "HWLHAPDF" }, { "modpdf1", "-1" }, { "modpdf2", "-1" }
     } ) { validate(); }
 
   FpmcParameters
@@ -39,8 +41,8 @@ namespace fpmc
     FpmcParameters param;
     std::ifstream card( filename );
     std::string buf;
-    //std::regex rgx_parse( "(\\w+)\\s+(\\S+)" );
-    std::regex rgx_parse( "(\\w+)[ ']+([^'\\n\\t]+)" );
+    std::regex rgx_parse( "(\\w+)\\s+(\\S+)" );
+    //std::regex rgx_parse( "(\\w+)[ ']+([^'\\n\\t]+)" );
     std::smatch match;
     while ( !card.eof() ) {
       std::getline( card, buf );
@@ -48,6 +50,7 @@ namespace fpmc
       std::string key = match[1], value = match[2];
       value.erase( std::find_if( value.rbegin(), value.rend(), std::bind1st( std::not_equal_to<char>(), ' ' ) ).base(), value.end() ); // remove trailing whitespaces
       std::transform( key.begin(), key.end(), key.begin(), ::tolower ); // transform the key to lowercase
+      value.erase( std::remove( value.begin(), value.end(), '\''), value.end() );
       param.add( key, value );
     }
     param.validate();
@@ -116,6 +119,9 @@ namespace fpmc
   void
   FpmcParameters::fetchHWBMCH( hwbmch_t& hwbmch ) const
   {
+    std::string def_str( "        " );
+    def_str.copy( hwbmch.PART1, 8 );
+    def_str.copy( hwbmch.PART2, 8 );
     if ( has( "part1" ) ) getString( "part1" ).copy( hwbmch.PART1, 8 );
     if ( has( "part2" ) ) getString( "part2" ).copy( hwbmch.PART2, 8 );
   }

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(FPMC)
 set(PROJECT_VERSION 1)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -std=c++11 -lgfortran -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -lgfortran -std=c++11 -g")
 set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -g -O1 -fno-automatic -fPIC")
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
@@ -16,9 +16,18 @@ enable_language(Fortran)
 
 include(UseEnvironment)
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${CLHEP_INCLUDE})
-include_directories(${HEPMC_INCLUDE})
-message(STATUS "HepMC found at " ${HEPMC_LIB})
+if(CLHEP_LIB)
+  message(STATUS "CLHEP found at ${CLHEP_LIB}")
+  include_directories(${CLHEP_INCLUDE})
+else()
+  message(FATAL_ERROR "CLHEP is required to build ${PROJECT_NAME}")
+endif()
+if(HEPMC_LIB)
+  message(STATUS "HepMC found at ${HEPMC_LIB}")
+  include_directories(${HEPMC_INCLUDE})
+else()
+  message(FATAL_ERROR "HepMC is required to build ${PROJECT_NAME}")
+endif()
 
 #----- build all the intermediate objects
 

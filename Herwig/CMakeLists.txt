@@ -7,3 +7,4 @@ set_target_properties(HerwigCore PROPERTIES LINKER_LANGUAGE CXX POSITION_INDEPEN
 #----- installation procedure
 
 install(TARGETS HerwigCore DESTINATION lib)
+

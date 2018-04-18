@@ -57,8 +57,8 @@ namespace fpmc
       }
       ProcessType processType() const {
         const std::string typepr = getString( "typepr" );
-        if ( typepr.compare( "EXC" )==0 ) return ExclusiveProcess;
-        if ( typepr.compare( "INC" )==0 ) return InclusiveProcess;
+        if ( typepr.compare( "EXC" ) == 0 ) return ExclusiveProcess;
+        if ( typepr.compare( "INC" ) == 0 ) return InclusiveProcess;
         return InvalidProcess;
       }
 
@@ -74,8 +74,8 @@ namespace fpmc
       }
       InteractionType interactionType() const {
         const std::string typint = getString( "typint" );
-        if ( typint.compare( "QED" )==0 ) return QED;
-        if ( typint.compare( "QCD" )==0 ) return QCD;
+        if ( typint.compare( "QED" ) == 0 ) return QED;
+        if ( typint.compare( "QCD" ) == 0 ) return QCD;
         return InvalidInteraction;
       }
 
