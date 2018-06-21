@@ -6,7 +6,7 @@ C-----------------------------------------------------------------------
       PROGRAM FPMC
 c---Common block
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'FPMC.INC'
+      INCLUDE 'fpmc.inc'
       INCLUDE 'CHIDe.inc'
 c---User's declarations
       DOUBLE PRECISION CMSENR
@@ -298,7 +298,7 @@ C * User's routine for initialization
 C----------------------------------------------------------------------- 
       SUBROUTINE HWABEG
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'FPMC.INC'
+      INCLUDE 'fpmc.inc'
       INCLUDE 'ffcard.inc'
 !      COMMON/ QUEST / IQUEST(10)   !pridano
 !      COMMON/ QUEST / IQUEST(10)   !pridano
@@ -387,7 +387,7 @@ C    - di-parton is 11 and 12
 C----------------------------------------------------------------------- 
       SUBROUTINE HWANAL
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'FPMC.INC'
+      INCLUDE 'fpmc.inc'
       INCLUDE 'ffcard.inc'
 
       integer IERR
@@ -477,7 +477,7 @@ C * User's routine for terminal calculations, histogram output, etc.
 C----------------------------------------------------------------------- 
       SUBROUTINE HWAEND
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'FPMC.INC'
+      INCLUDE 'fpmc.inc'
       INCLUDE 'ffcard.inc'
       INTEGER ICYCLE
 

@@ -56,22 +56,24 @@ set(LIBRARIES Fpmc ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB} ${CLHEP_LIB} ${HEPM
 
 #----- test executable
 
+include_directories(Fpmc/interface)
+include_directories(Fpmc/External)
+include_directories(Examples)
+include_directories(${HEPMC_INCLUDE})
+
 if(CERNLIB_PAWLIB_LIB)
-  include_directories(Examples)
-  include_directories(Fpmc/External)
-  include_directories(Fpmc/interface)
   add_executable(fpmc-paw Examples/fpmc_main.f Fpmc/src/ffcard.f Examples/fpmc_lhe.f Examples/ntuple.f Examples/reco_ok/reco_ok.f Examples/reco_ok/pxcone_mod_new.f)
   target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
 endif()
-
-include_directories(${HEPMC_INCLUDE})
-include_directories(Examples)
 
 add_executable(fpmc Examples/fpmc_bare.cc Examples/dummy_hwaend.f)
 target_link_libraries(fpmc ${LIBRARIES})
 
 add_executable(fpmc-hepmc Examples/fpmc_hepmc.cc Examples/dummy_hwaend.f)
 target_link_libraries(fpmc-hepmc ${LIBRARIES})
+
+add_executable(fpmc-lhe Examples/fpmc_main_lhe.f)
+target_link_libraries(fpmc-lhe ${LIBRARIES})
 
 #----- installation procedure
 
