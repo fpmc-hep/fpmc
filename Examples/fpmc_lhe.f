@@ -1,6 +1,6 @@
 C-----------------------------------------------------------------------
 CDECK  ID>, HWUEMP.
-*CMZ :-        -20/10/2013    
+*CMZ :-        -20/10/2013
 *-- Author :   M.E.POL from HWUEPR: Ian Knowles, Bryan Webber & Kosuke Odagiri
 C-----------------------------------------------------------------------
       SUBROUTINE HWUEMP
@@ -55,7 +55,7 @@ C 350  CONTINUE
 C It is a WW -> electrons and/or muons
 C Write start of event in the lhe file
       WRITE(45,40)
-      WRITE(45,41)NUP,IDRPUP,EVWGT,SCALE,ALPHEM,ALFAS 
+      WRITE(45,41)NUP,IDRPUP,EVWGT,SCALE,ALPHEM,ALFAS
       DO 410 I=1,NHEP
         IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.1)IPR1=I
         IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.2)IPR2=I
@@ -116,7 +116,7 @@ C     &      JMOHEP(1,I),JMOHEP(2,I),JDAHEP(1,I),JDAHEP(2,I),
 C     &      (PHEP(J,I),J=1,5),(VHEP(J,I),J=1,4)
         ENDIF
   412 CONTINUE
-      WRITE(45,50) 
+      WRITE(45,50)
    30 FORMAT(///1X,'EVENT ',I7,':',F8.2,' GEV/C ',A8,' ON ',F8.2,
      & ' GEV/C ',A8,' PROCESS:',I6/1X,'SEEDS: ',I11,' & ',I11,
      & '   STATUS: ',I4,' ERROR:',I4,'  WEIGHT: ',1P,E11.4/)
@@ -144,7 +144,7 @@ C-----------------------------------------------------------------------
       INTEGER II1,II2,II3,II4,II5
       INTEGER NUP,IDRPUP
       DOUBLE PRECISION AMASSG,VTIM,ASPI,ALFAS,HWUALF,SCALE
-      
+
       EXTERNAL HWUALF
       II1=0
       II2=0
@@ -175,19 +175,19 @@ C
       DO 510 I=1,NHEP
         IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.1)IPR1=I
         IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.2)IPR2=I
-     
+
         NUP = NUP + 1
   510 CONTINUE
 
-      WRITE(45,41)NUP,IDRPUP,EVWGT,SCALE,ALPHEM,ALFAS 
+      WRITE(45,41)NUP,IDRPUP,EVWGT,SCALE,ALPHEM,ALFAS
       DO 511 I=1,NHEP
         IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.1)IPR1=I
         IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.2)IPR2=I
-    
+
         WRITE(45,190) IDHEP(I),ISTHEP(I),
      &    JMOHEP(1,I),JMOHEP(2,I),JDAHEP(1,I),
      &    JDAHEP(2,I),(PHEP(J,I),J=1,5),VTIM,ASPI
-      
+
   511 CONTINUE
 
 C Now print the outgoing protons
@@ -202,7 +202,7 @@ C        ENDIF
 C  412 CONTINUE
 
       WRITE(45,50)
- 
+
    30 FORMAT(///1X,'EVENT ',I7,':',F8.2,' GEV/C ',A8,' ON ',F8.2,
      & ' GEV/C ',A8,' PROCESS:',I6/1X,'SEEDS: ',I11,' & ',I11,
      & '   STATUS: ',I4,' ERROR:',I4,'  WEIGHT: ',1P,E11.4/)
@@ -235,7 +235,7 @@ C      I3 = 3
       III5 = -1
       IPROC2 = -1
 
-      OPEN(UNIT=45,FILE=ULHEFILE)
+      OPEN(UNIT=45,FILE=ULHEFILE,STATUS='UNKNOWN')
 
       WRITE(45,30)
       WRITE(45,40)
@@ -248,8 +248,8 @@ C      WRITE(45,42)1000.*AVWGT,1000.*ERWGT,AVWGT,IPROC2
    40 FORMAT('<header>'/'</header>'/'<init>')
 C   41 FORMAT(2(5X,I4),2(2X,E15.8),2(2X,I2),2(2x,I2),2(2X,I1))
    41 FORMAT(2(5X,I4),2(2X,E15.8),2(2X,I1),2(2x,I5),2(2X,I1))
-   42 FORMAT(3(2x,E15.8),2X,I5)   
-   50 FORMAT('</init>')    
+   42 FORMAT(3(2x,E15.8),2X,I5)
+   50 FORMAT('</init>')
       RETURN
       END
 C-----------------------------------------------------------------------
