@@ -16,11 +16,11 @@ C-----------------------------------------------------------------------
       INTEGER NUP,IDRPUP
       DOUBLE PRECISION AMASSG,VTIM,ASPI,ALFAS,HWUALF,SCALE
       EXTERNAL HWUALF
-      II1=0
-      II2=0
-      II3=0
-      II4=0
-      II5=0
+      II1=0 ! PDG id
+      II2=0 ! mother 1
+      II3=0 ! mother 2
+      II4=0 ! colour 1
+      II5=0 ! colour 2
       ILEP=0
       JMOT=0
       ISIS1 = 0
@@ -161,7 +161,7 @@ C-----------------------------------------------------------------------
       IFLEP4 = 0
       NUP = 0
       IDRPUP = 1
-      AMASSG=0.0
+      AMASSG = 0.0
       VTIM = 0.0
       ASPI = 9.0
       ALFAS = HWUALF(1,EMSCA)
@@ -185,8 +185,8 @@ C
         IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.2)IPR2=I
 
         WRITE(45,190) IDHEP(I),ISTHEP(I),
-     &    JMOHEP(1,I),JMOHEP(2,I),JDAHEP(1,I),
-     &    JDAHEP(2,I),(PHEP(J,I),J=1,5),VTIM,ASPI
+     &    JMOHEP(1,I),JMOHEP(2,I),II4,II5, !FIXME need to retrieve the colour flow!
+     &    (PHEP(J,I),J=1,5),VTIM,ASPI
 
   511 CONTINUE
 
