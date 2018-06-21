@@ -72,7 +72,7 @@ target_link_libraries(fpmc ${LIBRARIES})
 add_executable(fpmc-hepmc Examples/fpmc_hepmc.cc Examples/dummy_hwaend.f)
 target_link_libraries(fpmc-hepmc ${LIBRARIES})
 
-add_executable(fpmc-lhe Examples/fpmc_main_lhe.f)
+add_executable(fpmc-lhe Examples/fpmc_main_lhe.f Fpmc/src/ffcard.f)
 target_link_libraries(fpmc-lhe ${LIBRARIES})
 
 #----- installation procedure
