@@ -3,6 +3,15 @@ project(FPMC)
 set(PROJECT_VERSION 1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -lgfortran -std=c++11 -g")
+#----- small fix for gcc-gfortran versions >= 8.1
+#----- (while CHIDe/KMR codes are not fixed)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+else()
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 8.1)
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
+  endif()
+endif()
+set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 set(MODULES Fpmc Herwig)
