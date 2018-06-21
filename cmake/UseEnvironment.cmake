@@ -12,6 +12,7 @@ if($ENV{HOSTNAME} MATCHES "^lxplus[0-9]+.cern.ch")
   set(LHAPDF_DIR "${BASE_DIR}/MCGenerators/lhapdf/5.8.9/x86_64-slc6-gcc46-opt")
 
   message(STATUS "Compiling on LXPLUS. Do not forget to source the environment variables!")
+  message(STATUS "    e.g. `source /cvmfs/sft.cern.ch/lcg/external/gcc/6.1.0/x86_64-slc6/setup.sh`")
 
   #find_library(CERNLIB_LIB NAMES cernlib HINTS "${CERNLIB_DIR}/lib")
   find_library(CERNLIB_MATHLIB_LIB NAMES mathlib HINTS "${CERNLIB_DIR}/lib")

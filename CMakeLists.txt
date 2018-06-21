@@ -62,8 +62,11 @@ include_directories(Examples)
 include_directories(${HEPMC_INCLUDE})
 
 if(CERNLIB_PAWLIB_LIB)
-  add_executable(fpmc-paw Examples/fpmc_main.f Fpmc/src/ffcard.f Examples/fpmc_lhe.f Examples/ntuple.f Examples/reco_ok/reco_ok.f Examples/reco_ok/pxcone_mod_new.f)
+  add_executable(fpmc-paw Examples/fpmc_main.f Fpmc/src/ffcard.f Examples/fpmc_lhe.f Examples/ntuple.f)
   target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
+
+  add_executable(fpmc-lhe Examples/fpmc_main_lhe.f Fpmc/src/ffcard.f)
+  target_link_libraries(fpmc-lhe ${LIBRARIES} ${CERNLIB_PACKLIB_LIB})
 endif()
 
 add_executable(fpmc Examples/fpmc_bare.cc Examples/dummy_hwaend.f)
@@ -71,9 +74,6 @@ target_link_libraries(fpmc ${LIBRARIES})
 
 add_executable(fpmc-hepmc Examples/fpmc_hepmc.cc Examples/dummy_hwaend.f)
 target_link_libraries(fpmc-hepmc ${LIBRARIES})
-
-add_executable(fpmc-lhe Examples/fpmc_main_lhe.f Fpmc/src/ffcard.f)
-target_link_libraries(fpmc-lhe ${LIBRARIES})
 
 #----- installation procedure
 

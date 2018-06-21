@@ -1,12 +1,12 @@
 C-----------------------------------------------------------------------
 C * 15/11/2006 O. Kepka
 C * Multifunctional module with cms fast simulation
-C * Set parameters via FF cards      
-C----------------------------------------------------------------------- 
+C * Set parameters via FF cards
+C-----------------------------------------------------------------------
       PROGRAM FPMC
 c---Common block
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'FPMC.INC'
+      INCLUDE 'fpmc.inc'
       INCLUDE 'CHIDe.inc'
 c---User's declarations
       DOUBLE PRECISION CMSENR
@@ -18,7 +18,7 @@ c---External
 
 c---Initialize FPMC setup parameters and read ffcards if READCARD = true
       READCARD = .TRUE.
-      CALL FPMC_VAR_INI(READCARD) 
+      CALL FPMC_VAR_INI(READCARD)
 
 c---Apply the setup parameters - either default/ffcard
 
@@ -35,7 +35,7 @@ c---Set cms energy
 c---Beam momenta
       PBEAM1=CMSENR/2d0
       PBEAM2=PBEAM1
-     
+
 c--- temp christophe p ion
 c      PBEAM1=14.D0
 c      PBEAM2=5.5D0
@@ -56,14 +56,14 @@ c---Setting the hard subprocess (see manual)
 
 c---Option to include hadronization and showering effects
 c      ANSWER='Y' ! say 'N' to skip this part
-      ANSWER=UHADR 
+      ANSWER=UHADR
 
 c---Initialization of other Herwig common blocks
 c...The default parameters has to be changed after this call
       CALL HWIGIN
 cc      SUSYIN=.TRUE.
 
-c---Random number genrator initializaiton      
+c---Random number genrator initializaiton
       NRN(1) = UNRN1 ! set again later in the code
       NRN(2) = UNRN2 ! set again later in the code
 
@@ -91,17 +91,17 @@ c      RMASS(449)=10000.D0
 c      RMASS(401)=10000.D0
 c      RMASS(402)=10000.D0
 c      RMASS(403)=10000.D0
-c      RMASS(404)=10000.D0   
+c      RMASS(404)=10000.D0
 c      RMASS(405)=10000.D0
 c      RMASS(407)=10000.D0
 c      RMASS(408)=10000.D0
-c      RMASS(409)=10000.D0  
+c      RMASS(409)=10000.D0
 c      RMASS(410)=10000.D0
 c      RMASS(411)=10000.D0
 
 c      RMASS(413)=10000.D0
 c      RMASS(414)=10000.D0
-c      RMASS(415)=10000.D0  
+c      RMASS(415)=10000.D0
 c      RMASS(416)=10000.D0
 c      RMASS(417)=10000.D0
 c      RMASS(418)=10000.D0
@@ -119,13 +119,13 @@ c      RMASS(412)=393.D0
 
 c      Q2WWMN=0
 c      Q2WWMX=4
-      
+
 c... beam momentum loss range
 c      YWWMIN=0.d0
 c      YWWMAX=1.D0
       YWWMIN=UYWWMIN
       YWWMAX=UYWWMAX
-      
+
 c--- central products : rapidity, pT or mass cuts
 c      YJMAX = 5d0
 c---JC      YJMAX = 4d0
@@ -133,7 +133,7 @@ c---JC      YJMAX = 4d0
       YJMIN = UYJMIN
 
 c      PTMIN = 25d0
-c---JC      
+c---JC
       PTMIN=UPTMIN
       PTMAX=UPTMAX
 
@@ -150,18 +150,18 @@ c                       15 is Budnev flux (RECOMMENDED for proton, QED)
 c                       16 is KMR flux (tables from L.Lonnblad or ExHume)
       NFLUX = UNFLUX
 
-c---Choosing pdf to use: 
+c---Choosing pdf to use:
 c                       according to hep/ph 0609291
-c                       10:  H1      
-c                       20:  Zeus 
-c                       30:  H1Zeus combined 
-c                       older versions for compat., see h1qcd.f   
+c                       10:  H1
+c                       20:  Zeus
+c                       30:  H1Zeus combined
+c                       older versions for compat., see h1qcd.f
 c                        2:  NLO fit as in H1
 c                        5:  LO  fit as in H1
 c                        8:  extended version of H1
       IFITPDF = UIFIT
 
-c ---Anomalous coupling settings      
+c ---Anomalous coupling settings
       AAANOM = UAAANOM
       D_KAPPA = UDKAPPA
       LAMBDA = UDLAMBDA
@@ -282,12 +282,12 @@ c---Check POMWIG Settings + Initialisations for consistency
       CALL HWCHEK
 
 c---Call HWUSTA to make any particle stable
-      CALL HWUSTA('PI0     ')      
+      CALL HWUSTA('PI0     ')
 
 c---Initialize elementary process
       CALL HWEINI
 
-c---Initialize event record fixing : this will replace the beam 
+c---Initialize event record fixing : this will replace the beam
 c   electrons by protons, radiated photons by pomerons/reggeons etc
       CALL HWFXER(.TRUE.,IPROC)
 
@@ -337,16 +337,16 @@ c---Terminate elementary process
       CALL HWEFIN
 
 c---User's terminal calculations
-      CALL HWAEND      
+      CALL HWAEND
       STOP
       END
 C-----------------------------------------------------------------------
-C * 07/03/2003, Tibor Kucs                                             
-C * User's routine for initialization                                
-C----------------------------------------------------------------------- 
+C * 07/03/2003, Tibor Kucs
+C * User's routine for initialization
+C-----------------------------------------------------------------------
       SUBROUTINE HWABEG
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'FPMC.INC'
+      INCLUDE 'fpmc.inc'
       INCLUDE 'ffcard.inc'
 !      COMMON/ QUEST / IQUEST(10)   !pridano
 !      COMMON/ QUEST / IQUEST(10)   !pridano
@@ -362,13 +362,13 @@ c---HBOOK initialization
       CALL HCDIR('//PAWC',' ')
 
       ! for high capacity hbook
-      IQUEST(10) = 64000  
+      IQUEST(10) = 64000
 
 c     UNTNAME is adopted from the key
       CALL HROPEN(33,'HWIG',UNTNAME,'NQ',8192,ISTAT)
       ! for low capacitiy hbook
 c      CALL HROPEN(33,'HWIG',UNTNAME,'NC',4096,ISTAT)
-      
+
 c---Histograms
       CALL HBOOK1(101,'Proton v1sq     ',50,0.,2.,0.)
       CALL HBOOK1(102,'Proton v2sq     ',50,0.,2.,0.)
@@ -425,7 +425,7 @@ c  simulation ntuple initialisation
 
 
 C----------------------------------------------------------------------
-C * 07/11/2003 Maarten B.                                             
+C * 07/11/2003 Maarten B.
 C * User's routine to analyze data from event.
 C * Distributions relevant for DPE scattering. Assumptions:
 C    - initial protons are index 1 and 2
@@ -433,11 +433,11 @@ C    - scattered protons are index 5 and 7 (from 1 and 2 resp.)
 C    - pomerons are 4 and 6 (radiated from index 1 and 2 resp.)
 C    - gluons are 8 and 9 (from index 4 and 6 resp.)
 C    - Higgs/Z/... is 10
-C    - di-parton is 11 and 12           
-C----------------------------------------------------------------------- 
+C    - di-parton is 11 and 12
+C-----------------------------------------------------------------------
       SUBROUTINE HWANAL
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'FPMC.INC'
+      INCLUDE 'fpmc.inc'
       INCLUDE 'ffcard.inc'
 
       integer IERR
@@ -449,7 +449,7 @@ C-----------------------------------------------------------------------
       common /remnant/ xg1b,xg2b
 
       IF(IERROR.NE.0) RETURN
-      
+
       WEIGHT=1d0
 
       V1SQ=PHEP(1,5)**2+PHEP(2,5)**2
@@ -513,8 +513,6 @@ C-----------------------------------------------------------------------
 
 c      print *,'central mass', sqrt(xi1*xi2)*ROOTS
 
-c --- my reconstruction is called
-      CALL FPMC_RECO(UOUTPUT,IERR)
       IF(IERR.NE.0) return
 
       call hfnt(777)
@@ -522,12 +520,12 @@ c --- my reconstruction is called
       RETURN
       END
 C----------------------------------------------------------------------
-C * 07/11/2003 Maarten B.                                             
-C * User's routine for terminal calculations, histogram output, etc.           
-C----------------------------------------------------------------------- 
+C * 07/11/2003 Maarten B.
+C * User's routine for terminal calculations, histogram output, etc.
+C-----------------------------------------------------------------------
       SUBROUTINE HWAEND
       INCLUDE 'HERWIG65.INC'
-      INCLUDE 'FPMC.INC'
+      INCLUDE 'fpmc.inc'
       INCLUDE 'ffcard.inc'
       INTEGER ICYCLE
 
