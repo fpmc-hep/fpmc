@@ -243,15 +243,15 @@ c---Set the number of nucleons - for QED photon flux
       write(*,*) 'ZION      = ',ZION
       write(*,*) 'AION      = ',AION
       write(*,*) 'BMIN      = ',RBMIN
-      write(*,*) 'AAANOM    = ', AAANOM
-      write(*,*) 'DKAPPA    = ', D_KAPPA
-      write(*,*) 'DLAMBDA   = ', LAMBDA
-      write(*,*) 'ANOMCUTOFF= ', ANOMCUTOFF
-      write(*,*) 'AAEXOTIC  = ', AAEXOTIC
-      write(*,*) 'AUTPDF(1) = ', AUTPDF(1)
-      write(*,*) 'MODPDF(1) = ', MODPDF(1)
-      write(*,*) 'AUTPDF(2) = ', AUTPDF(2)
-      write(*,*) 'MODPDF(2) = ', MODPDF(2)
+      write(*,*) 'AAANOM    = ',AAANOM
+      write(*,*) 'DKAPPA    = ',D_KAPPA
+      write(*,*) 'DLAMBDA   = ',LAMBDA
+      write(*,*) 'ANOMCUTOFF= ',ANOMCUTOFF
+      write(*,*) 'AAEXOTIC  = ',AAEXOTIC
+      write(*,*) 'AUTPDF(1) = ',AUTPDF(1)
+      write(*,*) 'MODPDF(1) = ',MODPDF(1)
+      write(*,*) 'AUTPDF(2) = ',AUTPDF(2)
+      write(*,*) 'MODPDF(2) = ',MODPDF(2)
       write(*,*)
 
       END
