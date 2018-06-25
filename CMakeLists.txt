@@ -61,13 +61,13 @@ include_directories(Examples)
 include_directories(${HEPMC_INCLUDE})
 
 if(CERNLIB_PAWLIB_LIB)
-  add_executable(fpmc-paw Examples/fpmc_main.f Examples/fpmc_load_params.f Examples/fpmc_var_ini.f Examples/fpmc_lhe.f Examples/ntuple.f)
-  target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
-
   add_executable(fpmc-lhe Examples/fpmc_main_lhe.f Examples/fpmc_lhe.f Examples/fpmc_load_params.f Examples/fpmc_var_ini.f)
   target_link_libraries(fpmc-lhe ${LIBRARIES} ${CERNLIB_PACKLIB_LIB})
+
+  add_executable(fpmc-paw Examples/fpmc_main.f Examples/fpmc_load_params.f Examples/fpmc_var_ini.f Examples/fpmc_lhe.f Examples/ntuple.f)
+  target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
 else()
-  add_executable(fpmc-lhe Examples/fpmc_main_lhe.cc Examples/fpmc_lhe.f Examples/fpmc_load_params.f Examples/dummy_hwaend.f)
+  add_executable(fpmc-lhe Examples/fpmc_main_lhe.f Examples/fpmc_lhe.f Examples/fpmc_load_params.f Examples/fpmc_var_ini.f Examples/fpmc_legacy_ffcard.cc)
   target_link_libraries(fpmc-lhe ${LIBRARIES})
 endif()
 
