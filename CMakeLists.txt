@@ -66,6 +66,9 @@ if(CERNLIB_PAWLIB_LIB)
 
   add_executable(fpmc-lhe Examples/fpmc_main_lhe.f Examples/fpmc_lhe.f Examples/fpmc_load_params.f Fpmc/src/ffcard.f)
   target_link_libraries(fpmc-lhe ${LIBRARIES} ${CERNLIB_PACKLIB_LIB})
+else()
+  add_executable(fpmc-lhe Examples/fpmc_main_lhe.cc Examples/fpmc_lhe.f Examples/fpmc_load_params.f Examples/dummy_hwaend.f)
+  target_link_libraries(fpmc-lhe ${LIBRARIES})
 endif()
 
 add_executable(fpmc Examples/fpmc_bare.cc Examples/dummy_hwaend.f)

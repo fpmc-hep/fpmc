@@ -7,6 +7,7 @@
 #include <sstream>
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 
 namespace fpmc
 {
@@ -76,7 +77,7 @@ namespace fpmc
           oss << "--" <<  par << " [" << par << "] ";
         }
         oss << std::endl;
-        std::cout << oss.str(); 
+        std::cout << oss.str();
       }
     private:
       std::string command_name_;
