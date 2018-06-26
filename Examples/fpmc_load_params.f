@@ -10,7 +10,6 @@ c---Common block
 c---User's declarations
       DOUBLE PRECISION CMSENR
       INTEGER N
-      CHARACTER ANSWER
 c---External
       INCLUDE 'ffcard.inc'
 
@@ -41,7 +40,6 @@ c---Setting the hard subprocess (see manual)
       IPROC = UIPROC
 
 c---Option to include hadronization and showering effects
-c      ANSWER='Y' ! say 'N' to skip this part
       ANSWER=UHADR
 
 c---Initialization of other Herwig common blocks

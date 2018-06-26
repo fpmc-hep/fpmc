@@ -11,7 +11,6 @@ c---Common block
 c---User's declarations
       DOUBLE PRECISION CMSENR
       INTEGER N
-      CHARACTER ANSWER
       LOGICAL READCARD
 c---External
       INCLUDE 'ffcard.inc'
