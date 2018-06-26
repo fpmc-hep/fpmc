@@ -38,9 +38,8 @@ extern "C" {
       address = reinterpret_cast<int&>( val );
     }
     else if ( stype == "m" ) {
-      const size_t size = value.size()-2; // strip the trailing "'" + '\0'
-      char val[size];
-      value.copy( val, size, 1 ); // strip the leading "'"
+      char val[100];
+      value.copy( val, value.size()-2, 1 ); // strip the leading "'" and the trailing "'" + '\0'
       address = reinterpret_cast<int&>( val );
     }
   }

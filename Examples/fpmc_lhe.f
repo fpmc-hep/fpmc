@@ -16,11 +16,11 @@ C-----------------------------------------------------------------------
       INTEGER NUP,IDRPUP
       DOUBLE PRECISION AMASSG,VTIM,ASPI,ALFAS,HWUALF,SCALE
       EXTERNAL HWUALF
-      II1=0 ! PDG id
-      II2=0 ! mother 1
-      II3=0 ! mother 2
-      II4=0 ! colour 1
-      II5=0 ! colour 2
+      II1=0
+      II2=0
+      II3=0
+      II4=0
+      II5=0
       ILEP=0
       JMOT=0
       ISIS1 = 0
@@ -137,35 +137,23 @@ C-----------------------------------------------------------------------
 C     Prints out event data in LHE format in unit 45
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
-      INTEGER J,IST,ILEP
+      INTEGER J,IST
       INTEGER I
       INTEGER IGA1,IGA2,IDA1,IDA2,IPR1,IPR2
-      INTEGER JMOT,ISIS1,ISIS2,IFLEP1,IFLEP2,IFLEP3,IFLEP4
-      INTEGER II1,II2,II3,II4,II5
+      INTEGER ICOL1,ICOL2
       INTEGER NUP,IDRPUP
-      DOUBLE PRECISION AMASSG,VTIM,ASPI,ALFAS,HWUALF,SCALE
+      DOUBLE PRECISION VTIM,ASPI,ALFAS,HWUALF,SCALE
+      LOGICAL SAVEPART
 
       EXTERNAL HWUALF
-      II1=0
-      II2=0
-      II3=0
-      II4=0
-      II5=0
-      ILEP=0
-      JMOT=0
-      ISIS1 = 0
-      ISIS2 = 0
-      IFLEP1 = 0
-      IFLEP2 = 0
-      IFLEP3 = 0
-      IFLEP4 = 0
       NUP = 0
       IDRPUP = 1
-      AMASSG = 0.0
       VTIM = 0.0
       ASPI = 9.0
       ALFAS = HWUALF(1,EMSCA)
       SCALE = 1.0
+      ICOL1 = 0
+      ICOL2 = 0
 
 C
 C Write start of event in the lhe file
@@ -173,33 +161,38 @@ C
       WRITE(45,40)
 
       DO 510 I=1,NHEP
-        IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.1)IPR1=I
-        IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.2)IPR2=I
+        IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.1) IPR1=I
+        IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.2) IPR2=I
 
-        NUP = NUP + 1
+        SAVEPART = .FALSE.
+        IF(ISTHEP(I).EQ.1.OR.ISTHEP(I).EQ.113.OR.ISTHEP(I).EQ.114) THEN
+          SAVEPART = .TRUE.
+        ENDIF
+
+        IF(SAVEPART) THEN
+          NUP = NUP + 1
+        ENDIF
+
   510 CONTINUE
 
       WRITE(45,41)NUP,IDRPUP,EVWGT,SCALE,ALPHEM,ALFAS
       DO 511 I=1,NHEP
-        IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.1)IPR1=I
-        IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.2)IPR2=I
+        IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.1) IPR1=I
+        IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.2) IPR2=I
 
-        WRITE(45,190) IDHEP(I),ISTHEP(I),
-     &    JMOHEP(1,I),JMOHEP(2,I),II4,II5, !FIXME need to retrieve the colour flow!
-     &    (PHEP(J,I),J=1,5),VTIM,ASPI
+        SAVEPART = .FALSE.
+        IF(ISTHEP(I).EQ.1.OR.ISTHEP(I).EQ.113.OR.ISTHEP(I).EQ.114) THEN
+          SAVEPART = .TRUE.
+          ISTHEP(I) = 1
+        ENDIF
+
+        IF(SAVEPART) THEN
+          WRITE(45,190) IDHEP(I),ISTHEP(I),
+     &      0,0,ICOL1,ICOL2,
+     &      (PHEP(J,I),J=1,5),VTIM,ASPI
+        ENDIF
 
   511 CONTINUE
-
-C Now print the outgoing protons
-C      DO 412 I=1,NHEP
-C        IF (I.EQ.IPR1.OR.I.EQ.IPR2)THEN
-C          II1 = 1
-C          II2 = 1
-C          II3 = 2
-C          WRITE(45,190)IDHEP(I),II1,II2,II3,II4,II5,
-C     &      (PHEP(J,I),J=1,5),VTIM,ASPI
-C        ENDIF
-C  412 CONTINUE
 
       WRITE(45,50)
 
@@ -220,15 +213,12 @@ C     Prints out initialization in LHE format in unit 45
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
       INCLUDE 'ffcard.inc'
-      INTEGER IPR1,IPR2,I1,I2,I3,I4,III5,IPROC2
+      INTEGER IPR1,IPR2,I3,I4,III5,IPROC2
       DOUBLE PRECISION ERWGT
 
 C FIXME
       IPR1 = 2212
       IPR2 = 2212
-C      I1 = 0
-      I1 = 1
-      I2 = 0
 C      I3 = 3
       I3 = 4
       I4 = 1
@@ -239,15 +229,16 @@ C      I3 = 3
 
       WRITE(45,30)
       WRITE(45,40)
-C      WRITE(45,41)IPR1,IPR2,PBEAM1,PBEAM2,III5,III5,III5,III5,I3,I4
-C      WRITE(45,42)1000.*AVWGT,1000.*ERWGT,AVWGT,IPROC2
-      WRITE(45,41)IPR1,IPR2,PBEAM1,PBEAM2,I2,I2,IPROC2,IPROC2,I3,I4
-      WRITE(45,42)1000.*AVWGT,1000.*ERWGT,AVWGT,I1
+      WRITE(45,41)IPR1,IPR2,PBEAM1,PBEAM2,III5,III5,III5,III5,I3,I4
+      WRITE(45,42)1000.*AVWGT,1000.*ERWGT,AVWGT,IPROC2
+C      WRITE(45,41)IPR1,IPR2,PBEAM1,PBEAM2,I2,I2,IPROC2,IPROC2,I3,I4
+C      WRITE(45,42)1000.*AVWGT,1000.*ERWGT,AVWGT,I1
       WRITE(45,50)
    30 FORMAT('<LesHouchesEvents version=' '"' '1.0' '"' '>')
    40 FORMAT('<header>'/'</header>'/'<init>')
 C   41 FORMAT(2(5X,I4),2(2X,E15.8),2(2X,I2),2(2x,I2),2(2X,I1))
-   41 FORMAT(2(5X,I4),2(2X,E15.8),2(2X,I1),2(2x,I5),2(2X,I1))
+C   41 FORMAT(2(5X,I4),2(2X,E15.8),2(2X,I1),2(2x,I5),2(2X,I1))
+   41 FORMAT(2(5X,I4),2(2X,E15.8),2(2X,I4),2(2X,I4),2(2X,I4))
    42 FORMAT(3(2x,E15.8),2X,I5)
    50 FORMAT('</init>')
       RETURN
