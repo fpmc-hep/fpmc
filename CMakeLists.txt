@@ -3,6 +3,14 @@ project(FPMC)
 set(PROJECT_VERSION 1)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -Wno-deprecated-declarations -pedantic -lgfortran -std=c++11 -g")
+#----- small fix for gcc-gfortran versions >= 8.1
+#----- (while CHIDe/KMR codes are not fixed)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+else()
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 8.1)
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -std=legacy")
+  endif()
+endif()
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 set(MODULES Fpmc Herwig)
@@ -47,16 +55,21 @@ set(LIBRARIES Fpmc ${GSL_LIB} ${GSL_CBLAS_LIB} ${LHAPDF_LIB} ${CLHEP_LIB} ${HEPM
 
 #----- test executable
 
-if(CERNLIB_PAWLIB_LIB)
-  include_directories(Examples)
-  include_directories(Fpmc/External)
-  include_directories(Fpmc/interface)
-  add_executable(fpmc-paw Examples/fpmc_main.f Fpmc/src/ffcard.f Examples/fpmc_lhe.f Examples/ntuple.f Examples/reco_ok/reco_ok.f Examples/reco_ok/pxcone_mod_new.f)
-  target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
-endif()
-
-include_directories(${HEPMC_INCLUDE})
+include_directories(Fpmc/interface)
+include_directories(Fpmc/External)
 include_directories(Examples)
+include_directories(${HEPMC_INCLUDE})
+
+if(CERNLIB_PAWLIB_LIB)
+  add_executable(fpmc-lhe Examples/fpmc_main_lhe.f Examples/fpmc_lhe.f Examples/fpmc_load_params.f Examples/fpmc_var_ini.f)
+  target_link_libraries(fpmc-lhe ${LIBRARIES} ${CERNLIB_PACKLIB_LIB})
+
+  add_executable(fpmc-paw Examples/fpmc_main.f Examples/fpmc_load_params.f Examples/fpmc_var_ini.f Examples/fpmc_lhe.f Examples/ntuple.f)
+  target_link_libraries(fpmc-paw ${LIBRARIES} ${CERNLIB_MATHLIB_LIB} ${CERNLIB_PAWLIB_LIB} ${CERNLIB_PACKLIB_LIB})
+else()
+  add_executable(fpmc-lhe Examples/fpmc_main_lhe.f Examples/fpmc_lhe.f Examples/fpmc_load_params.f Examples/fpmc_var_ini.f Examples/fpmc_legacy_ffcard.cc)
+  target_link_libraries(fpmc-lhe ${LIBRARIES})
+endif()
 
 add_executable(fpmc Examples/fpmc_bare.cc Examples/dummy_hwaend.f)
 target_link_libraries(fpmc ${LIBRARIES})
