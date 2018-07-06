@@ -68,7 +68,7 @@ namespace fpmc
       char* buf; strtod( value.c_str(), &buf );
       if ( *buf!=0 ) value = "'" + value + "'";
       os << std::left
-	 << std::setw( 15 ) << key
+         << std::setw( 15 ) << key
          << std::setw( 50 ) << value << std::endl;
       out << os.str();
     }

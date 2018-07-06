@@ -77,7 +77,7 @@ target_link_libraries(fpmc ${LIBRARIES})
 add_executable(fpmc-hepmc Examples/fpmc_hepmc.cc Examples/dummy_hwaend.f)
 target_link_libraries(fpmc-hepmc ${LIBRARIES})
 
-find_package(ROOT)
+find_package(ROOT QUIET)
 if(ROOT_FOUND)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
   add_executable(fpmc-root Examples/fpmc_root.cc Examples/dummy_hwaend.f)
@@ -94,5 +94,5 @@ install(DIRECTORY Fpmc DESTINATION include FILES_MATCHING PATTERN "*.inc")
 #----- copies
 
 file(COPY ${PROJECT_SOURCE_DIR}/Datacards/ DESTINATION Datacards/)
-file(COPY ${PROJECT_SOURCE_DIR}/Fpmc/External/CHIDe/Data/ DESTINATION Fpmc/External/CHIDe/Data/)
+file(COPY ${PROJECT_SOURCE_DIR}/Fpmc/External/CHIDe/Data/ DESTINATION External/CHIDe/Data/)
 
