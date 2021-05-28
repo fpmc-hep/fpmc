@@ -137,6 +137,7 @@ C-----------------------------------------------------------------------
 C     Prints out event data in LHE format in unit 45
 C-----------------------------------------------------------------------
       INCLUDE 'HERWIG65.INC'
+      INCLUDE 'ffcard.inc'
       INTEGER J,IST
       INTEGER I
       INTEGER IGA1,IGA2,IDA1,IDA2,IPR1,IPR2
@@ -181,9 +182,17 @@ C
         IF(IDHEP(I).EQ.2212.AND.JMOHEP(1,I).EQ.2) IPR2=I
 
         SAVEPART = .FALSE.
-        IF(ISTHEP(I).EQ.1.OR.ISTHEP(I).EQ.113.OR.ISTHEP(I).EQ.114) THEN
-          SAVEPART = .TRUE.
-          ISTHEP(I) = 1
+        IF(UHADR.EQ.'N') THEN
+          IF(ISTHEP(I).EQ.1) THEN
+            SAVEPART = .TRUE.
+          ELSEIF (ISTHEP(I).EQ.113.OR.ISTHEP(I).EQ.114) THEN
+            SAVEPART = .TRUE.
+            ISTHEP(I) = 1
+          ENDIF
+        ELSE
+          IF(ISTHEP(I).EQ.1) THEN
+            SAVEPART = .TRUE.
+          ENDIF
         ENDIF
 
         IF(SAVEPART) THEN
