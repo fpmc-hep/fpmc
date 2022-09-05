@@ -48,9 +48,11 @@ c---FLUX - POMERON + REGEON PARAMETERS
 c--- Anomalous coupling variables for anomalous AA->WW, AA-> ZZ, AA-> AA
       INTEGER AAANOM
       DOUBLE PRECISION D_KAPPA, LAMBDA, ANOMCUTOFF, A0W, ACW, A0Z, ACZ,
-     &        A1A, A2A
+     &        A1A, A2A, XI1TTBAR, XI2TTBAR, XI3TTBAR, XI4TTBAR, 
+     &        XI5TTBAR, XI6TTBAR
       COMMON /AAANOMAL/ D_KAPPA, LAMBDA, ANOMCUTOFF, A0W, ACW, A0Z, ACZ,
-     &        A1A, A2A, AAANOM
+     &        A1A, A2A, XI1TTBAR, XI2TTBAR, XI3TTBAR, XI4TTBAR, 
+     &        XI5TTBAR, XI6TTBAR, AAANOM
 
 c--- Variables for exotic  AA->AA and AA->ZZ and in the future AA->WW and AA->AZ ----C. Baldenegro 05-2016
       DOUBLE PRECISION AAM, AAQ, AAN, AAF0, AAF0Z, AAF0W, AAF0ZG,

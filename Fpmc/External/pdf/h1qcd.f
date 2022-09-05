@@ -208,10 +208,10 @@ c      XPQ( 4) = UDS_T/100.D0
 c      print *,'xpq:',xpq(-1),xpq(0)
 
 c CHR modify high x gluon
-c      GLU_NU=0.0d0
-c      IF(IFIT.NE.0) print *,' Gluon variation, normally should be =0 ',
-c     . GLU_NU
-c      XPQ( 0) = xpq(0) * (1.D0-zt)**(GLU_NU)
+      GLU_NU=0.000000d0
+      IF(IFIT.NE.0) print *,' Gluon variation, normally should be =0 ',
+     . GLU_NU
+      XPQ( 0) = xpq(0) * (1.D0-zt)**(GLU_NU)
 
 
 C Check output

@@ -62,7 +62,8 @@ extern "C"
   //--- anomalous coupling variables for anomalous AA->WW, AA-> ZZ, AA-> AA
   typedef struct {
     double D_KAPPA, LAMBDA, ANOMCUTOFF, A0W, ACW, A0Z, ACZ,
-           A1A, A2A;
+           A1A, A2A, XI1TTBAR, XI2TTBAR, XI3TTBAR, 
+           XI4TTBAR, XI5TTBAR, XI6TTBAR;
     int    AAANOM;
   } aaanomal_t;
   extern aaanomal_t aaanomal_;
@@ -119,7 +120,9 @@ extern "C"
            CHIDeX, CHIDeXP, CHIDeS2,
            XI1Min, XI1Max, XI2Min, XI2Max,
            CHIDeGapMin, CHIDeGapMax,
-           KMR2Q2CT, KMR2SRV, KMR2SCALE;
+           KMR2Q2CT, KMR2SRV, KMR2SCALE,
+           XI1TTBAR, XI2TTBAR, XI3TTBAR, 
+           XI4TTBAR, XI5TTBAR, XI6TTBAR;
   } myffread1_t;
   //extern myffread1_t myffread1_;
 

@@ -300,7 +300,7 @@ C ... Check NFLUX / TYPINT compatibility
       IF(TYPINT.NE.'QED') THEN
         IF(TYPINT.NE.'QCD') THEN
         PRINT*, ' '
-        PRINT*, ' FPMC - You requested ilegal type of interaction '
+        PRINT*, ' FPMC - You requested illegal type of interaction '
         PRINT*, '         TYPINT = ', TYPINT
         PRINT*, ' TYPINT should be set to QCD/QED '
         PRINT*, ' '
@@ -314,7 +314,7 @@ C ... Check NFLUX / TYPINT compatibility
       IF(TYPEPR.NE.'INC') THEN
          IF(TYPEPR.NE.'EXC') THEN
         PRINT*, ' '
-        PRINT*, ' FPMC - You requested ilegal type of production '
+        PRINT*, ' FPMC - You requested illegal type of production '
         PRINT*, '         TYPEPR = ', TYPEPR
         PRINT*, ' TYPEPR should be set to INC/EXC '
         PRINT*, ' '
@@ -580,8 +580,21 @@ C--M.S exclusive diphoton production
          ENDIF
 
          IF(AAEXOTIC.EQ.0)THEN
+           IF(IPROC.EQ.16075)THEN
+            PRINT*, ' - - - - - - - - - FPMC - - - - - - - - - '
+            PRINT *, ' '
+            PRINT *, 'G.von Gersdorff and S.Fichet ME used for 
+     &      AA->ttbar '
+            PRINT *, 'with anomalous coupling'
+            PRINT *, 'Anomalous coupling parameters set to:'
+            PRINT *, '   XI1TTBAR  = ', XI1TTBAR
+            PRINT *, '   XI2TTBAR  = ', XI2TTBAR
+            PRINT *, '   XI3TTBAR  = ', XI3TTBAR
+            PRINT *, '   XI4TTBAR  = ', XI4TTBAR
+            PRINT *, '   XI5TTBAR  = ', XI5TTBAR
+            PRINT *, '   XI6TTBAR  = ', XI6TTBAR
+           ENDIF
          ELSEIF(AAEXOTIC.EQ.1)THEN
-            PRINT *, 'EXOTICS FOR EXCL AAAA'
            IF( IPROC.LT.16063.AND.IPROC.GT.16065) THEN
             PRINT*, ' '
             PRINT*, ' FPMC - Exotic AAAA coupling available '
@@ -1257,7 +1270,7 @@ c nflux=20,22 CHR/Yura
          W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
          X = 1.D0/(Z**(2.D0*alphaP-1.D0))
          F = X*W*V
-	 ENDIF
+         ENDIF
       ELSEIF(NFLUX.EQ.22) THEN
          IF(IND.EQ.2) THEN
          Q2MIN = Z*Z*0.88d0/(1d0-Z)/QSCALE
@@ -1269,7 +1282,7 @@ c nflux=20,22 CHR/Yura
          W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
          X = 1.D0/(Z**(2.D0*alphaP-1.D0))
          F = X*W*V
-	 ENDIF
+         ENDIF
       ELSEIF (NFLUX.EQ.16) THEN
 C---KMR flux
          IF(IND.EQ.1) THEN
@@ -1288,11 +1301,11 @@ C ... end R.S.
 C CR YURA POm Reg
       ELSEIF(NFLUX.EQ.19) THEN
          IF(IND.EQ.1) THEN
-	 	V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
-     + 		  DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
-     		W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
-		X = 1.D0/(Z**(2.D0*alphaP-1.D0))
-		F = X*W*V
+                V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
+     +            DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
+                W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
+                X = 1.D0/(Z**(2.D0*alphaP-1.D0))
+                F = X*W*V
 c          print *,'F ind 1 :',Z,F
 c...Cox-Forshaw reggeon flux:
          ELSEIF (IND.EQ.2) THEN
@@ -1302,14 +1315,14 @@ c...Cox-Forshaw reggeon flux:
                 X = 1.D0/(Z**(2.D0*alphaR-1.D0))
                 F = X*W*V
 c                print *,'F IND 2 :',Z,F
-	 ENDIF
+         ENDIF
       ELSEIF(NFLUX.EQ.21) THEN
          IF(IND.EQ.2) THEN
-	 	V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
-     + 		  DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
-     		W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
-		X = 1.D0/(Z**(2.D0*alphaP-1.D0))
-		F = X*W*V
+                V = DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMIN)-
+     +            DEXP(-(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))*TMAX)
+                W = 1.D0/(Bpom+2.D0*alphaPp*DLOG(1.D0/Z))
+                X = 1.D0/(Z**(2.D0*alphaP-1.D0))
+                F = X*W*V
 c...Cox-Forshaw reggeon flux:
          ELSEIF (IND.EQ.1) THEN
                 V = DEXP(-(Breg+2.D0*alphaRp*DLOG(1.D0/Z))*TMIN)-
@@ -1317,7 +1330,7 @@ c...Cox-Forshaw reggeon flux:
                 W = 1.D0/(Breg+2.D0*alphaRp*DLOG(1.D0/Z))
                 X = 1.D0/(Z**(2.D0*alphaR-1.D0))
                 F = X*W*V
-	 ENDIF
+         ENDIF
       ELSE
          WRITE(*,*) 'In FLUX: NFLUX must be 9-16,18-26 in FPMC!'
          STOP
@@ -1700,7 +1713,7 @@ c         IF(IND.EQ.1) THEN
              GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)
 c         ELSEIF(IND.EQ.2) THEN
 c             GAMWT = GAMWT*F*ZGAM/C
-c	 ENDIF
+c        ENDIF
 C CHR Yura modif Reg Pom
       ELSEIF (NFLUX.EQ.21) THEN
              CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
@@ -1712,7 +1725,7 @@ c             CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
 c             GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)
 c         ELSEIF(IND.EQ.1) THEN
 c             GAMWT = GAMWT*F*ZGAM/C
-c	 ENDIF
+c        ENDIF
 C CHR Yura modif 10/2013 gamma+P
       ELSEIF (NFLUX.EQ.20) THEN
 c         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
@@ -1720,24 +1733,24 @@ c         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
              CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
              CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
              GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)
-c	     print *,'f fn gamwt :',f,fn,gamwt
-	 ELSEIF(IND.EQ.1) THEN
+c            print *,'f fn gamwt :',f,fn,gamwt
+         ELSEIF(IND.EQ.1) THEN
              CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
              GAMWT = GAMWT*F*ZGAM/C
-c	     print *,'f fn gamwt ind 1:',f,fn,gamwt
-	 ENDIF
+c            print *,'f fn gamwt ind 1:',f,fn,gamwt
+         ENDIF
 C CHR Yura P + gamma
       ELSEIF (NFLUX.EQ.22) THEN
          IF(IND.EQ.1) THEN
              CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
              CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
              GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)
-c	     print *,'f fn gamwt :',f,fn,gamwt
-	 ELSEIF(IND.EQ.2) THEN
+c            print *,'f fn gamwt :',f,fn,gamwt
+         ELSEIF(IND.EQ.2) THEN
              CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
              GAMWT = GAMWT*F*ZGAM/C
-c	     print *,'f fn gamwt ind 2:',f,fn,gamwt
-	 ENDIF
+c            print *,'f fn gamwt ind 2:',f,fn,gamwt
+         ENDIF
 C CHR ion proton-ion gamma gamma
       ELSEIF (NFLUX.EQ.23) THEN
          CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
@@ -1752,27 +1765,27 @@ C CHR ion proton-ion pomeron gamma
          CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
          CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
          GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)
-	 ELSEIF(IND.EQ.2) THEN
+         ELSEIF(IND.EQ.2) THEN
          CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
          GAMWT = GAMWT*F*ZGAM/C
-	 ENDIF
+         ENDIF
 C CHR ion proton-ion pomeron gamma
       ELSEIF (NFLUX.EQ.26) THEN
          IF(IND.EQ.2) THEN
          CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
          CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
          GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)
-	 ELSEIF(IND.EQ.1) THEN
+         ELSEIF(IND.EQ.1) THEN
          CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
          GAMWT = GAMWT*F*ZGAM/C
-	 ENDIF
+         ENDIF
 
 
 c         CALL FLUX(F,ZGAM,QQMIN,QQMAX,IPRO,IHEP)
 c         IF(IND.EQ.1) THEN
 c             CALL FLUX(FN,ZH1,QQMIN,QQMAX,IPRO,IHEP)
 c             GAMWT = GAMWT*F*ZGAM/(C*FN*zh1)
-c	 ENDIF
+c        ENDIF
 C ... begin R.S.
 C     In CHIDe model the integrand is not factorised into flux and hard
 C     process, therefore there is no flux here.
@@ -1987,7 +2000,7 @@ C        function envelope is 1/ebeam/z*alpha/pifac/Q2
         END DO
         ELSEIF(IND.EQ.2) THEN
          Q2=1.D-3
-	ENDIF
+        ENDIF
 
 
 C CHR  ion proton
@@ -2019,7 +2032,7 @@ C        function envelope is 1/ebeam/z*alpha/pifac/Q2
         END DO
         ELSEIF(IND.EQ.1) THEN
          Q2=1.D-3
-	ENDIF
+        ENDIF
 
 C CHR proton ion Pomeron gamma
       ELSEIF((NFLUX.EQ.25).AND.ZION.GE.10) THEN
@@ -2032,7 +2045,7 @@ C ......   H1 Pomeron
      +     (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
        ELSEIF(IND.EQ.2) THEN
          Q2=1.D-3
-	ENDIF
+        ENDIF
 
 
 
@@ -2047,7 +2060,7 @@ C ......   H1 Pomeron
      +     (DEXP(-C*QQMIN)-DEXP(-C*QQMAX))))
        ELSEIF(IND.EQ.1) THEN
          Q2=1.D-3
-	ENDIF
+        ENDIF
 
 
       ELSEIF((NFLUX.EQ.12.AND.ZION.EQ.1)
@@ -3062,35 +3075,35 @@ C DIS case : don't touch Beam1 (always e+/e-), modify only Beam2 (p,pbar)
             IDHEP(ISEC)=IDPDG(IREG)
 C CHR/Yura Pom Reg
           ELSEIF(NFLUX.EQ.19) THEN
-	    IF(I.EQ.1) THEN
+            IF(I.EQ.1) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
             ELSEIF(I.EQ.2) THEN
             IDHW(ISEC)=IREG
             IDHEP(ISEC)=IDPDG(IREG)
-	    ENDIF
+            ENDIF
 C Yura/CHR Reg Pom
           ELSEIF(NFLUX.EQ.21) THEN
-	    IF(I.EQ.2) THEN
+            IF(I.EQ.2) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
             ELSEIF(I.EQ.1) THEN
             IDHW(ISEC)=IREG
             IDHEP(ISEC)=IDPDG(IREG)
-	    ENDIF
+            ENDIF
           ELSEIF(NFLUX.LE.11.OR.NFLUX.EQ.16) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
 C Yura/CHR Photon Pom
           ELSEIF(NFLUX.EQ.20) THEN
             IF(I.EQ.2) THEN
-	    IDHW(ISEC)=IPOM
+            IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
             ENDIF
 C Yura/CHR Pom Photon
           ELSEIF(NFLUX.EQ.22) THEN
             IF(I.EQ.1) THEN
-	    IDHW(ISEC)=IPOM
+            IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
             ENDIF
           ENDIF
@@ -3115,34 +3128,34 @@ C CHR Rafal Should it be 11 or 16 ???????
                IDHEP(ISEC)=IDPDG(IREG)
 C CHR/Yura Pom Reg
             ELSEIF(NFLUX.EQ.19) THEN
-	     IF(I.EQ.1) THEN
+             IF(I.EQ.1) THEN
               IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
               ELSEIF(I.EQ.2) THEN
                IDHW(ISEC)=IREG
                IDHEP(ISEC)=IDPDG(IREG)
-	     ENDIF
+             ENDIF
 C CHR/Yura Reg Pom (non sense here)
             ELSEIF(NFLUX.EQ.21) THEN
-	     IF(I.EQ.2) THEN
+             IF(I.EQ.2) THEN
               IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
               ELSEIF(I.EQ.1) THEN
                IDHW(ISEC)=IREG
                IDHEP(ISEC)=IDPDG(IREG)
-	     ENDIF
+             ENDIF
 C CHR/Yura Photon Pom (non sense here)
             ELSEIF(NFLUX.EQ.20) THEN
              IF(I.EQ.2) THEN
-	      IDHW(ISEC)=IPOM
+              IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
-	     ENDIF
+             ENDIF
 C CHR/Yura Pom Photon (non sense here)
             ELSEIF(NFLUX.EQ.22) THEN
              IF(I.EQ.1) THEN
-	      IDHW(ISEC)=IPOM
+              IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
-	     ENDIF
+             ENDIF
             ELSEIF(NFLUX.LE.11.OR.NFLUX.EQ.16) THEN
                IDHW(ISEC)=IPOM
                IDHEP(ISEC)=IDPDG(IPOM)
@@ -3169,34 +3182,34 @@ C CHR/Rafal is it 16 or 11??????
                IDHEP(ISEC)=IDPDG(IREG)
 C CHR/Yura Pom Reg
             ELSEIF(NFLUX.EQ.19) THEN
-	     IF(I.EQ.1) THEN
+             IF(I.EQ.1) THEN
               IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
              ELSEIF(I.EQ.2) THEN
               IDHW(ISEC)=IREG
               IDHEP(ISEC)=IDPDG(IREG)
-	     ENDIF
+             ENDIF
 C CHR/Yura Reg Pom (non sense here)
             ELSEIF(NFLUX.EQ.21) THEN
-	     IF(I.EQ.2) THEN
+             IF(I.EQ.2) THEN
               IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
              ELSEIF(I.EQ.1) THEN
               IDHW(ISEC)=IREG
               IDHEP(ISEC)=IDPDG(IREG)
-	     ENDIF
+             ENDIF
 C CHR/Yura Pom Photon (non sense here)
             ELSEIF(NFLUX.EQ.20) THEN
              IF(I.EQ.2) THEN
-	      IDHW(ISEC)=IPOM
+              IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
-	     ENDIF
+             ENDIF
 C CHR/Yura Photon Pom (non sense here)
             ELSEIF(NFLUX.EQ.22) THEN
              IF(I.EQ.1) THEN
-	      IDHW(ISEC)=IPOM
+              IDHW(ISEC)=IPOM
               IDHEP(ISEC)=IDPDG(IPOM)
-	     ENDIF
+             ENDIF
             ELSEIF(NFLUX.LE.11.OR.NFLUX.EQ.16) THEN
                IDHW(ISEC)=IPOM
                IDHEP(ISEC)=IDPDG(IPOM)
@@ -3228,46 +3241,46 @@ C ... Modify secondary beams :
                  IDHEP(ISEC)=IDPDG(IREG)
 C CHR/Yura Pom Reg
           ELSEIF(NFLUX.EQ.19) THEN
-	    IF(I.EQ.1) THEN
+            IF(I.EQ.1) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
             ELSEIF(I.EQ.2) THEN
             IDHW(ISEC)=IREG
             IDHEP(ISEC)=IDPDG(IREG)
-	    ENDIF
+            ENDIF
 C CHR/Yura  Reg Pom - finally, it makes sense
           ELSEIF(NFLUX.EQ.21) THEN
-	    IF(I.EQ.2) THEN
+            IF(I.EQ.2) THEN
             IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
             ELSEIF(I.EQ.1) THEN
             IDHW(ISEC)=IREG
             IDHEP(ISEC)=IDPDG(IREG)
-	    ENDIF
+            ENDIF
 C CHR/Yura  Photon Pom - finally, it makes sense
           ELSEIF(NFLUX.EQ.20) THEN
             IF(I.EQ.2) THEN
-	    IDHW(ISEC)=IPOM
+            IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
-	    ENDIF
+            ENDIF
 C CHR/Yura  Pom Photon - finally, it makes sense
           ELSEIF(NFLUX.EQ.22) THEN
             IF(I.EQ.1) THEN
-	    IDHW(ISEC)=IPOM
+            IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
-	    ENDIF
+            ENDIF
 C CHR 2014 Photon Pom heavy ion - finally, it makes sense
           ELSEIF(NFLUX.EQ.26) THEN
             IF(I.EQ.2) THEN
-	    IDHW(ISEC)=IPOM
+            IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
-	    ENDIF
+            ENDIF
 C CHR 2014 Pom Photon heavy ion - finally, it makes sense
           ELSEIF(NFLUX.EQ.25) THEN
             IF(I.EQ.1) THEN
-	    IDHW(ISEC)=IPOM
+            IDHW(ISEC)=IPOM
             IDHEP(ISEC)=IDPDG(IPOM)
-	    ENDIF
+            ENDIF
               ELSEIF(NFLUX.LE.11.OR.NFLUX.EQ.16) THEN
                  IDHW(ISEC)=IPOM
                  IDHEP(ISEC)=IDPDG(IPOM)
@@ -3622,8 +3635,18 @@ c ... M.S.      : HQ=60,61,62,63,64,65 SM AA + AAANOM=3 def
             HQ=59 ! AA
             AAANOM=3
           ENDIF
+
+          IF (HQ.GE.78.AND.HQ.LE.79) THEN
+            HQ=59 ! AA
+            AAANOM=3
+          ENDIF
+
           IF (HQ.EQ.70) THEN
             HQ=13 !AA->GluGlu, C Baldenegro
+            AAANOM=3 !Enters M.S. SQME calls
+          ENDIF
+          IF (HQ.GE.75.AND.HQ.LE.77) THEN
+            HQ=6 !Top quark, A. Bellora
             AAANOM=3 !Enters M.S. SQME calls
           ENDIF
           IF (HQ.EQ.127) HQ=198
@@ -3657,7 +3680,8 @@ C Kinematics
            COSTH=(T-U)/(BE*S)
            EMSCA=SQRT(2.*S*T*U/(S*S+T*T+U*U))
 C Cross-sections
-        IF (HQ.NE.198.AND.HQ.NE.200.AND.HQ.NE.142.AND.HQ.NE.59) THEN
+        IF (HQ.NE.198.AND.HQ.NE.200.AND.HQ.NE.142.AND.HQ.NE.59
+     &    .AND.HQ.NE.6) THEN
 C --- Begin modif by Tibor Kucs 08/14/2003
 C     Updated by Maarten Boonekamp 11/03/2003
 c ... If QED use the original implementation :
@@ -3686,7 +3710,7 @@ c ...... gg -> qq
                 BESQ=1d0-4*XMSQ/S
                 XSQQ(IFLAVR) = TFACT*XMSQ/S/ETSQ**2*BESQ
                 SGGQQ=SGGQQ+XSQQ(IFLAVR)
-                ELSEIF(IFLAVR.GE.401.AND.IFLAVR.LE.406) THEN
+              ELSEIF(IFLAVR.GE.401.AND.IFLAVR.LE.406) THEN
                 XSQQ(IFLAVR) = 2*TFACT*XMSQ**2/S**2/ETSQ**2
                 SGGQQ=SGGQQ+XSQQ(IFLAVR)
               ENDIF
@@ -3740,6 +3764,7 @@ c ...... Total
      &              ' - STOP'
           STOP
         ENDIF
+
       ELSE
 
 c O.K. 01/11/2007 modified to include call to O'Mega matrix
@@ -3751,7 +3776,6 @@ c               FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
 c     $         *6*PIFAC*CFAC*ALPHEM**2/S**2
 c     $         *(1-S/(T*U)*(4D0/3*S+2*EMSQ)
 c     $         +(S/(T*U))**2*(2D0/3*S**2+2*EMSQ**2))
-
           IF(AAANOM.EQ.0)THEN
           ! original herwig formula
             FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
@@ -3897,6 +3921,36 @@ c ... According to the convention of O.K. for ZZ final states
               call resonances0even_sqme_az_c(AMP2, S, T, 1, 0,
      $        AAM, AAF0, AAF0ZG, AAW, AAA2)
               ENDIF
+c ... A.B. Calling anomalous ttbar production AA->ttbar 08-2020            
+              IF(HQ.EQ.6.AND.IPROC.EQ.16075) THEN
+              CALL eft_sqme_aattbar_c(AMP2, S, T,
+     $        XI1TTBAR,XI2TTBAR,XI3TTBAR,
+     $        XI4TTBAR,XI5TTBAR,XI6TTBAR, RMASS(6))
+              ENDIF
+
+c ... A.B. Calling anomalous ttbar production AA->ttbar 12-2021            
+              IF(HQ.EQ.6.AND.IPROC.EQ.16076) THEN
+              call resonances0even_sqme_aattbar_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAF0H, AAW, AAA2)
+              ENDIF
+
+c ... A.B. Calling anomalous ttbar production AA->ttbar 12-2021            
+              IF(HQ.EQ.6.AND.IPROC.EQ.16077) THEN
+              call resonances0odd_sqme_aattbar_c(AMP2, S, T, 1, 0,
+     $        AAM, AAF0, AAF0H, AAW, AAA2)
+              ENDIF
+
+              IF(HQ.EQ.59.AND.IPROC.EQ.16078) THEN
+              call resonances0even_sqme_aaaa_c(AMP2, S, T, 1, 2,
+     $        AAM, AAF0, AAW, AAA2)
+              ENDIF
+
+              IF(HQ.EQ.59.AND.IPROC.EQ.16079) THEN
+              call resonances0even_sqme_aaaa_c(AMP2, S, T, 1, 3,
+     $        AAM, AAF0, AAW, AAA2)
+              ENDIF
+
+
 c ... C.B. Calling GluGlu production (Spin0even resonance) AA->Dijet 05-2016
               IF(HQ.EQ.13.AND.IPROC.EQ.16070) THEN
               call resonances0even_sqme_gluglu_c(AMP2, S, T, 1, 0,
@@ -3911,7 +3965,7 @@ c ... C.B. Calling Higgs-Higgs production (Spin0even resonance) AA->Dijet 05-201
               call eft_sqme_aaaz_c(AMP2, S, T, 1, A1A, A2A, ANOMCUTOFF)
               ENDIF
 
-             FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
+              FACTR=-GEV2NB*2*LOG(TMAX/TMIN)*MAX(T,U)
      $         *2*PIFAC/(64.*PIFAC**2)/S**2*2d0*AMP2
 
 
@@ -3971,8 +4025,9 @@ c C.B. AZ
             ENDIF
             HCS=HCS+Q**4
             IF (GENEV.AND.HCS.GT.RCS) CALL HWHQCP(ID3,ID4,1243,61,*99)
-            ENDIF
- 10      CONTINUE
+          ENDIF
+ 10     CONTINUE
+
 C ... For 'QCD' no EM charge, it is set to ONE
       ELSE
         HCS=1.
@@ -4016,6 +4071,7 @@ c---End modif by Tibor Kucs 08/14/2003
       ELSE
         CALL HWETWO
       ENDIF
+      CONTINUE
       END
 
 CDECK  ID>, HWETWO.
@@ -4819,9 +4875,9 @@ c apply normalisation for reggeon on PDFs (not applied on flux)
             DIST(13)=Cr*GLU
             GOTO 999
 c Yura CHR Pom Reg
-	   ELSEIF (NFLUX.EQ.19) THEN
-c	   print *,'index in 19 :',ind,ibeam
-	   IF(IBEAM.EQ.1) THEN
+           ELSEIF (NFLUX.EQ.19) THEN
+c          print *,'index in 19 :',ind,ibeam
+           IF(IBEAM.EQ.1) THEN
            BCQ=QSCA*QSCA
 C Initialise xpq
             DO ILOOP=-6,6
@@ -4881,14 +4937,14 @@ c            valu(3)=2            ! GRV-P LO
             DIST(12)=0
             DIST(13)=Cr*GLU
 c            print *,'ind 2 glu :',x,qsca,dist(13)
-c	    print *,'enter glu pion :',glu
+c           print *,'enter glu pion :',glu
             GOTO 999
-	    ENDIF
+            ENDIF
 
 c Yura CHR Pom Reg
-	   ELSEIF (NFLUX.EQ.21) THEN
-c	   print *,'index in 21 :',ind,ibeam
-	   IF(IBEAM.EQ.2) THEN
+           ELSEIF (NFLUX.EQ.21) THEN
+c          print *,'index in 21 :',ind,ibeam
+           IF(IBEAM.EQ.2) THEN
            BCQ=QSCA*QSCA
 C Initialise xpq
             DO ILOOP=-6,6
@@ -4946,15 +5002,15 @@ C     Reggeon
             DIST(11)=0
             DIST(12)=0
             DIST(13)=Cr*GLU
-c	    print *,'enter glu pion :',glu
+c           print *,'enter glu pion :',glu
             GOTO 999
-	    ENDIF
+            ENDIF
 
 
 
 c Yura/CHR Photon pom
          ELSEIF (NFLUX.EQ.20) THEN
-	 IF(IBEAM.EQ.2) THEN
+         IF(IBEAM.EQ.2) THEN
             BCQ=QSCA*QSCA
 C Initialise xpq
             DO ILOOP=-6,6
@@ -4984,7 +5040,7 @@ c            DIST(10)=0
 
 c Yura/CHR Pom Photon
          ELSEIF (NFLUX.EQ.22) THEN
-	 IF(IBEAM.EQ.1) THEN
+         IF(IBEAM.EQ.1) THEN
             BCQ=QSCA*QSCA
 C Initialise xpq
             DO ILOOP=-6,6
@@ -5537,6 +5593,12 @@ C-----------------------------------------------------------------------
       write(*,*) '          ACZ        = ',ACZ
       write(*,*) '          A1A        = ',A1A
       write(*,*) '          A2A        = ',A2A
+      write(*,*) '          XI1TTBAR   = ',XI1TTBAR
+      write(*,*) '          XI2TTBAR   = ',XI2TTBAR
+      write(*,*) '          XI3TTBAR   = ',XI3TTBAR
+      write(*,*) '          XI4TTBAR   = ',XI4TTBAR
+      write(*,*) '          XI5TTBAR   = ',XI5TTBAR
+      write(*,*) '          XI6TTBAR   = ',XI6TTBAR
       write(*,*) '          ANOMCUTOFF = ',ANOMCUTOFF
       write(*,*) '          AAEXOTIC   = ',AAEXOTIC
       write(*,*) '          AAM        = ',AAM
@@ -5605,3 +5667,4 @@ c         print '(A,F8.2,I6)','rm id :',p(i,5),k(i,2)
 
 c      SUBROUTINE HWAEND
 c      END
+

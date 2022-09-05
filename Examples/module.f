@@ -163,6 +163,14 @@ c ---Anomalous coupling settings
       A2A = UA2A
       ANOMCUTOFF = UANOMCUTOFF
 
+c ---Ttbar EFT settings
+      XI1TTBAR = UXI1TTBAR
+      XI2TTBAR = UXI2TTBAR
+      XI3TTBAR = UXI3TTBAR
+      XI4TTBAR = UXI4TTBAR
+      XI5TTBAR = UXI5TTBAR
+      XI6TTBAR = UXI6TTBAR
+
 c ---Exotic excl AA settings
       AAEXOTIC = UAAEXOTIC
       AAM = UAAM
@@ -254,6 +262,12 @@ c---Set the number of nucleons - for QED photon flux
       write(*,*) 'A1A = ', A1A
       write(*,*) 'A2A = ', A2A
       write(*,*) 'ANOMCUTOFF= ', ANOMCUTOFF
+      write(*,*) 'XI1TTBAR= ', XI1TTBAR
+      write(*,*) 'XI2TTBAR= ', XI2TTBAR
+      write(*,*) 'XI3TTBAR= ', XI3TTBAR
+      write(*,*) 'XI4TTBAR= ', XI4TTBAR
+      write(*,*) 'XI5TTBAR= ', XI5TTBAR
+      write(*,*) 'XI6TTBAR= ', XI6TTBAR
       write(*,*) 'AAEXOTIC = ', AAEXOTIC
       write(*,*) 'AAM = ', AAM
       write(*,*) 'AAQ = ', AAQ

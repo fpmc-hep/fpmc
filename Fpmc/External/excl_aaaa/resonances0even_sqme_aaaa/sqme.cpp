@@ -70,6 +70,17 @@ namespace resonances0even_aaaa {
     double f0 = c;
     double w_const = w_c;
     double a2 = aa;
+    double mtop = 172.76;
+    double f0top = mass/(4*M_PI);
+    if (exclude_loops_EX == 2)//even
+    {
+      w_const = 3/(8*M_PI)*mtop*mtop/(f0top*f0top)*mass*pow((1-4*mtop*mtop/(mass*mass)),3./2.); //width assumption for ttbar paper
+    }
+
+    if (exclude_loops_EX == 3)//odd
+    {
+      w_const = 3/(8*M_PI)*mtop*mtop/(f0top*f0top)*mass*sqrt(1-4*mtop*mtop/(mass*mass)); //width assumption for ttbar paper
+    }
 
     if (s<0 || t >0 || t<-s ){
       cout<<"Invalid domain. Valid range is s>=0 and -s<=t<=0"<<endl;

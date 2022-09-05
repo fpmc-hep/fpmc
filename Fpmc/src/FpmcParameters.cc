@@ -25,7 +25,8 @@ namespace fpmc
       { "aaanom", "0" }, { "aaexotic", "0" },
       { "aam", "0.0" }, { "aaq", "0.0" }, { "aan", "0.0" },
       { "aaf0", "0.0" }, { "aaf0z", "0.0" }, { "aaf0w", "0.0" }, { "aaf0zg", "0.0" }, { "aaw", "0.0" }, { "aaa2", "0.0" },
-      { "dlambda", "0.0" }, { "anomcutoff", "-1.0" },
+      { "dlambda", "0.0" }, { "anomcutoff", "-1.0" }, {"xi1ttbar", "0.0"}, {"xi2ttbar", "0.0"}, {"xi3ttbar", "0.0"}, 
+      {"xi4ttbar", "0.0"}, {"xi5ttbar", "0.0"}, {"xi6ttbar", "0.0"}, 
       // CHIDe parameters
       { "chidex", "-1.0" }, { "chidexp", "-1.0" }, { "chides2", "-1.0" }, { "chidegapmin", "0.0" }, { "chidegapmax", "0.0" }, { "chide_iglu", "-1" }, { "chidepath", "External/CHIDe/Data/" },
       { "xi1min", "-1.0" }, { "xi1max", "-1.0" }, { "xi2min", "-1.0" }, { "xi2max", "-1.0" },
@@ -207,6 +208,12 @@ namespace fpmc
     if ( has( "acz" ) ) aaanomal.ACZ = getFloat( "acz" );
     if ( has( "a1a" ) ) aaanomal.A1A = getFloat( "a1a" );
     if ( has( "a2a" ) ) aaanomal.A2A = getFloat( "a2a" );
+    if ( has( "xi1ttbar" ) ) aaanomal.XI1TTBAR = getFloat( "xi1ttbar" );
+    if ( has( "xi2ttbar" ) ) aaanomal.XI2TTBAR = getFloat( "xi2ttbar" );
+    if ( has( "xi3ttbar" ) ) aaanomal.XI3TTBAR = getFloat( "xi3ttbar" );
+    if ( has( "xi4ttbar" ) ) aaanomal.XI4TTBAR = getFloat( "xi4ttbar" );
+    if ( has( "xi5ttbar" ) ) aaanomal.XI5TTBAR = getFloat( "xi5ttbar" );
+    if ( has( "xi6ttbar" ) ) aaanomal.XI6TTBAR = getFloat( "xi6ttbar" );
     if ( has( "anomcutoff" ) ) aaanomal.ANOMCUTOFF = getFloat( "anomcutoff" );
   }
 

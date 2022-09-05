@@ -157,6 +157,14 @@ c ---Anomalous coupling settings
       A2A = UA2A
       ANOMCUTOFF = UANOMCUTOFF
 
+c ---Ttbar EFT settings
+      XI1TTBAR = UXI1TTBAR
+      XI2TTBAR = UXI2TTBAR
+      XI3TTBAR = UXI3TTBAR
+      XI4TTBAR = UXI4TTBAR
+      XI5TTBAR = UXI5TTBAR
+      XI6TTBAR = UXI6TTBAR
+
 c ---Exotic excl AA settings
       AAEXOTIC = UAAEXOTIC
       AAM = UAAM
