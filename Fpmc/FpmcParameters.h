@@ -13,6 +13,7 @@
 #include <map>
 #include <regex>
 
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
